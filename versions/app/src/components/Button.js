@@ -6,23 +6,26 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Theme from '../styles/theme.style.js';
 import { AntDesign } from '@expo/vector-icons'
 import { globalStyles } from '../styles/styles.js';
+import { MaterialIcons, Feather, Fontisto, FontAwesome } from '@expo/vector-icons';
+import { AutoDragSortableView } from 'react-native-drag-sort';
+import { relativeTimeRounding } from 'moment';
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
 
-function GoToButton({ navigation, navigator = null, page = null, copy,noBorderBottom = null, pending =false ,params }) {
+function GoToButton({ navigation, navigator = null, page = null, copy, noBorderBottom = null, pending = false, params }) {
     return (
-        <TouchableOpacity style={[globalStyles.navigate_away,noBorderBottom && {borderBottomWidth:0}]} onPress={() => navigation.navigate(navigator, { screen: page,details:params })}>
+        <TouchableOpacity style={[globalStyles.navigate_away, noBorderBottom && { borderBottomWidth: 0 }]} onPress={() => navigation.navigate(navigator, { screen: page, details: params })}>
             <Text style={globalStyles.navigate_away_content}>{copy}</Text>
             {pending && <Text style={styles.pending}>PENDING</Text>}
-            <AntDesign name="right" size={20} color={Theme.FAINT} style={{paddingLeft:5}}/>
+            <AntDesign name="right" size={20} color={Theme.FAINT} style={{ paddingLeft: 5 }} />
         </TouchableOpacity>
     )
 }
 
-function CustomButton({ text, onPress, size, disabled, checkmark  }) {
+function CustomButton({ text, onPress, size, disabled, checkmark }) {
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={[
             styles.buttonContainer,
@@ -33,12 +36,12 @@ function CustomButton({ text, onPress, size, disabled, checkmark  }) {
             },
             disabled && styles.submitButtonDisabled
         ]}>
-                {checkmark &&
-                <AntDesign name="checkcircleo" size={17} color={Theme.SECONDARY_COLOR} style={{marginRight:10}}/>
-                }
+            {checkmark &&
+                <AntDesign name="checkcircleo" size={17} color={Theme.SECONDARY_COLOR} style={{ marginRight: 10 }} />
+            }
             <Text style={[
                 styles.buttonText,
-                size === "big" && { fontSize: 17,lineHeight:17 },
+                size === "big" && { fontSize: 17, lineHeight: 17 },
                 disabled && styles.submitButtonDisabledText
             ]}>
 
@@ -60,13 +63,43 @@ function SubmitButton({ text, onPress, style, disabled }) {
     )
 }
 
+function ReferralButton({ text, styleIconName, iconName, onPress, style, disabled }) {
+    let content;
+
+    switch (styleIconName) {
+        case 'Feather':
+            content = <Feather style={styles.referralIcon} name={iconName} size={25} color="black" />;
+            break;
+        case 'Fontisto':
+            content = <Fontisto style={styles.referralIcon} name={iconName} size={27} color="black" />;
+            break;
+        case 'FontAwesome':
+            content = <FontAwesome style={styles.referralIcon} name={iconName} size={26} color="black" />
+    }
+
+    //console.warn(`=========== styleIconName: ${styleIconName} ===============`);
+
+    return (
+        <TouchableOpacity style={globalStyles.referralButtonStyle} activeOpacity={0.8} onPress={onPress}>
+            <>
+                <View style={styles.referralTextAndIcon}>
+                    <Text style={[styles.referralButtonText, disabled]}>
+                        {content}
+                        {text}
+                    </Text>
+                </View>
+            </>
+        </TouchableOpacity>
+    )
+}
+
 const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Theme.SECONDARY_COLOR,
-        margin:5,
+        margin: 5,
         borderRadius: 12,
         paddingVertical: 9,
         paddingHorizontal: 14,
@@ -77,22 +110,22 @@ const styles = StyleSheet.create({
         color: Theme.TEXT_ON_SECONDARY_COLOR,
         alignSelf: "center",
     },
-    pending:{
+    pending: {
         backgroundColor: Theme.SECONDARY_COLOR_LIGHT,
         color: Theme.SECONDARY_COLOR,
-        paddingVertical:2,
-        paddingHorizontal:5,
-        marginTop:2,
-        marginRight:5,
-        borderRadius:4,
-        fontSize:7,
-        fontWeight:'bold',
-        lineHeight:12
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        marginTop: 2,
+        marginRight: 5,
+        borderRadius: 4,
+        fontSize: 7,
+        fontWeight: 'bold',
+        lineHeight: 12
     },
     submitButtonContainer: {
         backgroundColor: Theme.PRIMARY_COLOR,
         borderColor: Theme.WHITE,
-        margin:5,
+        margin: 5,
         borderRadius: 12,
         paddingVertical: 11,
         paddingHorizontal: 18,
@@ -106,6 +139,25 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: "uppercase"
     },
+    referralTextAndIcon: {
+        marginHorizontal: 10,
+        //backgroundColor: '#CCCCFF',
+        justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+    referralIcon: {
+        marginVertical: 5,
+        //backgroundColor: '#eab676',
+    },
+    referralButtonText: {
+        paddingLeft: 10,
+        //alignSelf: "center",
+        //backgroundColor: '#FF7F50',
+        color: Theme.TEXT_ON_REFERRAL_BUTTON,
+        fontSize: 22,
+        fontFamily: Theme.FONT_MEDIUM,
+        fontWeight: Theme.FONT_WEIGHT_LIGHT,
+    },
     submitButtonDisabled: {
         backgroundColor: Theme.DISABLED_BG
     },
@@ -114,4 +166,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export {GoToButton, CustomButton, SubmitButton}
+export { GoToButton, CustomButton, SubmitButton, ReferralButton }

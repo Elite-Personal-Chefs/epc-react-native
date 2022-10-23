@@ -1,19 +1,24 @@
 import { StyleSheet } from 'react-native';
 import Theme from '../styles/theme.style.js';
 
-const globalStyles =  StyleSheet.create({
+const globalStyles = StyleSheet.create({
+    reset: {
+        flex: 1,
+        backgroundColor: Theme.BACKGROUND_COLOR,
+        padding: 10,
+    },
     safe_dark: {
-        flex:1,
+        flex: 1,
         backgroundColor: Theme.PRIMARY_COLOR
     },
     safe_light: {
-        flex:1,
+        flex: 1,
         backgroundColor: Theme.BACKGROUND_COLOR,
-        padding:0,
-        margin:0,
+        padding: 0,
+        margin: 0,
     },
     safe_trans: {
-        flex:1,
+        flex: 1,
     },
     scrollContainer: {
         flex: 1,
@@ -22,71 +27,71 @@ const globalStyles =  StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.BACKGROUND_COLOR,
         alignItems: 'center',
-        justifyContent:'flex-start',
+        justifyContent: 'flex-start',
         padding: 10,
     },
     page_centered: {
         flex: 1,
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         padding: 10,
     },
     page_top: {
         flex: 1,
         alignItems: 'stretch',
-        justifyContent:'flex-start',
+        justifyContent: 'flex-start',
         padding: 10,
     },
     page_bottom: {
         flex: 1,
         alignItems: 'stretch',
-        justifyContent:'flex-end',
+        justifyContent: 'flex-end',
         padding: 10,
     },
     container: {
         alignItems: 'center',
-        justifyContent:'flex-start',
+        justifyContent: 'flex-start',
     },
     h1: {
         fontFamily: Theme.FONT_STANDARD,
         fontWeight: Theme.FONT_WEIGHT_MEDIUM,
         fontSize: Theme.FONT_SIZE_XL,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         lineHeight: 33,
-        paddingVertical:10,
+        paddingVertical: 10,
     },
     h2: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_LARGE,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         lineHeight: 20,
-        paddingVertical:8,
+        paddingVertical: 8,
     },
     h3: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_MEDIUM_PLUSM,
         fontWeight: 'bold',
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         lineHeight: 16,
-        paddingVertical:6,
+        paddingVertical: 6,
     },
     subtitle: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_SMALL,
-        fontSize:13,
-        lineHeight:16,
+        fontSize: 13,
+        lineHeight: 16,
         color: Theme.TEXT_ON_SURFACE_COLOR_LIGHT
     },
     p: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_SMALL,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         fontSize: 14,
         lineHeight: 20,
     },
     card: {
-        paddingVertical:15,
-        paddingHorizontal:12,
+        paddingVertical: 15,
+        paddingHorizontal: 12,
         borderRadius: 8,
         backgroundColor: Theme.SURFACE_COLOR,
         margin: 5,
@@ -152,10 +157,10 @@ const globalStyles =  StyleSheet.create({
         height: undefined,
         resizeMode: 'contain',
     },
-    empty_state:{
-        flex:1,
-        width:'100%',
-        justifyContent: 'center', 
+    empty_state: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
         alignItems: 'center'
     },
     empty_image: {
@@ -168,36 +173,53 @@ const globalStyles =  StyleSheet.create({
         fontSize: 13,
         fontWeight: 'bold',
         textAlign: 'center',
-        padding:20,
+        padding: 20,
         color: Theme.GRAY
     },
     navigate_away: {
         width: '100%',
-        flexDirection:'row',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 15,
         paddingHorizontal: 15,
-        borderBottomWidth:1,
+        borderBottomWidth: 1,
         borderColor: Theme.BORDER_COLOR
     },
-    navigate_away_content:{
-        flex:1,
+    navigate_away_content: {
+        flex: 1,
         fontWeight: 'bold',
         color: Theme.PRIMARY_COLOR,
         fontSize: 13,
+    },
+    referralButtonStyle: {
+        //backgroundColor: '#9FE2BF',
+        borderRadius: 10,
+        borderWidth: 1,
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 20,
+        // paddingTop: 25,
+        marginHorizontal: 5,
+        minHeight: 60,
+        minWidth: 350,
+        maxWidth: 350,
+    }, 
+    textLinkText:{
+        color: Theme.SECONDARY_COLOR,
     },
 })
 
 
 const menusStyles = StyleSheet.create({
     menu_course_cont: {
-        marginBottom:20
+        marginBottom: 20
     },
     menu_course: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_SMALL,
-        color:Theme.FAINT,
+        color: Theme.FAINT,
         fontStyle: 'italic',
         fontSize: 18,
         lineHeight: 20,
@@ -205,23 +227,23 @@ const menusStyles = StyleSheet.create({
         paddingBottom: 10
     },
     menu_item_cont: {
-        paddingVertical:10,
-        marginBottom:10
+        paddingVertical: 10,
+        marginBottom: 10
     },
     menu_name: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_SMALL,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         fontSize: 15,
         lineHeight: 20,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom:2
+        marginBottom: 2
     },
     menu_desc: {
         fontFamily: Theme.FONT_STANDARD,
         fontSize: Theme.FONT_SIZE_SMALL,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
         fontSize: 14,
         lineHeight: 20,
         textAlign: 'center'
@@ -250,27 +272,27 @@ const modal = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         width: '90%',
-        height:420,
-        borderWidth:1,
+        height: 420,
+        borderWidth: 1,
         borderColor: Theme.WHITE
     },
     close_button: {
         position: 'absolute',
         top: 0,
-        right:0,
+        right: 0,
         padding: 10,
-        zIndex:10000,
-        fontWeight:Theme.FONT_WEIGHT_HEAVY
+        zIndex: 10000,
+        fontWeight: Theme.FONT_WEIGHT_HEAVY
     },
     modalHeader: {
         alignItems: 'center',
         width: '100%',
-        color:Theme.SECONDARY_COLOR,
+        color: Theme.SECONDARY_COLOR,
     }
 })
 
 
-const forms =  StyleSheet.create({
+const forms = StyleSheet.create({
     formContainer: {
         flexDirection: 'row',
         height: 80,
@@ -286,16 +308,16 @@ const forms =  StyleSheet.create({
     },
     input: {
         width: '100%',
-        fontSize:15,
-        lineHeight:17,
+        fontSize: 15,
+        lineHeight: 17,
         backgroundColor: Theme.SURFACE_COLOR,
-        color:Theme.TEXT_ON_SURFACE_COLOR,
-        marginVertical:15,
-        padding:10,
+        color: Theme.TEXT_ON_SURFACE_COLOR,
+        marginVertical: 15,
+        padding: 10,
         borderRadius: 5,
         borderColor: Theme.FAINT,
         overflow: 'hidden',
-        borderWidth:1,
+        borderWidth: 1,
         backgroundColor: Theme.SURFACE_COLOR,
         borderColor: Theme.BORDER_COLOR
     },
@@ -307,8 +329,8 @@ const forms =  StyleSheet.create({
         borderRadius: 25,
         overflow: 'hidden',
         backgroundColor: Theme.SURFACE_COLOR,
-        color:Theme.SECONDARY_COLOR,
-        borderWidth:1,
+        color: Theme.SECONDARY_COLOR,
+        borderWidth: 1,
         borderColor: Theme.PRIMARY_COLOR,
         paddingLeft: 16,
     },
@@ -320,34 +342,34 @@ const forms =  StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft:8,
+        paddingLeft: 8,
         height: 58,
         borderRadius: 8,
         marginVertical: 20,
-        borderWidth:1,
+        borderWidth: 1,
         backgroundColor: Theme.SURFACE_COLOR,
         borderColor: Theme.BORDER_COLOR
     },
     input_icon: {
         color: Theme.SECONDARY_COLOR,
-        padding:8,
+        padding: 8,
         alignItems: 'center',
     },
-    focused_dark:{
+    focused_dark: {
         color: Theme.WHITE,
         borderColor: Theme.WHITE
     },
-    focused_light:{
+    focused_light: {
         color: Theme.PRIMARY_COLOR,
         borderColor: Theme.PRIMARY_COLOR
     },
-    notFocused:{
+    notFocused: {
     },
     custom_input: {
         flex: 1,
-        color:Theme.PRIMARY_COLOR,
-        fontSize:15,
-        paddingVertical:16,
+        color: Theme.PRIMARY_COLOR,
+        fontSize: 15,
+        paddingVertical: 16,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -357,25 +379,25 @@ const forms =  StyleSheet.create({
         justifyContent: 'space-between'
     },
     small_field: {
-        flex:2,
+        flex: 2,
         marginRight: 5,
     },
     password_icon: {
-        padding:8,
+        padding: 8,
         opacity: .5,
         alignItems: 'center',
     },
     has_comment: {
-        marginBottom:5
+        marginBottom: 5
     },
     input_comment: {
         width: '100%',
         fontSize: 11,
-        paddingLeft:5,
+        paddingLeft: 5,
         color: Theme.GRAY,
         textAlign: 'left'
     }
 })
 
 
-export {globalStyles, menusStyles, forms, modal}
+export { globalStyles, menusStyles, forms, modal }

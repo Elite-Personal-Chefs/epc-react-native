@@ -70,7 +70,7 @@ import SanitationScreen from '../screens/sanitationScreen'
 import LiabilityScreen from '../screens/liabilityScreen'
 
 
-
+import PersonalInfoScreen from '../screens/personalInfoScreen'
 import ContactScreen from '../screens/contactScreen'
 import FaqScreen from '../screens/faqScreen'
 import PlaygroundScreen from '../screens/playgroundScreen'
@@ -102,7 +102,8 @@ const AccountScreenStack = () => {
         }}>
             <AccountScreenStackNav.Screen name="Account" component={AccountScreen} />
             <AccountScreenStackNav.Screen name="Profile" component={ProfileScreen} />
-            <AccountScreenStackNav.Screen name="Refer" component={ReferScreen} />
+            <AccountScreenStackNav.Screen name="Personal" component={PersonalInfoScreen}/>
+            <AccountScreenStackNav.Screen name="Refer A Chef" component={ReferScreen} />
             <AccountScreenStackNav.Screen name="Terms" component={TermsScreen} />
             <AccountScreenStackNav.Screen name="Payments" component={PaymentsScreen} />
 
