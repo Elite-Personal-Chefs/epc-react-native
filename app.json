@@ -1,59 +1,77 @@
 {
-    "expo": {
-      "name": "EPC",
-      "slug": "epc",
-      "version": "1.0.6",
-      "orientation": "portrait",
-      "icon": "./exterior_assets/icon.png",
-      "splash": {
-        "image": "./exterior_assets/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#0c1e34"
+  "expo": {
+    "name": "EPC",
+    "slug": "epc",
+    "owner": "elite-personal-chefs",
+    "version": "1.0.8",
+    "orientation": "portrait",
+    "icon": "./exterior_assets/icon.png",
+    "splash": {
+      "image": "./exterior_assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0c1e34"
+    },
+    "scheme": "epc",
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/a6e6932b-8faa-4117-b320-118cecf3a213"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "packagerOpts": {
+      "sourceExts": [
+        "js",
+        "json",
+        "ts",
+        "tsx",
+        "jsx",
+        "vue"
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.epc.epcapp",
+      "supportsTablet": true,
+      "buildNumber": "1.0.8",
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "Find chefs or events in your area.",
+        "NSLocationWhenInUseUsageDescription": "Find chefs or events in your area."
       },
-      "scheme": "epc",
-      "updates": {
-        "fallbackToCacheTimeout": 0
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.37474980291-3lslvcsjoddq21tq150pr96v313g9tfe"
+        }
       },
-      "assetBundlePatterns": [
-        "**/*"
-      ],
-      "packagerOpts": {
-          "sourceExts": [
-            "js",
-            "json",
-            "ts",
-            "tsx",
-            "jsx",
-            "vue"
-          ]
-        },
-      "ios": {
-        "bundleIdentifier": "com.epc.epcapp",
-        "supportsTablet": true,
-        "buildNumber": "1.0.6",
-        "infoPlist": {
-            "NSLocationAlwaysUsageDescription": "Find chefs or events in your area.",
-            "NSLocationWhenInUseUsageDescription": "Find chefs or events in your area."
-        },
-        "config": {
-            "googleSignIn": {
-                "reservedClientId": "com.googleusercontent.apps.37474980291-3lslvcsjoddq21tq150pr96v313g9tfe"
-            }
-        },
-        "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./exterior_assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
       },
-      "android": {
-        "adaptiveIcon": {
-          "foregroundImage": "./exterior_assets/adaptive-icon.png",
-          "backgroundColor": "#FFFFFF"
-        },
-        "package": "net.agency22.epc",
-        "versionCode": 100060,
-        "googleServicesFile": "./google-services.json",
-        "permissions": []
-      },
-      "web": {
-        "favicon": "./exterior_assets/favicon.png"
+      "package": "net.agency22.epc",
+      "versionCode": 100060,
+      "googleServicesFile": "./google-services.json",
+      "permissions": []
+    },
+    "web": {
+      "favicon": "./exterior_assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a6e6932b-8faa-4117-b320-118cecf3a213"
       }
-  }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
+  },
+  "plugins": [
+    [
+      "expo-document-picker",
+      {
+        "appleTeamId": "L7M83BVZFK"
+      }
+    ]
+  ]
 }
