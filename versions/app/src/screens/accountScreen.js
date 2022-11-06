@@ -201,79 +201,198 @@ export default function AccountScreen({navigation}) {
 
     if(user){
         return (
-            <View style={globalStyles.scrollContainer}>
-                <KeyboardAwareScrollView>
-                <ScrollView >
-                    <View style={globalStyles.page} >
-                        <View style={styles.profile_header}>
-                            <TouchableWithoutFeedback  onPress={checkForCount}>
-                                {user.profile_img
-                                ? <Image source={{ uri: user.profile_img }} style={styles.profile_img} />  
-                                : <MaterialIcons name="person" size={60} color={Theme.SECONDARY_COLOR} style={styles.person_icon}/> 
-                                }
-                            </TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.profile_name}>{user.name}</Text>
-                                <Text style={styles.profile_id}>Member Since: {startDate}</Text>
-                            </View>
-                        </View>
-                        <TouchableWithoutFeedback onPress={() => alert('edit')}>
-                            <>
-                            <View style={globalStyles.navigate_away}>
-                                <Text style={globalStyles.navigate_away_content}>Personal Info</Text>
-                                <AntDesign name="edit" size={20} color={Theme.FAINT} style={{paddingLeft:5}} onPress={() => setShowPersonalEditSection(!showPersonalEditScreen)}/>
-                            </View>
-                            {showPersonalEditScreen &&
-                            <View style={[styles.info_container,{width:'100%'}]}>
-                                <View style={[forms.input_container,focusField == 'email' ? forms.focused_light: forms.notFocused]}>
-                                    <MaterialIcons name="email" size={27} style={[forms.input_icon,focusField == 'email' ? forms.focused_light: forms.notFocused]} />
-                                    <TextInput
-                                        style={[forms.custom_input]}
-                                        placeholder='Email'
-                                        placeholderTextColor={Theme.FAINT}
-                                        keyboardType='default'
-                                        onChangeText={(text) => changeEmail(text)}
-                                        value={(user.email) ? user.email : email}
-                                        underlineColorAndroid="transparent"
-                                        autoCapitalize="none"
-                                        onFocus={() => setFocusField("email")}
-                                        onBlur={() => setFocusField(null)}
-                                        setFocus={focusField}
-                                    />    
-                                </View> 
-                                <View style={[forms.input_container,focusField == 'password' ? forms.focused_light: forms.notFocused]}>
-                                    <MaterialIcons name="email" size={27} style={[forms.input_icon,focusField == 'password' ? forms.focused_light: forms.notFocused]} />
-                                    <TextInput
-                                        style={[forms.custom_input]}
-                                        placeholder='Password'
-                                        placeholderTextColor={Theme.FAINT}
-                                        keyboardType='default'
-                                        onChangeText={(text) => setPassword(text)}
-                                        value={password}
-                                        underlineColorAndroid="transparent"
-                                        autoCapitalize="none"
-                                        secureTextEntry={hide_password}
-                                        onFocus={() => setFocusField("password")}
-                                        onBlur={() => setFocusField(null)}
-                                        setFocus={focusField}
-                                    />    
-                                    <FontAwesome name={hide_password ? 'eye-slash' : 'eye'} size={20} color={Theme.SECONDARY_COLOR} style={forms.password_icon}  onPress={() => toggleShowPassword(!hide_password)}/>
-                                </View> 
-                                <CustomButton text='Save' size="small" onPress={() => updateAccount()} />
-                            </View>
-                            }
-                            </>
-                        </TouchableWithoutFeedback>
+			<View style={globalStyles.scrollContainer}>
+				<KeyboardAwareScrollView>
+					<ScrollView>
+						<View style={globalStyles.page}>
+							<View style={styles.profile_header}>
+								<TouchableWithoutFeedback
+									onPress={checkForCount}
+								>
+									{user.profile_img ? (
+										<Image
+											source={{ uri: user.profile_img }}
+											style={styles.profile_img}
+										/>
+									) : (
+										<MaterialIcons
+											name="person"
+											size={60}
+											color={Theme.SECONDARY_COLOR}
+											style={styles.person_icon}
+										/>
+									)}
+								</TouchableWithoutFeedback>
+								<View>
+									<Text style={styles.profile_name}>
+										{user.name}
+									</Text>
+									<Text style={styles.profile_id}>
+										Member Since: {startDate}
+									</Text>
+								</View>
+							</View>
+							<TouchableWithoutFeedback
+								onPress={() => alert("edit")}
+							>
+								<>
+									<View style={globalStyles.navigate_away}>
+										<Text
+											style={
+												globalStyles.navigate_away_content
+											}
+										>
+											Personal Info
+										</Text>
+										<AntDesign
+											name="edit"
+											size={20}
+											color={Theme.FAINT}
+											style={{ paddingLeft: 5 }}
+											onPress={() =>
+												setShowPersonalEditSection(
+													!showPersonalEditScreen
+												)
+											}
+										/>
+									</View>
+									{showPersonalEditScreen && (
+										<View
+											style={[
+												styles.info_container,
+												{ width: "100%" },
+											]}
+										>
+											<View
+												style={[
+													forms.input_container,
+													focusField == "email"
+														? forms.focused_light
+														: forms.notFocused,
+												]}
+											>
+												<MaterialIcons
+													name="email"
+													size={27}
+													style={[
+														forms.input_icon,
+														focusField == "email"
+															? forms.focused_light
+															: forms.notFocused,
+													]}
+												/>
+												<TextInput
+													style={[forms.custom_input]}
+													placeholder="Email"
+													placeholderTextColor={
+														Theme.FAINT
+													}
+													keyboardType="default"
+													onChangeText={(text) =>
+														changeEmail(text)
+													}
+													value={
+														user.email
+															? user.email
+															: email
+													}
+													underlineColorAndroid="transparent"
+													autoCapitalize="none"
+													onFocus={() =>
+														setFocusField("email")
+													}
+													onBlur={() =>
+														setFocusField(null)
+													}
+													setFocus={focusField}
+												/>
+											</View>
+											<View
+												style={[
+													forms.input_container,
+													focusField == "password"
+														? forms.focused_light
+														: forms.notFocused,
+												]}
+											>
+												<MaterialIcons
+													name="email"
+													size={27}
+													style={[
+														forms.input_icon,
+														focusField == "password"
+															? forms.focused_light
+															: forms.notFocused,
+													]}
+												/>
+												<TextInput
+													style={[forms.custom_input]}
+													placeholder="Password"
+													placeholderTextColor={
+														Theme.FAINT
+													}
+													keyboardType="default"
+													onChangeText={(text) =>
+														setPassword(text)
+													}
+													value={password}
+													underlineColorAndroid="transparent"
+													autoCapitalize="none"
+													secureTextEntry={
+														hide_password
+													}
+													onFocus={() =>
+														setFocusField(
+															"password"
+														)
+													}
+													onBlur={() =>
+														setFocusField(null)
+													}
+													setFocus={focusField}
+												/>
+												<FontAwesome
+													name={
+														hide_password
+															? "eye-slash"
+															: "eye"
+													}
+													size={20}
+													color={
+														Theme.SECONDARY_COLOR
+													}
+													style={forms.password_icon}
+													onPress={() =>
+														toggleShowPassword(
+															!hide_password
+														)
+													}
+												/>
+											</View>
+											<CustomButton
+												text="Save"
+												size="small"
+												onPress={() => updateAccount()}
+											/>
+										</View>
+									)}
+								</>
+							</TouchableWithoutFeedback>
 
-     
+							{activeFlow == "chefs" && (
+								<>
+									<GoToButton
+										navigation={navigation}
+										navigator="Profile"
+										copy="Chef Profile"
+									/>
+									<GoToButton
+										navigation={navigation}
+										navigator="Refer"
+										copy="Refer A Chef"
+									/>
 
-
-                        {activeFlow == 'chefs' &&
-                            <>
-                                <GoToButton navigation={navigation} navigator="Profile" copy="Chef Profile"/>
-                                <GoToButton navigation={navigation} navigator="Refer" copy="Refer A Chef"/>
-
-                                {/*                                
+									{/*                                
                                 <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
                                 <GoToButton navigation={navigation} navigator="Background Check" copy="Background Check"/>
 
@@ -284,31 +403,61 @@ export default function AccountScreen({navigation}) {
                                 <GoToButton navigation={navigation} navigator="Sanitation Manager License" copy="Sanitation Manager License"/>
                                 <GoToButton navigation={navigation} navigator="Liability Insurance" copy="Liability Insurance"/>
                                 */}
-                            </>
-                        }
-                        {activeFlow == 'guests' &&
-                            <GoToButton navigation={navigation} navigator="Payments" copy="Payments" params={user}/>
-                        }
-                        <GoToButton navigation={navigation} navigator="Terms" copy="Terms &amp; Conditions"/>
-                        <GoToButton navigation={navigation} navigator="Contact" copy="Contact Us"/>
-                        <GoToButton navigation={navigation} navigator="FAQ" copy="Frequently Asked Questions"/>
+								</>
+							)}
+							{activeFlow == "guests" && (
+								<GoToButton
+									navigation={navigation}
+									navigator="Payments"
+									copy="Payments"
+									params={user}
+								/>
+							)}
+							<GoToButton
+								navigation={navigation}
+								navigator="Terms"
+								copy="Terms &amp; Conditions"
+							/>
+							<GoToButton
+								navigation={navigation}
+								navigator="Contact"
+								copy="Contact Us"
+							/>
+							<GoToButton
+								navigation={navigation}
+								navigator="FAQ"
+								copy="Frequently Asked Questions"
+							/>
 
-                      
-                        <View>
-                            <Text onPress={() => logout()}  style={styles.textLinkText}>LOG OUT</Text>
-                            <Text style={styles.versionText}>App Version: {Constants.manifest.revisionId}</Text>
-                        </View>
-                        {devVisible &&
-                            <View>
-                                <Text onPress={() => navigation.navigate('Playground')}  style={styles.textLinkText}>DEVELOPER</Text>
-                            </View>
-                        }
-
-                    </View>
-                </ScrollView>
-                </KeyboardAwareScrollView>
-            </View>
-        )
+							<View>
+								<Text
+									onPress={() => logout()}
+									style={styles.textLinkText}
+								>
+									LOG OUT
+								</Text>
+								<Text style={styles.versionText}>
+                                    {/* TODO: Find what needs to be done to get the version id */}
+									App Version: {"Check TestFlight"}
+								</Text>
+							</View>
+							{devVisible && (
+								<View>
+									<Text
+										onPress={() =>
+											navigation.navigate("Playground")
+										}
+										style={styles.textLinkText}
+									>
+										DEVELOPER
+									</Text>
+								</View>
+							)}
+						</View>
+					</ScrollView>
+				</KeyboardAwareScrollView>
+			</View>
+		);
     }
     else{
         return (
