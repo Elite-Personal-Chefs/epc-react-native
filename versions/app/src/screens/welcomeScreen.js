@@ -121,7 +121,7 @@ export default function WelcomeScreen({navigation}) {
         {firstLaunch
         ?  !activeFlow
                 ? <View style={[globalStyles.page_centered,{backgroundColor:Theme.SURFACE_COLOR}]}>
-                    <Text style={globalStyles.h1}>Welcome! Let’s get started.</Text>
+                    <Text style={globalStyles.h1}>Welcome! Let’s get started!</Text>
                     <Text style={globalStyles.subtitle}>First, tell us what brings you to EPC.</Text>
                     <View style={styles.choose_flow}>
                         <Image style={styles.empty_image} source={require('../assets/onboard/table.png')} />
