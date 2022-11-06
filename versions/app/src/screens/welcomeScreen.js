@@ -180,7 +180,7 @@ export default function WelcomeScreen({navigation}) {
                     </View>
                 </View>
         :   <View style={[globalStyles.page_centered,{padding:30}]}>
-                <Text style={globalStyles.h1}>Welcome back!</Text>
+                <Text style={globalStyles.h1}>Welcome back! 😁</Text>
                 <Text style={globalStyles.subtitle}>Please choose how you will login.</Text>
                 <View style={styles.choose_flow}>
                     <Image style={styles.empty_image} source={require('../assets/onboard/table.png')} />

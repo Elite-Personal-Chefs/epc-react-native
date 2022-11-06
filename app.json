@@ -3,7 +3,7 @@
     "name": "EPC",
     "slug": "epc",
     "owner": "elite-personal-chefs",
-    "version": "1.0.6",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./exterior_assets/icon.png",
     "splash": {
@@ -31,7 +31,7 @@
     "ios": {
       "bundleIdentifier": "com.epc.epcapp",
       "supportsTablet": true,
-      "buildNumber": "1.0.6",
+      "buildNumber": "1.0.10",
       "infoPlist": {
         "NSLocationAlwaysUsageDescription": "Find chefs or events in your area.",
         "NSLocationWhenInUseUsageDescription": "Find chefs or events in your area."
