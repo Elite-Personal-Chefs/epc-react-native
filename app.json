@@ -2,6 +2,7 @@
     "expo": {
       "name": "EPC",
       "slug": "epc",
+      "owner": "elite-personal-chefs",
       "version": "1.0.6",
       "orientation": "portrait",
       "icon": "./exterior_assets/icon.png",
