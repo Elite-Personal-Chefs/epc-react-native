@@ -104,7 +104,7 @@ export default function MenuDetailScreen({route,navigation}) {
         //If this is a template page look for the menu in templates
         //otherwise look into the chefs colelction of menus
         const firestore = firebase.firestore()
-        const menuRef = (pageName == 'Templates') ? firestore.collection('menu_templates2').doc(details.id) : firestore.collection('chefs').doc(chefID).collection('menus').doc(details.id)
+        const menuRef = (pageName == 'Templates') ? firestore.collection('menu_templates').doc(details.id) : firestore.collection('chefs').doc(chefID).collection('menus').doc(details.id)
         const menuDoc = await menuRef.get();
         if (!menuDoc.exists) {
             console.log("No menu found")  

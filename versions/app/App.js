@@ -96,7 +96,7 @@ export default function App() {
         configKeys: configKeys,
         activeFlow: activeFlow,
         userLoggedIn,userLoggedIn,
-        apiMode: 'api_live', //possible options: local, live, dev
+        apiMode: 'api_local', //possible options: local, live, dev
         setActiveFlow,
         setUserLoggedIn,
         setUserID, //Pass any functions that contexts needs to edit
