@@ -16,7 +16,10 @@ To get started with running the client:
 
 ## Deploying new versions
 
-Updates can occur in 2 forms. **Minor** updates and **Major** updates. Minor updates, which will likely be the most common updates, can be updated
+1. Install EAS CLI global on by running `npm install -g eas-cli`
+2. Log into EAS by running `eas login`
+3. To push an Over-The-Air (OTA)
+4. Updates can occur in 2 forms. **Minor** updates and **Major** updates. Minor updates, which will likely be the most common updates, can be updated
 
 ## Log in to the *App Store*
 
