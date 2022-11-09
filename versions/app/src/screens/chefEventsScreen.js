@@ -44,7 +44,7 @@ export default function ChefEventScreen({navigation, route}) {
                 //CHANGE TO EVENT TEMPLATES
                 const result = await fetch(getEndpoint(appsGlobalContext,'event_templates')); //apiBase
                 const json = await result.json()
-                console.log("a",json)
+                // console.log("a",json)
                 setEventTemplates(json)
             }
             else if(eventPageName == 'Your Events'){

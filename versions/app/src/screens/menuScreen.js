@@ -52,7 +52,7 @@ export default function MenuScreen({navigation, route}) {
                     let menus = []
                     menusRef.forEach(doc => {
                         let menu = doc.data()
-                        console.log(menu)
+                        // console.log(menu)
                         menu.id = doc.id
                         menus.push(menu)
                     })
@@ -84,7 +84,7 @@ export default function MenuScreen({navigation, route}) {
     useFocusEffect(
         React.useCallback(() => {
             getMenus(menuPageName)
-            console.log("Menu screen is focused")
+            // console.log("Menu screen is focused")
         }, [1])
     )
 

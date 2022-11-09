@@ -73,7 +73,7 @@ export default function EventsScreen({navigation,route}) {
     }
 
     const renderEvent = ( {item} ) => {
-        console.log(item)
+        // console.log(item)
         return (
             <TouchableWithoutFeedback key={item.index} onPress={() => navigation.navigate('Event Details', {details:item})}>
                 <View style={styles.navigate_away}>
