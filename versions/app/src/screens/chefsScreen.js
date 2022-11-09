@@ -157,22 +157,23 @@ export default function EventsScreen({navigation,route}) {
     ]
 
     return (
-            <View style={[globalStyles.page,{padding:0}]}>
-                {hasChefs
-                ? chefPageName == 'Chefs'
-                    ? <>
-                        <View style={{flex:1,width:'100%'}}>
+        <View style={[globalStyles.page, { padding: 0 }]}>
+            <Text>Testing an OTA update</Text>
+            {hasChefs ? (
+                chefPageName == "Chefs" ? (
+                    <>
+                        <View style={{ flex: 1, width: "100%" }}>
                             <FlatList
                                 data={hasChefs}
                                 renderItem={renderChef}
-                                keyExtractor={event => event.id}
+                                keyExtractor={(event) => event.id}
                                 refreshControl={
                                     <RefreshControl
-                                    refreshing={refreshing}
-                                    onRefresh={onRefresh}
+                                        refreshing={refreshing}
+                                        onRefresh={onRefresh}
                                     />
                                 }
-                                />
+                            />
                         </View>
                         {/*
                         <TouchableOpacity style={styles.filter_bar} onPress={() => openFilters()}>
@@ -180,61 +181,109 @@ export default function EventsScreen({navigation,route}) {
                             <Octicons name="settings" size={16} color={Theme.TEXT_ON_PRIMARY_COLOR} />
                         </TouchableOpacity>
                         */}
-                     </>
-                    : <View style={styles.container}>
-                        <MapView 
+                    </>
+                ) : (
+                    <View style={styles.container}>
+                        <MapView
                             ref={mapRef} //assign our ref to this MapView
                             initialRegion={initialRegion}
                             onRegionChange={onRegionChange}
-                            style={styles.map} 
+                            style={styles.map}
                         >
-                            {coordinates && hasChefs.map((marker, index) => {
-                                return(<Marker
-                                    key={index}
-                                    coordinate={coordinates[index]}
-                                    title={marker.title}
-                                />)
-                                
-                            })}
+                            {coordinates &&
+                                hasChefs.map((marker, index) => {
+                                    return (
+                                        <Marker
+                                            key={index}
+                                            coordinate={coordinates[index]}
+                                            title={marker.title}
+                                        />
+                                    );
+                                })}
                         </MapView>
                         <ScrollView style={styles.places} horizontal={true}>
-                            {coordinates && hasChefs.map((item, index) => (
-                                 <TouchableWithoutFeedback
-                                    key={index}
-                                    onPress={() => goToMarker(coordinates[index]) }
-                                    onLongPress={() => navigation.navigate('Chef Details', {details:item})}
-                                >
-                                <View style={styles.scroller}>
-                                    <Image source={{ uri: item.profile_img }} style={styles.scroller_img} />
-                                    <View style={styles.scroller_content}>
-                                        <View style={styles.upper_content}>
-                                            <View>
-                                                <Text style={styles.scroller_title}>{item.name}</Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.lower_content}>
-                                            <Text style={styles.cuisines} numberOfLines={1}>{(item.cuisines) ? Object.values(item.cuisines).join(",") : ''}</Text>
-                                            <View style={styles.reviews_and_rating}>
-                                                {/*
+                            {coordinates &&
+                                hasChefs.map((item, index) => (
+                                    <TouchableWithoutFeedback
+                                        key={item.profile_img}
+                                        onPress={() =>
+                                            goToMarker(coordinates[index])
+                                        }
+                                        onLongPress={() =>
+                                            navigation.navigate(
+                                                "Chef Details",
+                                                { details: item }
+                                            )
+                                        }
+                                    >
+                                        <View style={styles.scroller}>
+                                            <Image
+                                                source={{
+                                                    uri: item.profile_img,
+                                                }}
+                                                style={styles.scroller_img}
+                                            />
+                                            <View
+                                                style={styles.scroller_content}
+                                            >
+                                                <View
+                                                    style={styles.upper_content}
+                                                >
+                                                    <View>
+                                                        <Text
+                                                            style={
+                                                                styles.scroller_title
+                                                            }
+                                                        >
+                                                            {item.name}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                <View
+                                                    style={styles.lower_content}
+                                                >
+                                                    <Text
+                                                        style={styles.cuisines}
+                                                        numberOfLines={1}
+                                                    >
+                                                        {item.cuisines
+                                                            ? Object.values(
+                                                                  item.cuisines
+                                                              ).join(",")
+                                                            : ""}
+                                                    </Text>
+                                                    <View
+                                                        style={
+                                                            styles.reviews_and_rating
+                                                        }
+                                                    >
+                                                        {/*
                                                 <FontAwesome name="star" size={12} color={Theme.SECONDARY_COLOR} />
                                                 <Text style={styles.rating}>{(item.chef_rating) ? item.chef_rating : '4.8'}</Text>
                                                 <Text style={styles.reviews}>(120)</Text>
                                                 */}
+                                                    </View>
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
-                                </View>
-                                </TouchableWithoutFeedback>
-                            ))}
+                                    </TouchableWithoutFeedback>
+                                ))}
                         </ScrollView>
                     </View>
-                : <View style={globalStyles.empty_state}>
-                <Image style={globalStyles.empty_image} source={require('../assets/empty_calendar.png')} />
-                <Text style={globalStyles.empty_text}>There are no chefs found</Text>
-            </View>
-                }
-            </View>
-    )
+                )
+            ) : (
+                <View style={globalStyles.empty_state}>
+                    <Image
+                        style={globalStyles.empty_image}
+                        source={require("../assets/empty_calendar.png")}
+                    />
+                    <Text style={globalStyles.empty_text}>
+                        There are no chefs found
+                    </Text>
+                </View>
+            )}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
