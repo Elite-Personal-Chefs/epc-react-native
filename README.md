@@ -18,8 +18,7 @@ To get started with running the client:
 
 1. Install EAS CLI global on by running `npm install -g eas-cli`
 2. Log into EAS by running `eas login`
-3. To push an Over-The-Air (OTA)
-4. Updates can occur in 2 forms. **Minor** updates and **Major** updates. Minor updates, which will likely be the most common updates, can be updated
+3. Updates can occur in 2 forms. **Minor** updates and **Major** builds. Minor updates, which will likely be the most common updates, can be updated with the following command: `eas build --platform ios --channel production`
 
 ## Log in to the *App Store*
 
