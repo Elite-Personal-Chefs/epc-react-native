@@ -34,33 +34,25 @@ export default function AccountScreen({navigation}) {
     const appsGlobalContext = useContext(AppContext);
     const uid = appsGlobalContext.userID
     const activeFlow = appsGlobalContext.activeFlow
-    console.log("Account UID",uid+" "+activeFlow)
+    //console.log("Account UID",uid+" "+activeFlow)
     const [user,setUserData] = useState(false)
     const [startDate,setStartDate] = useState('')
     const [dataLoaded,setDataLoaded] = useState(false)
     
-    
-    const [showPersonalEditScreen,setShowPersonalEditSection] = useState(false)
+    //? ARE WE USING THESE VARIABLES?
     const [focusField,setFocusField] = useState(false)
-
-    
     const [password, setPassword] = useState('')
     const [hide_password,toggleShowPassword] = useState(true)
-    
-    
-    
-    const [editProfileSection,setEditProfileSection] = useState(false)
     const [sectionName,setSectionName] = useState(false)
-
-
    
     /*************************************************************/
     // GET USER DATA TO RENDER PAGE WITH
     /*************************************************************/
     const getUserData = async (uid) => {
+        
         const usersRef = firebase.firestore().collection(activeFlow);
         const firebaseUser = await usersRef.doc(uid).get();
-        console.log("Finding user: "+activeFlow+" UID: "+uid)
+      
         if (firebaseUser.exists) {
             let userData = firebaseUser.data()
             let userDate = convertTimestamp(userData.createdAt)
@@ -93,33 +85,6 @@ export default function AccountScreen({navigation}) {
             updateBirthday()
         }
     }
-
-    /*************************************************************/
-    // UPDATE EMAIL
-    /*************************************************************/
-    const [email, setNewEmail] = useState('')
-    const changeEmail = async (text) => {
-        user.email = null
-        setNewEmail(text)
-    }
-
-    const updateEmail = async () => {
-        const userData = {
-            email: email
-        }
-        const usersRef = firebase.firestore().collection(activeFlow);
-        await usersRef.doc(uid).update(userData);
-        //Clean up and refresh profile editing
-        setDataLoaded(false)
-    }
-
-    
-    const updateAccount = () => {
-        updateEmail()
-        Alert.alert("Updating account...")
-    }
-
-    
 
     /*************************************************************/
     // UPDATE BIRTHDAY
@@ -168,9 +133,6 @@ export default function AccountScreen({navigation}) {
         );
     }
 
-  
-
-
     /*************************************************************/
     // EFFECT TO SHOW DEV SCREEN ON CLICKS
     /*************************************************************/
@@ -192,8 +154,6 @@ export default function AccountScreen({navigation}) {
             getUserData(uid)
         }, [1])
     )
-
-
 
     /*************************************************************/
     // ONLY SHOW IF WE HAVE USER
@@ -232,159 +192,13 @@ export default function AccountScreen({navigation}) {
 									</Text>
 								</View>
 							</View>
-							<TouchableWithoutFeedback
-								onPress={() => alert("edit")}
-							>
-								<>
-									<View style={globalStyles.navigate_away}>
-										<Text
-											style={
-												globalStyles.navigate_away_content
-											}
-										>
-											Personal Info
-										</Text>
-										<AntDesign
-											name="edit"
-											size={20}
-											color={Theme.FAINT}
-											style={{ paddingLeft: 5 }}
-											onPress={() =>
-												setShowPersonalEditSection(
-													!showPersonalEditScreen
-												)
-											}
-										/>
-									</View>
-									{showPersonalEditScreen && (
-										<View
-											style={[
-												styles.info_container,
-												{ width: "100%" },
-											]}
-										>
-											<View
-												style={[
-													forms.input_container,
-													focusField == "email"
-														? forms.focused_light
-														: forms.notFocused,
-												]}
-											>
-												<MaterialIcons
-													name="email"
-													size={27}
-													style={[
-														forms.input_icon,
-														focusField == "email"
-															? forms.focused_light
-															: forms.notFocused,
-													]}
-												/>
-												<TextInput
-													style={[forms.custom_input]}
-													placeholder="Email"
-													placeholderTextColor={
-														Theme.FAINT
-													}
-													keyboardType="default"
-													onChangeText={(text) =>
-														changeEmail(text)
-													}
-													value={
-														user.email
-															? user.email
-															: email
-													}
-													underlineColorAndroid="transparent"
-													autoCapitalize="none"
-													onFocus={() =>
-														setFocusField("email")
-													}
-													onBlur={() =>
-														setFocusField(null)
-													}
-													setFocus={focusField}
-												/>
-											</View>
-											<View
-												style={[
-													forms.input_container,
-													focusField == "password"
-														? forms.focused_light
-														: forms.notFocused,
-												]}
-											>
-												<MaterialIcons
-													name="email"
-													size={27}
-													style={[
-														forms.input_icon,
-														focusField == "password"
-															? forms.focused_light
-															: forms.notFocused,
-													]}
-												/>
-												<TextInput
-													style={[forms.custom_input]}
-													placeholder="Password"
-													placeholderTextColor={
-														Theme.FAINT
-													}
-													keyboardType="default"
-													onChangeText={(text) =>
-														setPassword(text)
-													}
-													value={password}
-													underlineColorAndroid="transparent"
-													autoCapitalize="none"
-													secureTextEntry={
-														hide_password
-													}
-													onFocus={() =>
-														setFocusField(
-															"password"
-														)
-													}
-													onBlur={() =>
-														setFocusField(null)
-													}
-													setFocus={focusField}
-												/>
-												<FontAwesome
-													name={
-														hide_password
-															? "eye-slash"
-															: "eye"
-													}
-													size={20}
-													color={
-														Theme.SECONDARY_COLOR
-													}
-													style={forms.password_icon}
-													onPress={() =>
-														toggleShowPassword(
-															!hide_password
-														)
-													}
-												/>
-											</View>
-											<CustomButton
-												text="Save"
-												size="small"
-												onPress={() => updateAccount()}
-											/>
-										</View>
-									)}
-								</>
-							</TouchableWithoutFeedback>
-
 							{activeFlow == "chefs" && (
 								<>
 									<GoToButton
 										navigation={navigation}
-										navigator="Profile"
+										navigator="Personal"
 										copy="Chef Profile"
+                                        params={user}
 									/>
 									<GoToButton
 										navigation={navigation}
