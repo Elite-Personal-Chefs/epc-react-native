@@ -97,24 +97,17 @@ const AccountScreenStack = () => {
             <AccountScreenStackNav.Screen name="Terms" component={TermsScreen} />
             <AccountScreenStackNav.Screen name="Payments" component={PaymentsScreen} />
 
-
-
             <AccountScreenStackNav.Screen name="Waiver of Liability" component={WaiverScreen} />
             <AccountScreenStackNav.Screen name="Background Check" component={BackgroundCheckScreen} /> 
             <AccountScreenStackNav.Screen name="Professional Resume" component={ResumeScreen} /> 
             <AccountScreenStackNav.Screen name="Food Handler's License" component={FoodHandlerScreen} /> 
 
-
-
             <AccountScreenStackNav.Screen name="Professional Licenses" component={LicenseScreen} />
             <AccountScreenStackNav.Screen name="Sanitation Manager License" component={SanitationScreen} />
             <AccountScreenStackNav.Screen name="Liability Insurance" component={LiabilityScreen} />
 
-
-
             <AccountScreenStackNav.Screen name="Contact" component={ContactScreen}  options={{ headerShown: true }}/>
             <AccountScreenStackNav.Screen name="FAQ" component={FaqScreen}  options={{ headerShown: true }}/>
-
 
             <AccountScreenStackNav.Screen name="Playground" component={PlaygroundScreen}/>
         </AccountScreenStackNav.Navigator>       
