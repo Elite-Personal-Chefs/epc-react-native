@@ -12,7 +12,6 @@ import * as Updates from "expo-updates";
 import AppLoading from "expo-app-loading";
 import * as SplashScreen from "expo-splash-screen";
 
-
 //COMPONENTS
 import AppContext from "./src/components/AppContext";
 import Navigator from "./src/routes";
@@ -42,11 +41,13 @@ import { NotoSerif_400Regular } from "@expo-google-fonts/noto-serif";
 
 /***** assign a default text to the whole app ******/
 Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.style = { fontFamily: "Roboto_400Regular" };
 
-//Ignore Yellow Timer Warnings caused by firebase
+
+//Ignore Yellow Timer Warnings caused by firebase and react native packages (Hopefully this will be fixed in the future)
 LogBox.ignoreLogs(["Setting a timer"]);
+LogBox.ignoreLogs(["ViewPropTypes"]);
 
+SplashScreen.preventAutoHideAsync();
 /*******************************************************************************/
 //MAIN EXPORT FUNCTION
 /*******************************************************************************/
@@ -81,14 +82,6 @@ export default function App() {
 	console.log("APP: USER ID: " + appGlobals.userID);
 	console.log("APP: USER LOGGED IN: " + appGlobals.userLoggedIn);
 
-	const holdSplashScreen = async () => {
-		try {
-			await SplashScreen.preventAutoHideAsync();
-		} catch (e) {
-			//console.warn(e);
-		}
-	};
-
 	//CHECK FOR OTA UPDATES
 	const checkForUpdates = async () => {
 		if (Platform.OS != "web") {
@@ -116,19 +109,23 @@ export default function App() {
 		console.log(
 			"++++++++++++++++ USE EFFECT IS RUNNING: FONTS LOADED ++++++++++++++++="
 		);
-		holdSplashScreen();
 		checkForUpdates();
+
+		if (fontsLoaded)
+			Text.defaultProps.style = { fontFamily: "Roboto_400Regular" };
 
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
 	}, [fontsLoaded]);
 
 	const appIsReady = fontsLoaded && !appIsAwaitingOTAUpdates && !loading;
 
+	if (!appIsReady) return null;
+
+	SplashScreen.hideAsync();
+
 	//LOAD CONTENT
 	//You started loading the font "Roboto_400Regular", but used it before it finished loading. You need to wait for Font.loadAsync to complete before using the font.
-	return !appIsReady ? (
-		<AppLoading />
-	) : (
+	return (
 		<AppContext.Provider value={appGlobals}>
 			<SafeAreaProvider>
 				<StatusBar

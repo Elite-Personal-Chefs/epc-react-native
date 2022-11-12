@@ -26,3 +26,12 @@ To get started with running the client:
 
 
 
+# Known Errors
+
+`[TypeError: undefined is not an object (evaluating 'NativeUnimoduleProxy.viewManagersNames.includes')](https://stackoverflow.com/questions/72487854/typeerror-undefined-is-not-an-object-evaluating-nativeunimoduleproxy-viewmana)`
+
+If you run into this error above, run the following command: `expo install expo-modules-core`
+
+
+
+This can happen if you delete the `node_module` folder.
