@@ -46,6 +46,7 @@ Text.defaultProps = Text.defaultProps || {};
 //Ignore Yellow Timer Warnings caused by firebase and react native packages (Hopefully this will be fixed in the future)
 LogBox.ignoreLogs(["Setting a timer"]);
 LogBox.ignoreLogs(["ViewPropTypes"]);
+LogBox.ignoreLogs(["AsyncStorage has been extracted"]);
 
 SplashScreen.preventAutoHideAsync();
 /*******************************************************************************/
