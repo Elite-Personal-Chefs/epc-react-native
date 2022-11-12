@@ -1,7 +1,7 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext , useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 //OTHER DEPENDENCIES
@@ -25,7 +25,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 export default function LoginScreen({route,navigation}) {
     const chosenFlow = route.params.chosenFlow //used for registration route down below
-    console.log("LOGIN: Chosen Flow",chosenFlow)
+    useEffect(() =>console.log("LOGIN: Chosen Flow",chosenFlow), [chosenFlow]);
 
     const appsGlobalContext = useContext(AppContext);
     const [email, setEmail] = useState('')

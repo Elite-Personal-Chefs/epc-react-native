@@ -9,25 +9,6 @@ const useSession = () => {
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [userData, setUserData] = useState(null);
 
-	const appGlobals = {
-		userID: userID,
-		userData: userData,
-		configKeys: configKeys,
-		activeFlow: activeFlow,
-		userLoggedIn,
-		apiMode: "api_live", //possible options: local, live, dev
-		setActiveFlow,
-		setUserLoggedIn,
-		setUserID, //Pass any functions that contexts needs to edit
-		setUserData, //Pass any functions that contexts needs to edit
-		signInWithEmailAndPassword,
-		signUpWithEmailAndPassword,
-		signOut,
-		sendPasswordResetEmail,
-		updateEmail,
-		updatePassword,
-	};
-
 	useEffect(() => {
 		setLoading(true);
 		console.log("Starting Session (useSession)");
@@ -38,11 +19,9 @@ const useSession = () => {
 			.onAuthStateChanged((firebaseUser) => {
 				if (firebaseUser) {
 					const uid = firebaseUser.uid;
-					console.log("SESSION: Current User", uid);
-					//Being inside useEffect, we have to create async function here and call it after
 
-					//Call Async function
-					if (!userData) loadUserData(uid);
+					loadUserData(uid);
+
 					setUserID(uid);
 					setUserLoggedIn(true);
 				} else {
@@ -61,8 +40,9 @@ const useSession = () => {
 	const loadUserData = async (uid) => {
 		const user = await getUserData(uid);
 
-		if (user.exists) {
-			console.log("APP: User exists from " + userType);
+
+		if (user) {
+			console.log("APP: User exists from " + user.user_type);
 			appGlobals.setActiveFlow(user.user_type);
 			appGlobals.setUserData(user.userData);
 			if (Platform.OS != "web") {
@@ -88,6 +68,25 @@ const useSession = () => {
 
 	const updatePassword = async (password) =>
 		firebase.auth().currentUser.updatePassword(password);
+
+	const appGlobals = {
+		userID: userID,
+		userData: userData,
+		configKeys: configKeys,
+		activeFlow: activeFlow,
+		userLoggedIn,
+		apiMode: "api_live", //possible options: local, live, dev
+		setActiveFlow,
+		setUserLoggedIn,
+		setUserID, //Pass any functions that contexts needs to edit
+		setUserData, //Pass any functions that contexts needs to edit
+		signInWithEmailAndPassword,
+		signUpWithEmailAndPassword,
+		signOut,
+		sendPasswordResetEmail,
+		updateEmail,
+		updatePassword,
+	};
 
 	return {
 		appGlobals,

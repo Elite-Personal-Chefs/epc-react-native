@@ -35,7 +35,7 @@ export default function AccountScreen({navigation}) {
     const uid = appsGlobalContext.userID
     const activeFlow = appsGlobalContext.activeFlow
     console.log("Account UID",uid+" "+activeFlow)
-    const [user,setUserData] = useState(false)
+    // const [user,setUserData] = useState(false)
     const [startDate,setStartDate] = useState('')
     const [dataLoaded,setDataLoaded] = useState(false)
     
@@ -57,27 +57,28 @@ export default function AccountScreen({navigation}) {
     /*************************************************************/
     // GET USER DATA TO RENDER PAGE WITH
     /*************************************************************/
-    const getUserData = async (uid) => {
-        const usersRef = firebase.firestore().collection(activeFlow);
-        const firebaseUser = await usersRef.doc(uid).get();
-        console.log("Finding user: "+activeFlow+" UID: "+uid)
-        if (firebaseUser.exists) {
-            let userData = firebaseUser.data()
-            let userDate = convertTimestamp(userData.createdAt)
+    // const getUserData = async (uid) => {
+    //     console.log("Account Screen Active Flow", activeFlow)
+    //     const usersRef = firebase.firestore().collection(activeFlow);
+    //     const firebaseUser = await usersRef.doc(uid).get();
+    //     console.log("Finding user: "+activeFlow+" UID: "+uid)
+    //     if (firebaseUser.exists) {
+    //         let userData = firebaseUser.data()
+    //         let userDate = convertTimestamp(userData.createdAt)
 
-            //Set user data throughout page
-            setUserData(userData);
-            setStartDate(userDate[0])
-            setDataLoaded(true)
-        }
-        else{
-            console.log("No user found")
-        }
-    }
+    //         //Set user data throughout page
+    //         setUserData(userData);
+    //         setStartDate(userDate[0])
+    //         setDataLoaded(true)
+    //     }
+    //     else{
+    //         console.log("No user found")
+    //     }
+    // }
 
-    if(!dataLoaded){
-        getUserData(uid)
-    }
+    // if(!dataLoaded){
+    //     getUserData(uid)
+    // }
 
     /*************************************************************/
     // EDIT INFO
@@ -151,14 +152,13 @@ export default function AccountScreen({navigation}) {
                 },
                 {
                     text: "Logout",
-                    onPress: () =>  {
+                    onPress: async () =>  {
                         console.log("Logging out user")
-                        firebase.auth().signOut().then(()=>{
+                        await appsGlobalContext.signOut();
                             console.log("Logged out")
-                            appsGlobalContext.setUserData(null)
-                            appsGlobalContext.setUserID(null)
+                            // appsGlobalContext.setUserData(null)
+                            // appsGlobalContext.setUserID(null)
                             setUserData(null)
-                        })
                     }
                 },
             ],
@@ -187,17 +187,13 @@ export default function AccountScreen({navigation}) {
     }
 
 
-    useFocusEffect(
-        React.useCallback(() => {
-            getUserData(uid)
-        }, [1])
-    )
-
 
 
     /*************************************************************/
     // ONLY SHOW IF WE HAVE USER
     /*************************************************************/
+
+    const {userData:user} = appsGlobalContext;
 
     if(user){
         return (
@@ -228,7 +224,7 @@ export default function AccountScreen({navigation}) {
 										{user.name}
 									</Text>
 									<Text style={styles.profile_id}>
-										Member Since: {startDate}
+										Member Since: {convertTimestamp(appsGlobalContext.userData.createdAt)}
 									</Text>
 								</View>
 							</View>

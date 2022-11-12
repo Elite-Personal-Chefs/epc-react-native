@@ -74,11 +74,9 @@ export default function App() {
 	const { appGlobals, loading } = useSession();
 	const [appIsAwaitingOTAUpdates, setAppIsAwaitingOTAUpdates] =
 		useState(false);
-	console.log("USER", appGlobals.userData);
+	// console.log("USER", appGlobals.userData);
 
 	//DIAGNOSTICS OF APP STATE
-	console.log("APP: FONTS LOADED: " + fontsLoaded);
-	console.log("APP: APP IS READY: " + appIsReady);
 	console.log("APP: AWAITING OTA UPDATES: " + appIsAwaitingOTAUpdates);
 	console.log("APP: USER ID: " + appGlobals.userID);
 	console.log("APP: USER LOGGED IN: " + appGlobals.userLoggedIn);
