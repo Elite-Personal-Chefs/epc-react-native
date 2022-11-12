@@ -3,7 +3,7 @@
 /*******************************************************************************/
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Text, StatusBar, Platform, LogBox, AsyncStorage } from "react-native";
+import { Text, StatusBar, Platform, LogBox } from "react-native";
 
 //import Sentry from './src/components/Sentry';
 
@@ -12,8 +12,6 @@ import * as Updates from "expo-updates";
 import AppLoading from "expo-app-loading";
 import * as SplashScreen from "expo-splash-screen";
 
-// FIREBASE AND CONFIG DEPENDENCIES
-import { firebase, configKeys } from "./src/config/config";
 
 //COMPONENTS
 import AppContext from "./src/components/AppContext";
@@ -23,8 +21,6 @@ import Navigator from "./src/routes";
 import useSession from "./src/hooks/useSession";
 
 //THEMES AND FONTS SETUP
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
 import Theme from "./src/styles/theme.style.js";
 
 //FONTS SETUP
@@ -124,26 +120,24 @@ export default function App() {
 		checkForUpdates();
 
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
-
 	}, [fontsLoaded]);
 
 	const appIsReady = fontsLoaded && !appIsAwaitingOTAUpdates && !loading;
 
 	//LOAD CONTENT
-	if (fontsLoaded && appIsReady) {
-		return (
-			<AppContext.Provider value={appGlobals}>
-				<SafeAreaProvider>
-					<StatusBar
-						animated={true}
-						backgroundColor={Theme.PRIMARY_COLOR}
-						barStyle="default"
-					/>
-					<Navigator userLoggedIn={appGlobals.userLoggedIn} />
-				</SafeAreaProvider>
-			</AppContext.Provider>
-		);
-	} else {
-		return <AppLoading />;
-	}
+	//You started loading the font "Roboto_400Regular", but used it before it finished loading. You need to wait for Font.loadAsync to complete before using the font.
+	return !appIsReady ? (
+		<AppLoading />
+	) : (
+		<AppContext.Provider value={appGlobals}>
+			<SafeAreaProvider>
+				<StatusBar
+					animated={true}
+					backgroundColor={Theme.PRIMARY_COLOR}
+					barStyle="default"
+				/>
+				<Navigator userLoggedIn={appGlobals.userLoggedIn} />
+			</SafeAreaProvider>
+		</AppContext.Provider>
+	);
 }

@@ -36,7 +36,6 @@ const useSession = () => {
 		const unsubscribe = firebase
 			.auth()
 			.onAuthStateChanged((firebaseUser) => {
-				console.log("APP component: onAuthStateChanged", firebaseUser);
 				if (firebaseUser) {
 					const uid = firebaseUser.uid;
 					console.log("SESSION: Current User", uid);
