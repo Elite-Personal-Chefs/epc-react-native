@@ -3,11 +3,13 @@ import { firebase, configKeys } from "../config/config";
 import { getUserData } from "../services/user";
 
 const useSession = () => {
+	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
 	const [loading, setLoading] = useState(true);
 	const [activeFlow, setActiveFlow] = useState(null); //chefs or guests
 	const [userID, setUserID] = useState("");
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [userData, setUserData] = useState(null);
+	const [accessToken, setAccessToken] = useState(null);
 
 	useEffect(() => {
 		setLoading(true);
@@ -21,8 +23,8 @@ const useSession = () => {
 					const uid = firebaseUser.uid;
 
 					loadUserData(uid);
-
-					setUserID(uid);
+					setAccessToken(firebaseUser.getIdToken());
+					getAccessToken(firebaseUser);
 					setUserLoggedIn(true);
 				} else {
 					console.log(
@@ -37,6 +39,10 @@ const useSession = () => {
 		return () => unsubscribe();
 	}, []);
 
+	const getAccessToken = async (firebaseUser) => {
+		const token = await firebaseUser.getIdToken();
+		setAccessToken(token);
+	}
 	const loadUserData = async (uid) => {
 		const user = await getUserData(uid);
 
@@ -76,6 +82,7 @@ const useSession = () => {
 		activeFlow: activeFlow,
 		userLoggedIn,
 		apiMode: "api_live", //possible options: local, live, dev
+		accessToken,
 		setActiveFlow,
 		setUserLoggedIn,
 		setUserID, //Pass any functions that contexts needs to edit
@@ -87,6 +94,8 @@ const useSession = () => {
 		updateEmail,
 		updatePassword,
 	};
+
+	console.debug("APP: App Globals", appGlobals);
 
 	return {
 		appGlobals,
