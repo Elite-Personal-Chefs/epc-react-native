@@ -187,7 +187,11 @@ const globalStyles =  StyleSheet.create({
         color: Theme.PRIMARY_COLOR,
         fontSize: 13,
     },
+    linkTextColor: {
+        color: Theme.SECONDARY_COLOR,
+    },
 })
+
 
 
 const menusStyles = StyleSheet.create({

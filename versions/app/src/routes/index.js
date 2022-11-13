@@ -69,7 +69,7 @@ import LiabilityScreen from '../screens/liabilityScreen'
 import ContactScreen from '../screens/contactScreen'
 import FaqScreen from '../screens/faqScreen'
 import PlaygroundScreen from '../screens/playgroundScreen'
-
+import PersonalInfoScreen from '../screens/personalInfoScreen'
 
 /*** UNAUTHORIZED ****/
 import WelcomeScreen from '../screens/welcomeScreen'
@@ -94,27 +94,22 @@ const AccountScreenStack = () => {
             <AccountScreenStackNav.Screen name="Account" component={AccountScreen} />
             <AccountScreenStackNav.Screen name="Profile" component={ProfileScreen} />
             <AccountScreenStackNav.Screen name="Refer" component={ReferScreen} />
+            <AccountScreenStackNav.Screen name="Personal Info" component={PersonalInfoScreen}/>
+            
             <AccountScreenStackNav.Screen name="Terms" component={TermsScreen} />
             <AccountScreenStackNav.Screen name="Payments" component={PaymentsScreen} />
-
-
 
             <AccountScreenStackNav.Screen name="Waiver of Liability" component={WaiverScreen} />
             <AccountScreenStackNav.Screen name="Background Check" component={BackgroundCheckScreen} /> 
             <AccountScreenStackNav.Screen name="Professional Resume" component={ResumeScreen} /> 
             <AccountScreenStackNav.Screen name="Food Handler's License" component={FoodHandlerScreen} /> 
 
-
-
             <AccountScreenStackNav.Screen name="Professional Licenses" component={LicenseScreen} />
             <AccountScreenStackNav.Screen name="Sanitation Manager License" component={SanitationScreen} />
             <AccountScreenStackNav.Screen name="Liability Insurance" component={LiabilityScreen} />
 
-
-
             <AccountScreenStackNav.Screen name="Contact" component={ContactScreen}  options={{ headerShown: true }}/>
             <AccountScreenStackNav.Screen name="FAQ" component={FaqScreen}  options={{ headerShown: true }}/>
-
 
             <AccountScreenStackNav.Screen name="Playground" component={PlaygroundScreen}/>
         </AccountScreenStackNav.Navigator>       

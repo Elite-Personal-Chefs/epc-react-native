@@ -10,6 +10,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as DocumentPicker from "expo-document-picker";
 import uuid from "uuid";
 
+
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
@@ -43,8 +44,12 @@ export const getTimeDifference = (dateObj) => {
 };
 
 export const gotoWebLink = (link) => {
-	WebBrowser.openBrowserAsync(link);
-};
+    return WebBrowser.openBrowserAsync(link)
+}
+
+export const mailto = (email = 'consultation@elitepersonalchefs.com', subject = 'EPC Application') => {
+    Linking.openURL(`mailto:${email}?subject=${subject}`);
+}
 
 export const getEndpoint = (appsGlobalContext, endpoint) => {
 	const apiMode = appsGlobalContext.apiMode;
