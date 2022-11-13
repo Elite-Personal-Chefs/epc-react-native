@@ -21,8 +21,8 @@ const useSession = () => {
 			.onAuthStateChanged((firebaseUser) => {
 				if (firebaseUser) {
 					const uid = firebaseUser.uid;
-
 					loadUserData(uid);
+					setUserID(uid);
 					setAccessToken(firebaseUser.getIdToken());
 					getAccessToken(firebaseUser);
 					setUserLoggedIn(true);
@@ -96,8 +96,6 @@ const useSession = () => {
 		updatePassword,
 		reload,
 	};
-
-	console.debug("APP: App Globals", appGlobals);
 
 	return {
 		appGlobals,
