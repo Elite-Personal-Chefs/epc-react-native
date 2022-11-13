@@ -196,8 +196,8 @@ export default function AccountScreen({navigation}) {
 								<>
 									<GoToButton
 										navigation={navigation}
-										navigator="Personal"
-										copy="Chef Profile"
+										navigator="Personal Info"
+										copy="Personal Info"
                                         params={user}
 									/>
 									<GoToButton

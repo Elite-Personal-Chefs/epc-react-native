@@ -7,7 +7,7 @@ import React, { useState, useRef, useContext, useEffect } from "react";
 import { firebase, configKeys } from '../config/config'
 
 // COMPONENTS
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { CustomButton, GoToButton } from '../components/Button';
 import AppContext from '../components/AppContext';
 import { convertTimestamp } from '../helpers/helpers';
@@ -116,7 +116,7 @@ export default function PersonalInfoScreen({ route, navigation }) {
                 />
             </View>
             <View style={[forms.input_container, focusField == 'password' ? forms.focused_light : forms.notFocused]}>
-                <MaterialIcons name="email" size={27} style={[forms.input_icon, focusField == 'password' ? forms.focused_light : forms.notFocused]} />
+                <MaterialIcons name="lock" size={27} style={[forms.input_icon, focusField == 'password' ? forms.focused_light : forms.notFocused]} />
                 <TextInput
                     style={[forms.custom_input]}
                     placeholder='Password'
@@ -133,8 +133,9 @@ export default function PersonalInfoScreen({ route, navigation }) {
                 />
                 <FontAwesome name={hide_password ? 'eye-slash' : 'eye'} size={20} color={Theme.SECONDARY_COLOR} style={forms.password_icon} onPress={() => toggleShowPassword(!hide_password)} />
             </View>
-
-            <CustomButton text='Save' size="small" onPress={() => updateAccount()} />
+            <View style={{backgroundColor: Theme.SECONDARY_COLOR, width: "100%", borderRadius: 10, height: 50, justifyContent: "center", marginTop: 15}}>
+                <Button color={"white"} title='Save' size="big" onPress={() => updateAccount()} />
+            </View>
         </View>
 
     )

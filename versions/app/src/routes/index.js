@@ -94,7 +94,7 @@ const AccountScreenStack = () => {
             <AccountScreenStackNav.Screen name="Account" component={AccountScreen} />
             <AccountScreenStackNav.Screen name="Profile" component={ProfileScreen} />
             <AccountScreenStackNav.Screen name="Refer" component={ReferScreen} />
-            <AccountScreenStackNav.Screen name="Personal" component={PersonalInfoScreen}/>
+            <AccountScreenStackNav.Screen name="Personal Info" component={PersonalInfoScreen}/>
             
             <AccountScreenStackNav.Screen name="Terms" component={TermsScreen} />
             <AccountScreenStackNav.Screen name="Payments" component={PaymentsScreen} />
