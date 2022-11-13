@@ -42,10 +42,9 @@ const useSession = () => {
 	const getAccessToken = async (firebaseUser) => {
 		const token = await firebaseUser.getIdToken();
 		setAccessToken(token);
-	}
+	};
 	const loadUserData = async (uid) => {
 		const user = await getUserData(uid);
-
 
 		if (user) {
 			console.log("APP: User exists from " + user.user_type);
@@ -75,6 +74,8 @@ const useSession = () => {
 	const updatePassword = async (password) =>
 		firebase.auth().currentUser.updatePassword(password);
 
+	const reload = async (password) => firebase.auth().currentUser.reload();
+
 	const appGlobals = {
 		userID: userID,
 		userData: userData,
@@ -93,6 +94,7 @@ const useSession = () => {
 		sendPasswordResetEmail,
 		updateEmail,
 		updatePassword,
+		reload,
 	};
 
 	console.debug("APP: App Globals", appGlobals);
