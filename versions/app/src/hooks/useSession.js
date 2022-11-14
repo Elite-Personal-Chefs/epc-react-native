@@ -80,17 +80,14 @@ const useSession = () => {
 			console.error("Error updating email", error.code);
 			// sometimes users can't update their email because they haven't signed in recently
 			if (error.code === ERRORS.REQUIRES_RECENT_LOGIN) {
-				console.log("Reauthenticating user");
 				// create credential to reauthenticate user
 				const credential = firebase.auth.EmailAuthProvider.credential(
 					firebase.auth().currentUser.email,
 					password
 				);
-				console.debug("Credential", credential);
 				await firebase
 				.auth()
 				.currentUser.reauthenticateWithCredential(credential);
-				console.debug("Reauthed");
 				//update email
 				await firebase.auth().currentUser.updateEmail(newEmail);
 				console.log("Email updated to " + newEmail);

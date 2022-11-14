@@ -104,7 +104,7 @@ export default function PersonalInfoScreen({ route, navigation }) {
 	return (
 		<View style={globalStyles.page}>
 			<View style={{ padding: 10, justifyContent: "center", margin: 20 }}>
-				<Text>You can update your email and password here.</Text>
+				<Text>You can update your email address here.</Text>
 			</View>
 			<View
 				style={[
