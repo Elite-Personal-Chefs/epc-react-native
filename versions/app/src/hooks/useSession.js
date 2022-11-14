@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { firebase, configKeys } from "../config/config";
 import { getUserData } from "../services/user";
 
+const ERRORS = {
+	REQUIRES_RECENT_LOGIN: "auth/requires-recent-login",
+}
+
 const useSession = () => {
 	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
 	const [loading, setLoading] = useState(true);
@@ -68,8 +72,34 @@ const useSession = () => {
 	const sendPasswordResetEmail = async (email) =>
 		firebase.auth().sendPasswordResetEmail(email);
 
-	const updateEmail = async (email) =>
-		firebase.auth().currentUser.updateEmail(email);
+	const updateEmail = async (newEmail, password) => {
+		console.debug("Updating email in useSession");
+		try {
+			await firebase.auth().currentUser.updateEmail(newEmail);
+		} catch (error) {
+			console.error("Error updating email", error.code);
+			// sometimes users can't update their email because they haven't signed in recently
+			if (error.code === ERRORS.REQUIRES_RECENT_LOGIN) {
+				console.log("Reauthenticating user");
+				// create credential to reauthenticate user
+				const credential = firebase.auth.EmailAuthProvider.credential(
+					firebase.auth().currentUser.email,
+					password
+				);
+				console.debug("Credential", credential);
+				await firebase
+				.auth()
+				.currentUser.reauthenticateWithCredential(credential);
+				console.debug("Reauthed");
+				//update email
+				await firebase.auth().currentUser.updateEmail(newEmail);
+				console.log("Email updated to " + newEmail);
+			} else {
+				console.debug("Error, Something else", JSON.stringify(error, null, 4));
+				throw error;
+			}
+		}
+	};
 
 	const updatePassword = async (password) =>
 		firebase.auth().currentUser.updatePassword(password);
