@@ -139,7 +139,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	};
 	const confirmPickerDate = (date) => {
 		console.log("A date has been picked: ", date);
-		const readableDate = moment(date).format("dddd, MMMM Do YYYY");
+		const readableDate = moment(date).format("dddd, MMMM Do, YYYY");
 		console.log(readableDate);
 		setPickerValueDate(readableDate);
 		hidePickerDate();
@@ -454,7 +454,7 @@ export default function CreateEventScreen({ route, navigation }) {
 												style={[
 													forms.custom_input,
 													{
-														color: Theme.FAINT,
+														color: pickerValueDate ? "black" : Theme.FAINT,
 														flex: 0,
 													},
 												]}
