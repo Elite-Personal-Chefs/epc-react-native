@@ -421,7 +421,7 @@ export default function CreateEventScreen({ route, navigation }) {
 											flexDirection: "row",
 											justifyContent: "center",
 											alignItems: "center",
-                                            horizontalPadding: 8
+											horizontalPadding: 8,
 										}}
 									>
 										<View
@@ -621,7 +621,10 @@ export default function CreateEventScreen({ route, navigation }) {
 										/>
 										{/* VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead. */}
 										<GooglePlacesAutocomplete
-											placeholder="Location"
+											placeholder="Locations"
+											textInputProps={{
+												placeholderTextColor: "#b9b9b9",
+											}}
 											listViewDisplayed={true} // true/false/undefined
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
