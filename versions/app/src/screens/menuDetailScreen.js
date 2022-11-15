@@ -98,16 +98,17 @@ export default function MenuDetailScreen({ route, navigation }) {
 		});
 		console.log(details);
 		navigation.navigate("Create Menu", {
-			name: details.title,
 			description: details.description,
-			photo: menuImg, //details.photos[0],
-			menuID: details.id,
 			menu: editableMenuFormat,
+			menuID: details.id,
+			name: details.title,
+			photo: menuImg, //details.photos[0],
+			price: details.price,
 		});
 	};
 
 	const getMenus = async (details) => {
-		console.log(uid, details.id);
+		//console.log(uid, details);
 		//If a chefID is passed in the details then use that as the ID of the chef to look for
 		const chefID = details.chefID ? details.chefID : uid;
 		//If this is a template page look for the menu in templates
@@ -178,14 +179,12 @@ export default function MenuDetailScreen({ route, navigation }) {
 				<View style={styles.content}>
 					<View style={styles.header}>
 						<View style={styles.title}>
-							<Text style={globalStyles.h1}>{details.title}</Text>
+								<Text style={globalStyles.h1}>{details.title}</Text>
 						</View>
-						{/*
-                        <View style={styles.price_cont}>
-                            <Text style={styles.price}>$120</Text>
-                            <Text style={styles.price_label}>Per Person</Text>
-                        </View>
-                        */}
+						<View style={styles.price_cont}>
+								<Text style={styles.price_label}>EPC Suggested Price</Text>
+								<Text style={styles.price}>${details.price}<Text style={styles.price_label}>/Person</Text></Text>
+						</View>
 					</View>
 					{pageName == "Templates" && (
 						<View style={styles.btn_cont}>
@@ -211,7 +210,7 @@ export default function MenuDetailScreen({ route, navigation }) {
 							<CustomButton
 								text="Edit"
 								onPress={() => editMenu(true)}
-								size="small"
+								size="big"
 							/>
 						</View>
 					)}
@@ -320,14 +319,16 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	header: {
-		flexDirection: "row",
+		flexDirection: "column",
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
 	title: {
-		flex: 1,
+		marginVertical: 5
+		//flex: 1
 	},
 	price_cont: {
+		//marginVertical: 10
 		//flex:1,
 	},
 	price: {
@@ -337,8 +338,9 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	price_label: {
-		fontSize: 14,
 		color: Theme.PRIMARY_COLOR,
+		fontSize: 14,
+		paddingVertical: 5,
 		textAlign: "center",
 	},
 	btn_cont: {

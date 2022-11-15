@@ -38,13 +38,13 @@ export default function HomeScreen({navigation}) {
     // GET USER DATA TO RENDER PAGE WITH
     /*************************************************************/
     const getUserData = async (uid) => {
-        console.log("HOME SCREEN, Loading user data")
+        //console.log("HOME SCREEN, Loading user data")
         const usersRef = firebase.firestore().collection('chefs');
         const firebaseUser = await usersRef.doc(uid).get();
         if (firebaseUser.exists) {
             let userData = firebaseUser.data()
-            console.log("Setting new user data")
-            console.log("Is this user verified?")
+            //console.log("Setting new user data")
+            //console.log("Is this user verified?")
             if(_.has(userData,'isEmailVerified') && userData.isEmailVerified == false){
                 console.log("They are not verified, show the verification page")
                 setEmailIsNotVerified(true)
@@ -79,7 +79,7 @@ export default function HomeScreen({navigation}) {
     /*************************************************************/
     useFocusEffect(
         React.useCallback(() => {
-            console.log("Home screen is focused")
+            //console.log("Home screen is focused")
             getUserData(uid)
         }, [1])
     )
