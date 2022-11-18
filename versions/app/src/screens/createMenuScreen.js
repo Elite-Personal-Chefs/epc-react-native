@@ -37,12 +37,9 @@ import { Entypo, FontAwesome, FontAwesome5, MaterialCommunityIcons, AntDesign, M
 
 
 export default function CreateMenuScreen({route,navigation}) {
-
-    console.log("P",route.params)
-
-
+   
     const appsGlobalContext = useContext(AppContext);
-    const uid = appsGlobalContext.userID
+    const uid = appsGlobalContext.userID;
     const [modalVisible,setModalVisible] = useState(false)
     const [isCourse, setIsCourse] = useState(true);
     const [coursesList, setCoursesList] = useState([]);
@@ -50,7 +47,7 @@ export default function CreateMenuScreen({route,navigation}) {
     const [newCourse, setNewCourse] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
     const [open, setOpen] = useState(false);
-    const [isPhotoMode, setPhotoMode] = useState(false);    
+    const [isPhotoMode, setPhotoMode] = useState(false);
     const [alphaData, setAlphaData] = useState((route.params) ? route.params.menu : []);
     const [menuID, setMenuID] = useState((route.params) ? route.params.menuID : null);
     const [descriptionText, setDescriptionText] = useState(null);
@@ -411,7 +408,7 @@ export default function CreateMenuScreen({route,navigation}) {
                             </View>
 
                             {/* BOTTOM TOOLBAR */}
-                            <View style={styles.formik_section,styles.add_item_cont}>
+                            <View style={[styles.formik_section,styles.add_item_cont]}>
                                 <View style={styles.add_box}>
                                     <TouchableOpacity style={styles.add_course_item} onPress={() => {
                                         getCourses()

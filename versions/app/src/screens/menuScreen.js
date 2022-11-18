@@ -42,8 +42,8 @@ export default function MenuScreen({navigation, route}) {
             if(menuPageName == 'Templates'){
                 console.log(getEndpoint(appsGlobalContext,'menu_templates'))
                 const result = await fetch(getEndpoint(appsGlobalContext,'menu_templates')); //apiBase
-                const json = await result.json()
-                setMenuTemplates(json)
+                const json = await result.json();
+                setMenuTemplates(json);
             }
             else if(menuPageName == 'Your Menus'){
                 console.log("Looking for your menus")

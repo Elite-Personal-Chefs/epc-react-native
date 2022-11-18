@@ -295,7 +295,7 @@ export default function EventDetailScreen({route,navigation}) {
                         </View>
                         <Text style={globalStyles.card_content}>Here are some guidelines to follow in the space and some other details.</Text>
                         {eventDetails.house_rules.map((rule,index) => {
-                            return(<Text style={globalStyles.card_content,styles.rules}>• {rule}</Text>)
+                            return(<Text style={[globalStyles.card_content,styles.rules]}>• {rule}</Text>)
                         })}
                         <View style={globalStyles.card_header}>
                             <Text style={[globalStyles.h3,{marginTop:10}]}>You also acknowledge:</Text>

@@ -29,11 +29,11 @@ export default function WelcomeScreen({navigation}) {
     const checkForFirstLaunch = async () => {
         try {
             const storedLaunchFlag = await AsyncStorage.getItem('hasLaunched')
-            console.log("First Launch Flag Set?",storedLaunchFlag)
+            //console.log("First Launch Flag Set?",storedLaunchFlag)
             if(storedLaunchFlag === null){
                 setFirstLaunch(true)
             }
-            console.log("This is what Welcome thinks context is",appsGlobalContext)
+            //console.log("This is what Welcome thinks context is",appsGlobalContext)
         } catch (e) {
             console.warn(e);
         }
