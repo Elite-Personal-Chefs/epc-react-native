@@ -231,7 +231,7 @@ export default function MenuDetailScreen({ route, navigation }) {
           )}
           <View style={[globalStyles.card, { width: "100%" }]}>
             <View style={globalStyles.card_header}>
-              <Text style={globalStyles.h3}>Description</Text>
+              <Text style={globalStyles.card_header_text}>Description</Text>
             </View>
             <Text style={globalStyles.card_content}>{details.description}</Text>
           </View>

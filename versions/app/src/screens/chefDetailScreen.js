@@ -98,38 +98,50 @@ export default function ChefDetailScreen({route,navigation}) {
                             }
                         </View>
                         */}
-                    </View>
-                    <View style={[globalStyles.card,{width:'100%'}]}>
-                        <View style={globalStyles.card_header}>
-                            <Text style={globalStyles.h3}>About Chef {details.name}</Text>
-                        </View>
-                        <Text style={globalStyles.card_content,styles.card_content}>{details.bio}</Text>
-                        <View style={styles.details_cont}>
-                            {_.has(details, 'certifications')  &&
-                                Object.keys(details.certifications).map((certName,index) => {
-                                    if(details.certifications[certName].is_approved){
-                                        return (<>
-                                            <View style={{flexDirection:'row', alignItems: 'center',justifyContent:'flex-start'}}>
-                                                <MaterialCommunityIcons name="check-circle" size={20} color={Theme.SECONDARY_COLOR} style={{paddingHorizontal:5}}/>
-                                                <Text style={styles.certification_name}>{certName}</Text>
-                                            </View>
-                                        </>)
-                                    }
-                                })
-                            }
-                        </View>
+            </View>
+            <View style={[globalStyles.card, { width: "100%" }]}>
+              <View style={globalStyles.card_header}>
+                <Text style={globalStyles.card_header_text}>About Chef {details.name}</Text>
+              </View>
+              <Text style={[globalStyles.card_content, styles.card_content]}>{details.bio}</Text>
+              <View style={styles.details_cont}>
+                {_.has(details, "certifications") &&
+                  Object.keys(details.certifications).map((certName, index) => {
+                    if (details.certifications[certName].is_approved) {
+                      return (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                            }}
+                          >
+                            <MaterialCommunityIcons
+                              name='check-circle'
+                              size={20}
+                              color={Theme.SECONDARY_COLOR}
+                              style={{ paddingHorizontal: 5 }}
+                            />
+                            <Text style={styles.certification_name}>{certName}</Text>
+                          </View>
+                        </>
+                      );
+                    }
+                  })}
+              </View>
 
                         <View style={globalStyles.card_header}>
                             <Text style={globalStyles.h3}>Fun Facts</Text>
                         </View>
                         {details.facts1 &&
-                        <Text style={globalStyles.card_content,styles.card_content}>{details.facts1}</Text>
+                        <Text style={[globalStyles.card_content,styles.card_content]}>{details.facts1}</Text>
                         }
                         {details.facts2 &&
-                        <Text style={globalStyles.card_content,styles.card_content}>{details.facts2}</Text>
+                        <Text style={[globalStyles.card_content,styles.card_content]}>{details.facts2}</Text>
                         }
                         {details.facts3 &&
-                        <Text style={globalStyles.card_content,styles.card_content}>{details.facts3}</Text>
+                        <Text style={[globalStyles.card_content,styles.card_content]}>{details.facts3}</Text>
                         }
 
                         {/*
@@ -155,14 +167,20 @@ export default function ChefDetailScreen({route,navigation}) {
                     </View>
                    
 
-                    {menuTemplates &&
-                        <View style={[globalStyles.card,{width:'100%'}]}>
-                            <View style={globalStyles.card_header}>
-                                <Text style={globalStyles.h3}>Menus</Text>
-                            </View>
-                            <MenuListing menuTemplates={menuTemplates} chefID={chefID} pageName="Your Menus" navigation={navigation} key="Your Menus"/>
-                        </View>
-                    }
+            {menuTemplates && (
+              <View style={[globalStyles.card, { width: "100%" }]}>
+                <View style={globalStyles.card_header}>
+                  <Text style={globalStyles.card_header_text}>Menus</Text>
+                </View>
+                <MenuListing
+                  menuTemplates={menuTemplates}
+                  chefID={chefID}
+                  pageName='Your Menus'
+                  navigation={navigation}
+                  key='Your Menus'
+                />
+              </View>
+            )}
 
                     <View style={{marginVertical:20, width:'100%'}}>
                         {!showContact &&
