@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { Platform } from "react-native";
 import { firebase, configKeys } from "../config/config";
-import { getUserData } from "../services/user";
+import { getUserData } from "../data/user";
 
 const ERRORS = {
 	REQUIRES_RECENT_LOGIN: "auth/requires-recent-login",
-}
+};
 
 const useSession = () => {
 	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
@@ -13,7 +14,7 @@ const useSession = () => {
 	const [userID, setUserID] = useState("");
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [userData, setUserData] = useState(null);
-	const [accessToken, setAccessToken] = useState(null);
+	const [accessToken, setAccessToken] = useState<string>("");
 
 	useEffect(() => {
 		setLoading(true);
@@ -22,12 +23,12 @@ const useSession = () => {
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
 		const unsubscribe = firebase
 			.auth()
-			.onAuthStateChanged((firebaseUser) => {
+			.onAuthStateChanged(async (firebaseUser) => {
 				if (firebaseUser) {
 					const uid = firebaseUser.uid;
 					loadUserData(uid);
 					setUserID(uid);
-					setAccessToken(firebaseUser.getIdToken());
+					setAccessToken((await firebaseUser.getIdToken()) as string);
 					getAccessToken(firebaseUser);
 					setUserLoggedIn(true);
 				} else {
@@ -48,7 +49,7 @@ const useSession = () => {
 		setAccessToken(token);
 	};
 	const loadUserData = async (uid) => {
-		const user = await getUserData(uid);
+		const user = (await getUserData(uid)) as any;
 
 		if (user) {
 			console.log("APP: User exists from " + user.user_type);
@@ -75,33 +76,36 @@ const useSession = () => {
 	const updateEmail = async (newEmail, password) => {
 		console.debug("Updating email in useSession");
 		try {
-			await firebase.auth().currentUser.updateEmail(newEmail);
+			await firebase.auth().currentUser?.updateEmail(newEmail);
 		} catch (error) {
 			console.error("Error updating email", error.code);
 			// sometimes users can't update their email because they haven't signed in recently
 			if (error.code === ERRORS.REQUIRES_RECENT_LOGIN) {
 				// create credential to reauthenticate user
 				const credential = firebase.auth.EmailAuthProvider.credential(
-					firebase.auth().currentUser.email,
+					firebase.auth().currentUser?.email as string,
 					password
 				);
 				await firebase
-				.auth()
-				.currentUser.reauthenticateWithCredential(credential);
+					.auth()
+					.currentUser?.reauthenticateWithCredential(credential);
 				//update email
-				await firebase.auth().currentUser.updateEmail(newEmail);
+				await firebase.auth().currentUser?.updateEmail(newEmail);
 				console.log("Email updated to " + newEmail);
 			} else {
-				console.debug("Error, Something else", JSON.stringify(error, null, 4));
+				console.debug(
+					"Error, Something else",
+					JSON.stringify(error, null, 4)
+				);
 				throw error;
 			}
 		}
 	};
 
 	const updatePassword = async (password) =>
-		firebase.auth().currentUser.updatePassword(password);
+		firebase.auth().currentUser?.updatePassword(password);
 
-	const reload = async (password) => firebase.auth().currentUser.reload();
+	const reload = async (password) => firebase.auth().currentUser?.reload();
 
 	const appGlobals = {
 		userID: userID,
