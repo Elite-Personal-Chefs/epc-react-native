@@ -3,11 +3,12 @@
 /*******************************************************************************/
 import React, { useState, useContext, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, StyleSheet, View, ScrollView, Dimensions , Image, ActivityIndicator} from 'react-native'
+import { Text, StyleSheet, View, ScrollView, Dimensions , Image, ActivityIndicator, TouchableOpacity} from 'react-native'
 
 //Other Dependencies
-import { firebase, configKeys } from '../config/config'
-import _ from 'underscore'
+import { firebase, configKeys } from '../config/config'; 
+import _ from 'underscore'; 
+import { useFocusEffect } from '@react-navigation/native';
 
 // COMPONENTS
 import AppContext from '../components/AppContext';
@@ -15,6 +16,7 @@ import { CustomButton } from '../components/Button';
 import {getEndpoint} from '../helpers/helpers'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 // STYLES
 import {globalStyles, menusStyles, footer, forms} from '../styles/styles';
@@ -28,10 +30,10 @@ import {AntDesign, MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-ic
 
 
 export default function EventDetailScreen({route,navigation}) {
+
   const appsGlobalContext = useContext(AppContext);
   const uid = appsGlobalContext.userID;
   const user = appsGlobalContext.userData;
-  //console.log(user)
   const activeFlow = appsGlobalContext.activeFlow;
   const details = route.params.details;
   const pageName = route.params.pageName;
@@ -39,8 +41,9 @@ export default function EventDetailScreen({route,navigation}) {
   const [reserved, setReserved] = useState(details.reserved ? true : false);
   const [guestList, setGuestList] = useState(false);
   const [menuItems, setMenuItems] = useState(false);
-  const [eventDetails, setEventDetails] = useState();
-  const [eventAndMenuPrice, setEventAndMenuPrice] = useState(+details.cpp + +details.menu_price);
+  const [eventDetails, setEventDetails] = useState(details ? details : null);
+  const [knownCPP, setKnownCPP] = useState(details.cpp ? +details.cpp : false);
+  const [toolTipVisible, setToolTipVisible] = useState(false);
 
 
 
@@ -50,7 +53,7 @@ export default function EventDetailScreen({route,navigation}) {
   const getEventDetails = async () => {
     console.log("This is a reservation need more details");
     const firestore = firebase.firestore();
-    const eventRef = firestore.collection("experiences").doc(eventDetails.experience_id);
+    const eventRef = firestore.collection("experiences").doc(eventDetails.id || eventDetails.experience_id);
     const eventDoc = await eventRef.get();
     if (!eventDoc.exists) {
       console.log("No event found");
@@ -107,7 +110,7 @@ export default function EventDetailScreen({route,navigation}) {
   
 
   const addToMyEvents = async (eventID) => {
-    console.log(eventID, uid);
+    //console.log(eventID, uid);
     try {
       const result = await fetch(getEndpoint(appsGlobalContext, "copy_event_template"), {
         method: "POST",
@@ -147,26 +150,32 @@ export default function EventDetailScreen({route,navigation}) {
 
 
   const getMenus = async (details, pageName) => {
-    console.log(pageName);
-    console.log("GETTING MENU: ", details.menu_template_id);
+    console.log("GETTING MENU ID: ", details);
     //If this is a template page look for the menu in templates
     //otherwise look into the chefs colelction of menus
     const firestore = firebase.firestore();
-    let menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
-    /*
-        if(pageName == 'Templates'){
-        }
-        else{
-            menuRef = firestore.collection('chefs').doc(details.chef_id).collection('menus').doc(details.menu_template_id)
-        }
-        */
-    const menuDoc = await menuRef.get();
+    let menuRef;
+    let menuDoc;
+
+    if( pageName == 'Templates' || details.isTemplate ) {
+      console.log(`pageName \n ${pageName}`);
+      menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
+
+    } else if ( pageName == 'Your Events' ) {
+        menuRef = firestore.collection('chefs').doc(uid).collection('menus').doc(`${details.menu_template_id}`);
+    }
+
+    menuDoc = await menuRef.get();
+      
     if (!menuDoc.exists) {
       console.log("No menu found");
     } else {
+        
+      console.log(`menuDoc: \n${JSON.stringify(menuDoc)}`);
       let menu = menuDoc.data();
       let courses = menu.courses;
       let menuItems = [];
+
       for await (const course of courses) {
         //Get all courses for this menu
         let courseSnapshot = await menuRef.collection(course).get();
@@ -179,7 +188,8 @@ export default function EventDetailScreen({route,navigation}) {
           menuItems.push({ items, course: course });
         }
       }
-      console.log(menuItems);
+
+      //console.log(menuItems);
       setMenuItems(menuItems);
     }
   };
@@ -207,25 +217,26 @@ export default function EventDetailScreen({route,navigation}) {
     }
   };
 
-
-
-
-
-
-
-
-  useEffect(() => {
-    setEventDetails(details);
-    //Set menu image if one exists
-    if (details.photos) {
+  /*************************************************************/
+  // RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
+  /*************************************************************/
+  useFocusEffect(
+    React.useCallback(() => {
+      if (details.photos) {
       setEventImg({ uri: details.photos[0] });
       //useState(require('../assets/food_pasta.png'))
-    }
-    getMenus(details, pageName);
-    if (activeFlow == "chefs") {
-      getGuestList(details.id);
-    }
-  }, []);
+      }
+
+      getMenus(details, pageName);
+      
+      if (activeFlow == "chefs") {
+        getGuestList(details.id);
+      }
+
+      getEventDetails();
+
+    }, [])
+  )
 
   return (
     <SafeAreaView style={globalStyles.safe_light}>
@@ -237,14 +248,36 @@ export default function EventDetailScreen({route,navigation}) {
               <View style={styles.title}>
                 <Text style={globalStyles.h1}>{eventDetails.title}</Text>
               </View>
-              {eventAndMenuPrice ? (
-              <View style={styles.price_cont}>
-                <Text style={styles.price}>  ${`${eventAndMenuPrice}`}
+              {pageName == "Templates" && (
+              <View style={styles.suggested_price_container}>
+                <View style={styles.price_label_and_icon_container}>
+                <Text style={styles.price_label}>EPC Suggested Price</Text>
+                <Tooltip
+                  isVisible={toolTipVisible}
+                  content={
+                    <View>
+                      <Text>Your cost per person is your event price and will be shown to your guests.</Text>
+                    </View>
+                  }
+                  placement="bottom"
+                  onClose={() => setToolTipVisible(false)}
+                  useInteractionManager={true} // need this prop to wait for react navigation
+                  // below is for the status bar of react navigation bar
+                  // topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+                >
+                <TouchableOpacity
+                  style={[{ width: '100%', }, styles.button]}
+                  onPress={() => setToolTipVisible(true)}
+                >
+                  <AntDesign name="infocirlceo" size={17} color="black" />
+                </TouchableOpacity>
+                </Tooltip>
+                </View>
+                <Text style={styles.price}>
+                  ${knownCPP}
                   <Text style={styles.price_label}>/Person</Text>
                 </Text>
               </View>
-            ) : (
-              null
             )}
             </View>
             {pageName == "Templates" && (
@@ -399,24 +432,28 @@ export default function EventDetailScreen({route,navigation}) {
 
 const styles = StyleSheet.create({
     image:{
-        width: windowWidth,
-        height: 260,
-        backgroundColor: Theme.PRIMARY_COLOR
+      width: windowWidth,
+      height: 260,
+      backgroundColor: Theme.PRIMARY_COLOR
     },
     content: {
-        padding:15,
-        alignItems: 'center',
+      flex: 1,
+      padding: 15,
+      alignItems: "center",
+      width: "100%",
     },
     header:{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+      flexDirection: "column",
+      justifyContent: "space-between",
+      alignItems: "center",
     },
     title:{
-        flex:1,
+      marginVertical: 5
+		  //flex: 1
     },
-    price_cont: {
-        //flex:1,
+    suggested_price_container: {
+      //marginVertical: 10
+      //flex:1,
     },
     price: {
         fontSize: 20,
@@ -424,11 +461,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center', 
     },
+    price_label_and_icon_container: {
+    flexDirection: "row", 
+    },
     price_label: {
       color: Theme.PRIMARY_COLOR,
       fontSize: 14,
       paddingVertical: 5,
+      marginRight: 5,
       textAlign: "center",
+    },
+    detail_icon: {
+    paddingLeft: 0,
+    marginRight: -8,
+    color: Theme.PRIMARY_COLOR,
     },
     btn_cont: {
         width:'100%',
