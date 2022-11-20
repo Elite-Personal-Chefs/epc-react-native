@@ -6,8 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, StyleSheet, View, ScrollView, Dimensions , Image, ActivityIndicator, TouchableOpacity} from 'react-native'
 
 //Other Dependencies
-import { firebase, configKeys } from '../config/config'
-import _ from 'underscore'
+import { firebase, configKeys } from '../config/config'; 
+import _ from 'underscore'; 
+import { useFocusEffect } from '@react-navigation/native';
 
 // COMPONENTS
 import AppContext from '../components/AppContext';
@@ -52,7 +53,7 @@ export default function EventDetailScreen({route,navigation}) {
   const getEventDetails = async () => {
     console.log("This is a reservation need more details");
     const firestore = firebase.firestore();
-    const eventRef = firestore.collection("experiences").doc(eventDetails.experience_id);
+    const eventRef = firestore.collection("experiences").doc(eventDetails.id || eventDetails.experience_id);
     const eventDoc = await eventRef.get();
     if (!eventDoc.exists) {
       console.log("No event found");
@@ -162,7 +163,6 @@ export default function EventDetailScreen({route,navigation}) {
 
     } else if ( pageName == 'Your Events' ) {
         menuRef = firestore.collection('chefs').doc(uid).collection('menus').doc(`${details.menu_template_id}`);
-
     }
 
     menuDoc = await menuRef.get();
@@ -217,25 +217,26 @@ export default function EventDetailScreen({route,navigation}) {
     }
   };
 
-
-
-
-
-
-
-
-  useEffect(() => {
-    //setEventDetails(details);
-    //Set menu image if one exists
-    if (details.photos) {
+  /*************************************************************/
+  // RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
+  /*************************************************************/
+  useFocusEffect(
+    React.useCallback(() => {
+      if (details.photos) {
       setEventImg({ uri: details.photos[0] });
       //useState(require('../assets/food_pasta.png'))
-    }
-    getMenus(details, pageName);
-    if (activeFlow == "chefs") {
-      getGuestList(details.id);
-    }
-  }, []);
+      }
+
+      getMenus(details, pageName);
+      
+      if (activeFlow == "chefs") {
+        getGuestList(details.id);
+      }
+
+      getEventDetails();
+
+    }, [])
+  )
 
   return (
     <SafeAreaView style={globalStyles.safe_light}>

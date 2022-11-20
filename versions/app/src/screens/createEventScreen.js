@@ -1,7 +1,7 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -70,15 +70,21 @@ export default function CreateEventScreen({ route, navigation }) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const [isDisabled, setIsDisabled] = useState(false);
-	const [menusList, setMenusList] = useState([]);
 	const [focusName, setFocusName] = useState(null);
+
+	//* FOR DROPDOWN PICKER
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
+	const [menusList, setMenusList] = useState([]);
+	const [currentMenuID, setCurrentMenuID] = useState(route.params && route.params.details ? route.params.details.menu_template_id : value);
+
 	const [details, setDetails] = useState(
 		route.params && route.params.details ? route.params.details : null
 	);
+
+	const eventRef = useRef();
 	const [eventLocation, setEventLocation] = useState(
-		details ? details.location : null
+		details.location ? details.location : ""
 	);
 	const [eventID, setEventID] = useState(details ? details.id : null);
 
@@ -113,6 +119,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		let location = await Location.getLastKnownPositionAsync();
 		console.log(location);
 	};
+
 	getCurrentLocation();
 
 	let preserviceMsg =
@@ -251,6 +258,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	useEffect(() => {
 		Location.installWebGeolocationPolyfill();
 		getMenus(uid);
+		eventRef.current?.setAddressText(eventLocation);
 	}, [1]);
 
 	return (
@@ -303,6 +311,7 @@ export default function CreateEventScreen({ route, navigation }) {
 								description: details ? details.description : "",
 								guests: details ? details.guests : "",
 								cpp: details ? details.cpp : "",
+								menu_template_id: details ? details.menu_template_id : "",
 							}}
 							onSubmit={(values) => {
 								setIsDisabled(false);
@@ -621,17 +630,18 @@ export default function CreateEventScreen({ route, navigation }) {
 										/>
 										{/* VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead. */}
 										<GooglePlacesAutocomplete
-											placeholder="Locations"
-											textInputProps={{
-												placeholderTextColor: "#b9b9b9",
-											}}
 											listViewDisplayed={true} // true/false/undefined
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
 												console.log(data, details);
 												setEventLocation(
 													data.description
-												);
+													);
+											}}
+											placeholder="Locations"
+											ref={eventRef}
+											textInputProps={{
+												placeholderTextColor: "#b9b9b9",
 											}}
 											query={{
 												key: "AIzaSyBNszkGed_0yWGVbllKvCElBiZrCxywKXo",
@@ -670,7 +680,7 @@ export default function CreateEventScreen({ route, navigation }) {
 									<DropDownPicker
 										zIndex={1000}
 										open={open}
-										value={value}
+										value={currentMenuID}
 										items={menusList}
 										setOpen={setOpen}
 										setValue={setValue}
