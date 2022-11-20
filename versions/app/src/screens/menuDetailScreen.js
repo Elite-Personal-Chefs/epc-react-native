@@ -12,6 +12,7 @@ import {
 	Image,
 	ActivityIndicator,
 	TextInput,
+  TouchableOpacity
 } from "react-native";
 
 //Other Dependencies
@@ -24,10 +25,12 @@ import { CustomButton } from "../components/Button";
 import { getEndpoint } from "../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../styles/styles";
 import Theme from "../styles/theme.style.js";
+import {AntDesign, MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-icons'
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -49,6 +52,7 @@ export default function MenuDetailScreen({ route, navigation }) {
   const [menuImg, setMenuImg] = useState(null);
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [toolTipVisible, setToolTipVisible] = useState(false);
 
   const addToMyMenu = async (menuID) => {
     setAdding(true);
@@ -103,7 +107,6 @@ export default function MenuDetailScreen({ route, navigation }) {
       menuID: details.id,
       name: details.title,
       photo: menuImg, //details.photos[0],
-      price: details.price,
     });
   };
 
@@ -170,9 +173,31 @@ export default function MenuDetailScreen({ route, navigation }) {
             <View style={styles.title}>
               <Text style={globalStyles.h1}>{details.title}</Text>
             </View>
-            {knownMenuPrice && (
-              <View style={styles.price_cont}>
-                <Text style={styles.price_label}>Suggested Price</Text>
+            {pageName == "Templates" && (
+              <View style={styles.suggested_price_container}>
+                <View style={styles.price_label_and_icon_container}>
+                <Text style={styles.price_label}>EPC Suggested Price</Text>
+                <Tooltip
+                  isVisible={toolTipVisible}
+                  content={
+                    <View>
+                      <Text>This is only a suggested menu price. Your event price is what's shown to your guests.</Text>
+                    </View>
+                  }
+                  placement="bottom"
+                  onClose={() => setToolTipVisible(false)}
+                  useInteractionManager={true} // need this prop to wait for react navigation
+                  // below is for the status bar of react navigation bar
+                  // topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+                >
+                <TouchableOpacity
+                  style={[{ width: '100%', }, styles.button]}
+                  onPress={() => setToolTipVisible(true)}
+                >
+                  <AntDesign name="infocirlceo" size={17} color="black" />
+                </TouchableOpacity>
+                </Tooltip>
+                </View>
                 <Text style={styles.price}>
                   ${details.price}
                   <Text style={styles.price_label}>/Person</Text>
@@ -201,12 +226,12 @@ export default function MenuDetailScreen({ route, navigation }) {
           )}
           {pageName == "Your Menus" && activeFlow == "chefs" && (
             <View style={styles.btn_cont}>
-              <CustomButton text='Edit' onPress={() => editMenu(true)} size='big' />
+              <CustomButton text='Edit Menu' onPress={() => editMenu(true)} size='big' />
             </View>
           )}
           <View style={[globalStyles.card, { width: "100%" }]}>
             <View style={globalStyles.card_header}>
-              <Text style={globalStyles.h3}>Description</Text>
+              <Text style={globalStyles.card_header_text}>Description</Text>
             </View>
             <Text style={globalStyles.card_content}>{details.description}</Text>
           </View>
@@ -283,7 +308,7 @@ const styles = StyleSheet.create({
 		marginVertical: 5
 		//flex: 1
 	},
-	price_cont: {
+	suggested_price_container: {
 		//marginVertical: 10
 		//flex:1,
 	},
@@ -293,10 +318,19 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: "center",
 	},
+  price_label_and_icon_container: {
+    flexDirection: "row", 
+  },
+  detail_icon: {
+    paddingLeft: 0,
+    marginRight: -8,
+    color: Theme.PRIMARY_COLOR,
+  },
 	price_label: {
 		color: Theme.PRIMARY_COLOR,
 		fontSize: 14,
 		paddingVertical: 5,
+    marginRight: 5,
 		textAlign: "center",
 	},
 	btn_cont: {
