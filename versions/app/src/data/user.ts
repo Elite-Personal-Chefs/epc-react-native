@@ -1,22 +1,5 @@
 import { firebase } from "../config/config";
 
-export default interface User {
-	id?: string;
-	firstName?: string;
-	lastName?: string;
-	profileImg?: string;
-	email?: string;
-	reservationSummaries?: {
-		eventTitle?: string;
-		location?: string;
-		start?: string;
-		eventImg?: string;
-		reservationRef?: string;
-	}[];
-}
-
-
-
 const getUserData = async (uid) => {
 	console.log("Getting user data", uid);
 
