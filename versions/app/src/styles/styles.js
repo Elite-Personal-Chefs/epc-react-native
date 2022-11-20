@@ -188,7 +188,7 @@ const globalStyles =  StyleSheet.create({
     },
     navigate_away_content:{
         flex:1,
-        fontWeight: 'medium',
+        fontWeight: '500',
         color: Theme.PRIMARY_COLOR,
         fontSize: 13,
     },

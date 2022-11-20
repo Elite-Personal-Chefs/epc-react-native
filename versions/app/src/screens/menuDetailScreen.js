@@ -173,7 +173,7 @@ export default function MenuDetailScreen({ route, navigation }) {
             <View style={styles.title}>
               <Text style={globalStyles.h1}>{details.title}</Text>
             </View>
-            {knownMenuPrice && (
+            {pageName == "Templates" && (
               <View style={styles.suggested_price_container}>
                 <View style={styles.price_label_and_icon_container}>
                 <Text style={styles.price_label}>EPC Suggested Price</Text>
@@ -181,7 +181,7 @@ export default function MenuDetailScreen({ route, navigation }) {
                   isVisible={toolTipVisible}
                   content={
                     <View>
-                      <Text> This is only a suggested menu price. Your event price is what's shown to your guests.</Text>
+                      <Text>This is only a suggested menu price. Your event price is what's shown to your guests.</Text>
                     </View>
                   }
                   placement="bottom"
