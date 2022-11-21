@@ -154,12 +154,13 @@ export default function EventDetailScreen({ route, navigation }) {
 	const editEvent = () => {
 		console.log("Lets edit the envet");
 		navigation.navigate("Create Event", {
-			details: details,
+			details: eventDetails || details,
 		});
 	};
 
 	const getMenus = async (details, pageName) => {
 		console.log("GETTING MENU ID: ", details);
+		console.log("Page Name", pageName);
 		//If this is a template page look for the menu in templates
 		//otherwise look into the chefs colelction of menus
 		const firestore = firebase.firestore();
@@ -171,7 +172,8 @@ export default function EventDetailScreen({ route, navigation }) {
 			menuRef = firestore
 				.collection("menu_templates")
 				.doc(details.menu_template_id);
-		} else if (pageName == "Your Events") {
+		} else {
+			console.log("Getting menu from chefs collection");
 			menuRef = firestore
 				.collection("chefs")
 				.doc(uid)
@@ -246,8 +248,6 @@ export default function EventDetailScreen({ route, navigation }) {
 				setEventImg({ uri: details.photos[0] });
 				//useState(require('../assets/food_pasta.png'))
 			}
-
-			getMenus(details, pageName);
 
 			if (activeFlow == "chefs") {
 				getGuestList(details.id);

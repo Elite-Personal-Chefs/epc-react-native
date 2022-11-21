@@ -225,7 +225,6 @@ export default function CreateEventScreen({ route, navigation }) {
 			await usersRef.doc(eventID).update(values);
 		} else {
 			const snapshot = await usersRef.add(values);
-			console.log(snapshot);
 			setEventID(snapshot.id);
 		}
 		//MENU ADDED NOW GO TO PHOTOS
@@ -315,7 +314,6 @@ export default function CreateEventScreen({ route, navigation }) {
 							}}
 							onSubmit={(values) => {
 								setIsDisabled(false);
-								console.log(values);
 								values.chef_id = uid;
 								values.start_time = pickerValueStart;
 								values.end_time = pickerValueEnd;
@@ -683,7 +681,7 @@ export default function CreateEventScreen({ route, navigation }) {
 										value={currentMenuID}
 										items={menusList}
 										setOpen={setOpen}
-										setValue={setValue}
+										setValue={setCurrentMenuID}
 										closeAfterSelecting={true}
 										itemSeparator={true}
 										onChangeValue={(value) => {
