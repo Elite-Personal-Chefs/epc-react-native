@@ -3,6 +3,7 @@
 /*******************************************************************************/
 import React, { useState, useContext, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from '@react-navigation/native';
 import {
 	Button,
 	Text,
@@ -17,7 +18,6 @@ import {
 //Other Dependencies
 import { firebase, configKeys } from '../config/config'; 
 import _ from 'underscore'; 
-import { useFocusEffect } from '@react-navigation/native';
 
 // COMPONENTS
 import AppContext from '../components/AppContext';
@@ -26,6 +26,7 @@ import {getEndpoint} from '../helpers/helpers'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Tooltip from 'react-native-walkthrough-tooltip';
+import { publishEvent, unpublishEvent } from '../data/event';
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../styles/styles";
@@ -230,6 +231,17 @@ export default function EventDetailScreen({route,navigation}) {
       console.log("NO GUEST LIST FOUND");
     }
   };
+
+  const changePublishStatus = async () => {
+
+    if (eventDetails.published) {
+      await unpublishEvent(eventDetails.id);
+    } else {
+      await publishEvent(eventDetails.id);
+    }
+
+    getEventDetails();
+  }
 
   /*************************************************************/
   // RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
@@ -506,7 +518,7 @@ export default function EventDetailScreen({route,navigation}) {
 						title={`${
 							eventDetails.published ? "Unpublish" : "Publish"
 						} Event`}
-						onPress={() => goBack()}
+						onPress={changePublishStatus}
 						size="small"
 					>
 						A Button

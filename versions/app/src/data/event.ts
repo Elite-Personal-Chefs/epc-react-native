@@ -4,24 +4,24 @@ import Event from "../models/event";
 
 // CRUD Events in firestore
 const createEvent = async (chef, data): Promise<void> => {
-	const eventCollection = firebase.firestore().collection("events");
+	const eventCollection = firebase.firestore().collection("experiences");
 	await eventCollection.add(data);
 };
 
 const getEvent = async (eventID): Promise<Event> => {
-	const eventCollection = firebase.firestore().collection("events");
+	const eventCollection = firebase.firestore().collection("experiences");
 	const event = await eventCollection.doc(eventID).get();
 	return event.data() as Event;
 };
 
 const getEvents = async (): Promise<Event[]> => {
-	const eventCollection = firebase.firestore().collection("events");
+	const eventCollection = firebase.firestore().collection("experiences");
 	const events = await eventCollection.get();
 	return events.docs.map((doc) => doc.data()) as Event[];
 };
 
 const getPublishedEvents = async (): Promise<Event[]> => {
-	const eventCollection = firebase.firestore().collection("events");
+	const eventCollection = firebase.firestore().collection("experiences");
 	const events = await eventCollection.where("published", "==", true).get();
 	return events.docs.map((doc) => doc.data()) as Event[];
 };
@@ -29,7 +29,7 @@ const getPublishedEvents = async (): Promise<Event[]> => {
 const updateEvent = async (eventID, data): Promise<void> => {
 	const event = await firebase
 		.firestore()
-		.collection("events")
+		.collection("experiences")
 		.doc(eventID)
 		.update(data);
 	return event;
@@ -38,7 +38,7 @@ const updateEvent = async (eventID, data): Promise<void> => {
 const publishEvent = async (eventID): Promise<void> => {
 	const event = await firebase
 		.firestore()
-		.collection("events")
+		.collection("experiences")
 		.doc(eventID)
 		.update({ published: true });
 
@@ -48,7 +48,7 @@ const publishEvent = async (eventID): Promise<void> => {
 const unpublishEvent = async (eventID): Promise<void> => {
 	const event = await firebase
 		.firestore()
-		.collection("events")
+		.collection("experiences")
 		.doc(eventID)
 		.update({ published: false });
 
