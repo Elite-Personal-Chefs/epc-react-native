@@ -25,7 +25,7 @@ export default function EventListing ({eventTemplates, pageName, navigation }) {
         return (
             <TouchableWithoutFeedback key={item.index} onPress={() => navigation.navigate('Event Details',  {details:item,pageName:pageName})}>
                 <View style={globalStyles.navigate_away}>
-                    <Text style={globalStyles.navigate_away_content}>{item.title}</Text>
+                    <Text style={[globalStyles.navigate_away_content, {fontWeight: "bold",}]}>{item.title}</Text>
                     <AntDesign name="right" size={20} color={Theme.FAINT} style={{paddingLeft:5}}/>
                 </View>
             </TouchableWithoutFeedback>

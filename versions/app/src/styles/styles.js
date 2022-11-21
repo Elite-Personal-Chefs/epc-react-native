@@ -100,8 +100,13 @@ const globalStyles =  StyleSheet.create({
         elevation: 3,
     },
     card_header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 7,
+    },
+    card_header_text: {
+        fontWeight: "bold",
+        fontSize: 16, 
     },
     divider: {
         borderBottomColor: Theme.FAINT,
@@ -183,7 +188,7 @@ const globalStyles =  StyleSheet.create({
     },
     navigate_away_content:{
         flex:1,
-        fontWeight: 'bold',
+        fontWeight: '500',
         color: Theme.PRIMARY_COLOR,
         fontSize: 13,
     },
