@@ -54,7 +54,7 @@ export default function ChefEventScreen({navigation, route}) {
                 const json = await result.json()
                 console.log("b",json.transactions)
                 if(!json.error){ //&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
-                    //console.log(json)
+                    console.log("Events", json)
                     setEventTemplates(json.transactions ? json.transactions : json)
                 }
                 else{

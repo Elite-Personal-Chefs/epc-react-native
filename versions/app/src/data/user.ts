@@ -1,5 +1,5 @@
 import { firebase } from "../config/config";
-//get firebase user
+
 const getUserData = async (uid) => {
 	console.log("Getting user data", uid);
 
@@ -13,7 +13,7 @@ const getUserData = async (uid) => {
 
 	// TODO: See if there is a way to simplify this.
 	let genericUserData = genericUser.data();
-	let userType = genericUserData.user_type;
+	let userType = genericUserData?.user_type;
 	const userRef = firebase.firestore().collection(userType);
 	const userData = await userRef.doc(uid).get();
 
