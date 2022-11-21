@@ -115,9 +115,6 @@ export default function EventsScreen({navigation,route}) {
     }
 
 
-    useEffect(() => {
-        getEvents(eventPageName)
-    }, [1])
 
     /*************************************************************/
     // RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
@@ -126,7 +123,7 @@ export default function EventsScreen({navigation,route}) {
         React.useCallback(() => {
             getEvents(eventPageName)
             console.log("Event screen is focused:"+eventPageName)
-        }, [1])
+        }, [])
     )
 
 
