@@ -48,7 +48,7 @@ export default function AccountScreen({ navigation }) {
   const appsGlobalContext = useContext(AppContext);
   const uid = appsGlobalContext.userID;
   const activeFlow = appsGlobalContext.activeFlow;
-	console.log("Account UID", uid + " " + activeFlow);
+  console.log("Account UID", uid + " " + activeFlow);
   // const [user,setUserData] = useState(false)
   const [startDate, setStartDate] = useState("");
   const [dataLoaded, setDataLoaded] = useState(false);

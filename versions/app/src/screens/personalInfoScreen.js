@@ -12,10 +12,9 @@ import AppContext from "../components/AppContext";
 import { firebase, configKeys } from "../config/config";
 
 // HELPER DEPENDENCIES
-import { convertTimestamp } from "../helpers/helpers";
 
 // COMPONENTS
-import { CustomButton, GoToButton } from "../components/Button";
+import { InformationButton } from "../components/Button";
 
 // STYLES
 import { globalStyles, forms, modal } from "../styles/styles";
@@ -36,11 +35,11 @@ export default function PersonalInfoScreen({ route, navigation }) {
     certifications: certificationsRef,
   } = appsGlobalContext;
 
-	// States
-	const [focusField, setFocusField] = useState(false);
-	const [password, setPassword] = useState("");
-	const [hide_password, toggleShowPassword] = useState(true);
-    const [updatingEmail, setUpdatingEmail] = useState(false);
+  // console.log(
+  //   `appsGlobalContext in PersonalInfoScreen: ${JSON.stringify(
+  //     appsGlobalContext.userData.searchable.first_name
+  //   )}`
+  // );
 
   // GLOBAL STATE VARIABLES
   const [userData, setUserData] = useState(userDataRef ? userDataRef : {});
@@ -81,7 +80,7 @@ export default function PersonalInfoScreen({ route, navigation }) {
     };
 
     await usersRef.doc(uid).update(userData); // TODO: Update to use service
-  };;
+  };
 
   const updateAccount = async () => {
 
@@ -95,8 +94,9 @@ export default function PersonalInfoScreen({ route, navigation }) {
     //Clean up and refresh profile editing
     appsGlobalContext.reload();
 
-    //updateEmail();
-    //Alert.alert("Updating account...");
+    Alert.alert("Account Updated!", `Your account was successfully updated!`, [
+      { text: "View Profile", onPress: () => navigation.goBack() },
+    ]);
   };
 
   /*************************************************************/
@@ -244,19 +244,27 @@ export default function PersonalInfoScreen({ route, navigation }) {
             You must type in your password in order to save these changes.
           </Text>
 
-          <View style={[]}>
-            <Text>Password</Text>
-            <Text>
+          <View style={forms.information_divider}></View>
+
+          <View style={forms.information_container}>
+            <Text style={forms.information_header}>Change Password</Text>
+            <Text style={forms.information_text}>
               You can set a permanent password if you don't want to use temporary login codes. If
               you lose access to your school email address, you'll be able to log in using your
               password.
             </Text>
-            <Button title='Change Password'></Button>
+            <View style={forms.button_gray_container}>
+              <InformationButton
+                text='Change Password'
+                size='small'
+                //onPress={}
+              ></InformationButton>
+            </View>
           </View>
 
           <View style={[forms.button_container, forms.button_bottom]}>
             <Button
-              color={"white"}
+              color={Theme.WHITE}
               title={!updatingProfile ? "Update Profile" : "Updating..."}
               disabled={!email || !password}
               size='big'

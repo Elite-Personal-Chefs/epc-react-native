@@ -73,8 +73,7 @@ const useSession = (uid) => {
   const updateEmail = async (newEmail, password) => {
 		console.debug("Updating email in useSession");
     try {
-			await firebase.auth().currentUser?.updateEmail(newEmail);
-      const updateEmail = await firebase.auth().currentUser?.updateEmail(newEmail);
+      await firebase.auth().currentUser?.updateEmail(newEmail);
     } catch (error) {
       console.error("Error updating email", error.code);
       // sometimes users can't update their email because they haven't signed in recently

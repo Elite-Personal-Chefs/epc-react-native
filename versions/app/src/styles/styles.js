@@ -385,6 +385,25 @@ const forms = StyleSheet.create({
     color: Theme.TEXT_ON_SURFACE_COLOR,
     fontWeight: "normal",
   },
+  information_container: {},
+  information_divider: {
+    borderTopWidth: 1,
+    borderColor: Theme.BORDER_COLOR,
+    marginVertical: 20,
+  },
+  information_header: {
+    justifyContent: "flex-start",
+    alignContent: "center",
+    fontSize: 16,
+    color: Theme.TEXT_ON_SURFACE_COLOR,
+    fontWeight: "400",
+    marginBottom: 8,
+  },
+  information_text: {
+    fontSize: 14,
+    color: Theme.TEXT_ON_SURFACE_COLOR,
+    fontWeight: "normal",
+  },
   focused_dark: {
     color: Theme.WHITE,
     borderColor: Theme.WHITE,
@@ -425,6 +444,21 @@ const forms = StyleSheet.create({
     paddingLeft: 5,
     color: Theme.GRAY,
     textAlign: "left",
+  },
+  information_button: {
+    backgroundColor: Theme.GRAY,
+    borderRadius: 5,
+    color: Theme.WHITE,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    marginVertical: 10,
+    width: "40%",
+    whitespace: "normal",
+    wordwrap: "breakword",
+  },
+  information_button_text: {
+    color: Theme.WHITE,
   },
   button_container: {
     backgroundColor: Theme.SECONDARY_COLOR,
