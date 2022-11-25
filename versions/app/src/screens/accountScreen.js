@@ -44,183 +44,162 @@ import {
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function AccountScreen({ navigation }) {
-	//Get global vars from app context
-	const appsGlobalContext = useContext(AppContext);
-	const uid = appsGlobalContext.userID;
-	const activeFlow = appsGlobalContext.activeFlow;
+  //Get global vars from app context
+  const appsGlobalContext = useContext(AppContext);
+  const uid = appsGlobalContext.userID;
+  const activeFlow = appsGlobalContext.activeFlow;
 	console.log("Account UID", uid + " " + activeFlow);
-	// const [user,setUserData] = useState(false)
-	const [startDate, setStartDate] = useState("");
-	const [dataLoaded, setDataLoaded] = useState(false);
+  // const [user,setUserData] = useState(false)
+  const [startDate, setStartDate] = useState("");
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [sectionName, setSectionName] = useState(false);
 
-	//? ARE WE USING THESE VARIABLES?
-	const [focusField, setFocusField] = useState(false);
-	const [password, setPassword] = useState("");
-	const [hide_password, toggleShowPassword] = useState(true);
-	const [sectionName, setSectionName] = useState(false);
+  /*************************************************************/
+  // GET USER DATA TO RENDER PAGE WITH
+  /*************************************************************/
+  // const getUserData = async (uid) => {
+  //     console.log("Account Screen Active Flow", activeFlow)
+  //     const usersRef = firebase.firestore().collection(activeFlow);
+  //     const firebaseUser = await usersRef.doc(uid).get();
+  //     console.log("Finding user: "+activeFlow+" UID: "+uid)
+  //     if (firebaseUser.exists) {
+  //         let userData = firebaseUser.data()
+  //         let userDate = convertTimestamp(userData.createdAt)
 
-	/*************************************************************/
-	// GET USER DATA TO RENDER PAGE WITH
-	/*************************************************************/
-	// const getUserData = async (uid) => {
-	//     console.log("Account Screen Active Flow", activeFlow)
-	//     const usersRef = firebase.firestore().collection(activeFlow);
-	//     const firebaseUser = await usersRef.doc(uid).get();
-	//     console.log("Finding user: "+activeFlow+" UID: "+uid)
-	//     if (firebaseUser.exists) {
-	//         let userData = firebaseUser.data()
-	//         let userDate = convertTimestamp(userData.createdAt)
+  //         //Set user data throughout page
+  //         setUserData(userData);
+  //         setStartDate(userDate[0])
+  //         setDataLoaded(true)
+  //     }
+  //     else{
+  //         console.log("No user found")
+  //     }
+  // }
 
-	//         //Set user data throughout page
-	//         setUserData(userData);
-	//         setStartDate(userDate[0])
-	//         setDataLoaded(true)
-	//     }
-	//     else{
-	//         console.log("No user found")
-	//     }
-	// }
+  // if(!dataLoaded){
+  //     getUserData(uid)
+  // }
 
-	// if(!dataLoaded){
-	//     getUserData(uid)
-	// }
+  /*************************************************************/
+  // EDIT INFO
+  /*************************************************************/
+  const updateProfile = () => {
+    if (sectionName == "phone") {
+      updatePhone();
+    }
+    if (sectionName == "email") {
+      updateEmail();
+    }
+    if (sectionName == "birthday") {
+      updateBirthday();
+    }
+  };
 
-	/*************************************************************/
-	// EDIT INFO
-	/*************************************************************/
-	const updateProfile = () => {
-		if (sectionName == "phone") {
-			updatePhone();
-		}
-		if (sectionName == "email") {
-			updateEmail();
-		}
-		if (sectionName == "birthday") {
-			updateBirthday();
-		}
-	};
+  /*************************************************************/
+  // UPDATE BIRTHDAY
+  /*************************************************************/
+  const [birthday, setNewBirthday] = useState("");
+  const updateBirthday = async () => {
+    const userData = {
+      birthday: birthday,
+    };
+    const usersRef = firebase.firestore().collection(activeFlow);
+    await usersRef.doc(uid).update(userData);
+    //Clean up and refresh profile editing
+    setSectionName(false);
+    setEditProfileSection(false);
+    setDataLoaded(false);
+  };
 
-	/*************************************************************/
-	// UPDATE BIRTHDAY
-	/*************************************************************/
-	const [birthday, setNewBirthday] = useState("");
-	const updateBirthday = async () => {
-		const userData = {
-			birthday: birthday,
-		};
-		const usersRef = firebase.firestore().collection(activeFlow);
-		await usersRef.doc(uid).update(userData);
-		//Clean up and refresh profile editing
-		setSectionName(false);
-		setEditProfileSection(false);
-		setDataLoaded(false);
-	};
+  /*************************************************************/
+  // LOGOUT
+  /*************************************************************/
+  const logout = () => {
+    Alert.alert(
+      "Logout",
+      "Would you like to log out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            console.log("Logging out user");
+            await appsGlobalContext.signOut();
+            console.log("Logged out");
+            // appsGlobalContext.setUserData(null)
+            // appsGlobalContext.setUserID(null)
+            setUserData(null);
+          },
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
 
-	/*************************************************************/
-	// LOGOUT
-	/*************************************************************/
-	const logout = () => {
-		Alert.alert(
-			"Logout",
-			"Would you like to log out?",
-			[
-				{
-					text: "Cancel",
-					style: "cancel",
-				},
-				{
-					text: "Logout",
-					onPress: async () => {
-						console.log("Logging out user");
-						await appsGlobalContext.signOut();
-						console.log("Logged out");
-						// appsGlobalContext.setUserData(null)
-						// appsGlobalContext.setUserID(null)
-						setUserData(null);
-					},
-				},
-			],
-			{
-				cancelable: true,
-			}
-		);
-	};
+  /*************************************************************/
+  // EFFECT TO SHOW DEV SCREEN ON CLICKS
+  /*************************************************************/
+  const [theCount, setTheCount] = useState(0);
+  const [devVisible, setDevVisible] = useState(false);
 
-	/*************************************************************/
-	// EFFECT TO SHOW DEV SCREEN ON CLICKS
-	/*************************************************************/
-	const [theCount, setTheCount] = useState(0);
-	const [devVisible, setDevVisible] = useState(false);
+  const checkForCount = () => {
+    let newCount = theCount + 1;
+    setTheCount(newCount);
+    if (newCount > 6) {
+      setDevVisible(true);
+    }
+    console.log(theCount);
+  };
 
-	const checkForCount = () => {
-		let newCount = theCount + 1;
-		setTheCount(newCount);
-		if (newCount > 6) {
-			setDevVisible(true);
-		}
-		console.log(theCount);
-	};
+  /*************************************************************/
+  // ONLY SHOW IF WE HAVE USER
+  /*************************************************************/
 
-	/*************************************************************/
-	// ONLY SHOW IF WE HAVE USER
-	/*************************************************************/
+  const { userData: user } = appsGlobalContext;
 
-	const { userData: user } = appsGlobalContext;
+  if (user) {
+    return (
+      <View style={globalStyles.scrollContainer}>
+        <KeyboardAwareScrollView>
+          <ScrollView>
+            <View style={globalStyles.page}>
+              <View style={styles.profile_header}>
+                <TouchableWithoutFeedback onPress={checkForCount}>
+                  {user.profile_img ? (
+                    <Image source={{ uri: user.profile_img }} style={styles.profile_img} />
+                  ) : (
+                    <MaterialIcons
+                      name='person'
+                      size={60}
+                      color={Theme.SECONDARY_COLOR}
+                      style={styles.person_icon}
+                    />
+                  )}
+                </TouchableWithoutFeedback>
+                <View>
+                  <Text style={styles.profile_name}>{user.name}</Text>
+                  <Text style={styles.profile_id}>
+                    Member Since: {convertTimestamp(appsGlobalContext.userData.createdAt)}
+                  </Text>
+                  <Text>{appsGlobalContext.userData.email}</Text>
+                </View>
+              </View>
+              {activeFlow == "chefs" && (
+                <>
+                  <GoToButton
+                    navigation={navigation}
+                    navigator='Profile Info'
+                    copy='Profile'
+                    params={user}
+                  />
+                  <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' />
 
-	if (user) {
-		return (
-			<View style={globalStyles.scrollContainer}>
-				<KeyboardAwareScrollView>
-					<ScrollView>
-						<View style={globalStyles.page}>
-							<View style={styles.profile_header}>
-								<TouchableWithoutFeedback
-									onPress={checkForCount}
-								>
-									{user.profile_img ? (
-										<Image
-											source={{ uri: user.profile_img }}
-											style={styles.profile_img}
-										/>
-									) : (
-										<MaterialIcons
-											name="person"
-											size={60}
-											color={Theme.SECONDARY_COLOR}
-											style={styles.person_icon}
-										/>
-									)}
-								</TouchableWithoutFeedback>
-								<View>
-									<Text style={styles.profile_name}>
-										{user.name}
-									</Text>
-									<Text style={styles.profile_id}>
-										Member Since:{" "}
-										{convertTimestamp(
-											appsGlobalContext.userData.createdAt
-										)}
-									</Text>
-									<Text>
-										{appsGlobalContext.userData.email}
-									</Text>
-								</View>
-							</View>
-							{activeFlow == "chefs" && (
-								<>
-									<GoToButton
-										navigation={navigation}
-										navigator="Personal Info"
-										copy="Personal Info"
-										params={user}
-									/>
-									<GoToButton
-										navigation={navigation}
-										navigator="Refer"
-										copy="Refer A Chef"
-									/>
-
-									{/*                                
+                  {/*                                
                                 <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
                                 <GoToButton navigation={navigation} navigator="Background Check" copy="Background Check"/>
 
@@ -231,73 +210,60 @@ export default function AccountScreen({ navigation }) {
                                 <GoToButton navigation={navigation} navigator="Sanitation Manager License" copy="Sanitation Manager License"/>
                                 <GoToButton navigation={navigation} navigator="Liability Insurance" copy="Liability Insurance"/>
                                 */}
-								</>
-							)}
-							{activeFlow == "guests" && (
-								<GoToButton
-									navigation={navigation}
-									navigator="Payments"
-									copy="Payments"
-									params={user}
-								/>
-							)}
-							<GoToButton
-								navigation={navigation}
-								navigator="Terms"
-								copy="Terms &amp; Conditions"
-							/>
-							<GoToButton
-								navigation={navigation}
-								navigator="Contact"
-								copy="Contact Us"
-							/>
-							<GoToButton
-								navigation={navigation}
-								navigator="FAQ"
-								copy="Frequently Asked Questions"
-							/>
+                </>
+              )}
+              {activeFlow == "guests" && (
+                <GoToButton
+                  navigation={navigation}
+                  navigator='Payments'
+                  copy='Payments'
+                  params={user}
+                />
+              )}
+              <GoToButton navigation={navigation} navigator='Terms' copy='Terms &amp; Conditions' />
+              <GoToButton navigation={navigation} navigator='Contact' copy='Contact Us' />
+              <GoToButton
+                navigation={navigation}
+                navigator='FAQ'
+                copy='Frequently Asked Questions'
+              />
 
-							<View>
-								<Text
-									onPress={() => logout()}
-									style={styles.textLinkText}
-								>
-									LOG OUT
-								</Text>
-								<Text style={styles.versionText}>
-									{/* TODO: Find what needs to be done to get the version id */}
-									App Version: {"Check TestFlight"}
-								</Text>
-							</View>
-							{devVisible && (
-								<View>
-									<Text
-										onPress={() =>
-											navigation.navigate("Playground")
-										}
-										style={styles.textLinkText}
-									>
-										DEVELOPER
-									</Text>
-								</View>
-							)}
-						</View>
-					</ScrollView>
-				</KeyboardAwareScrollView>
-			</View>
-		);
-	} else {
-		return (
-			<View
-				style={[
-					globalStyles.container,
-					{ flex: 1, alignItems: "center", justifyContent: "center" },
-				]}
-			>
-				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
-			</View>
-		);
-	}
+              <View>
+                <Text onPress={() => logout()} style={styles.textLinkText}>
+                  LOG OUT
+                </Text>
+                <Text style={styles.versionText}>
+                  {/* TODO: Find what needs to be done to get the version id */}
+                  App Version: {"Check TestFlight"}
+                </Text>
+              </View>
+              {devVisible && (
+                <View>
+                  <Text
+                    onPress={() => navigation.navigate("Playground")}
+                    style={styles.textLinkText}
+                  >
+                    DEVELOPER
+                  </Text>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAwareScrollView>
+      </View>
+    );
+  } else {
+    return (
+      <View
+        style={[
+          globalStyles.container,
+          { flex: 1, alignItems: "center", justifyContent: "center" },
+        ]}
+      >
+        <ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
+      </View>
+    );
+  }
 }
 
 const formatCardNumbers = (ccIcon) => {
