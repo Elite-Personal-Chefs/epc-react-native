@@ -86,40 +86,45 @@ export default function HomeScreen({navigation}) {
 
     if(user){
         return (
-            <SafeAreaView style={globalStyles.safe_light}>
-                <View style={[globalStyles.page,{marginTop:-50}]}>
-                    <ScrollView 
-                        style={{width:'100%', flex:1}}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                            />
-                        }
-                    >
-                    <View style={globalStyles.card}>
-                        <View style={globalStyles.card_header}>
-                            <Text style={globalStyles.h3}>Net Income</Text>
-                            <Text style={styles.dropdown}>This Week</Text>
-                        </View>
-                        <Text style={styles.featured_content}>$0</Text>
+          <SafeAreaView style={globalStyles.safe_light}>
+            <View style={[globalStyles.page, { marginTop: -50 }]}>
+              <ScrollView
+                style={{ width: "100%", flex: 1 }}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              >
+                <View style={globalStyles.card}>
+                  <View style={globalStyles.card_header}>
+                    <Text style={globalStyles.h3}>Net Income</Text>
+                    <Text style={styles.dropdown}>This Week</Text>
+                  </View>
+                  <Text style={styles.featured_content}>$0</Text>
+                </View>
+
+                {emailIsNotVerified && (
+                  <View style={globalStyles.card}>
+                    <View style={[globalStyles.card_header, styles.divider]}>
+                      <Text style={[globalStyles.h3]}>Email Not Verified</Text>
                     </View>
+                    <TouchableOpacity
+                      style={styles.navigate_away}
+                      onPress={() => checkForVerifiedEmail()}
+                    >
+                      <Text style={[styles.navigate_away_content]}>
+                        Click here if you have already verified your email.
+                      </Text>
+                      <AntDesign
+                        name='right'
+                        size={20}
+                        color={Theme.FAINT}
+                        style={{ paddingLeft: 5 }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-                    {emailIsNotVerified && 
-                        <View style={globalStyles.card}>
-                            <View style={[globalStyles.card_header,styles.divider]}>
-                                <Text style={[globalStyles.h3]}>Email Not Verified</Text>
-                            </View>
-                            <TouchableOpacity style={styles.navigate_away} onPress={() => checkForVerifiedEmail()}>
-                                <Text style={[styles.navigate_away_content]}>Click here if you have already verified your email.</Text>
-                                <AntDesign name="right" size={20} color={Theme.FAINT} style={{paddingLeft:5}}/>
-                            </TouchableOpacity>
-                        </View>
-                    }
-
-                    {_.has(user,'isOnboarded') && user.isOnboarded === true
-                        ? <>
-                            {/*
+                {_.has(user, "isOnboarded") && user.isOnboarded === true ? (
+                  <>
+                    {/*
                             <View style={globalStyles.card}>
                                 <View style={globalStyles.card_header}>
                                     <Text style={[globalStyles.h3,{fontSize:17}]}>Stand Out from the Crowd!</Text>
@@ -128,13 +133,21 @@ export default function HomeScreen({navigation}) {
                                 <ChefStatus certifications={user.certifications} navigation={navigation}/>
                             </View>
                             */}
-                            <View style={globalStyles.card}>
-                                <View style={{flexDirection: 'row', paddingVertical:5}}>
-                                    <Text style={{fontSize:14, color:Theme.PRIMARY_COLOR, fontWeight: 'bold'}}>Chef Status: ELITE CHEF</Text>
-                                    <Image style={globalStyles.badge_small} source={require('../assets/badges/status_elite_chef.png')} />
-                                </View>
-                            </View>
-                            <View style={globalStyles.card}>
+                    <View style={globalStyles.card}>
+                      <View style={{ flexDirection: "row", paddingVertical: 5 }}>
+                        <Text
+                          style={{ fontSize: 14, color: Theme.PRIMARY_COLOR, fontWeight: "bold" }}
+                        >
+                          Chef Status: ELITE CHEF
+                        </Text>
+                        <Image
+                          style={globalStyles.badge_small}
+                          source={require("../assets/badges/status_elite_chef.png")}
+                        />
+                      </View>
+                    </View>
+
+                    {/* <View style={globalStyles.card}>
                                 <View style={[globalStyles.card_header,styles.divider]}>
                                     <Text style={globalStyles.h3}>Refer A Chef</Text>
                                 </View>
@@ -142,24 +155,35 @@ export default function HomeScreen({navigation}) {
                                     <Text style={[styles.navigate_away_content,{color:Theme.FAINT, fontWeight: 'normal'}]}>Earn $50 for every chef you refer</Text>
                                     <AntDesign name="right" size={20} color={Theme.FAINT} style={{paddingLeft:5}}/>
                                 </TouchableOpacity>
-                            </View>
-                        </>
-                        : <>
-                            <View style={globalStyles.card}>
-                                <View style={[globalStyles.card_header]}>
-                                    <Text style={[globalStyles.h3]}>Complete your profile</Text>
-                                </View>
-                                <TouchableOpacity style={styles.navigate_away} onPress={() => navigation.navigate("Account", { screen: "Profile" })}>
-                                    <Text style={styles.navigate_away_content}>Hey Chef, let's finish up your profile so you{'\n'}can start booking!</Text>
-                                    <AntDesign name="right" size={20} color={Theme.SECONDARY_COLOR} style={{paddingLeft:5}}/>
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                    }
-                    </ScrollView>
-                </View>
-            </SafeAreaView>
-        )
+                            </View> */}
+                  </>
+                ) : (
+                  <>
+                    <View style={globalStyles.card}>
+                      <View style={[globalStyles.card_header]}>
+                        <Text style={[globalStyles.h3]}>Complete your profile</Text>
+                      </View>
+                      <TouchableOpacity
+                        style={styles.navigate_away}
+                        onPress={() => navigation.navigate("Account", { screen: "Profile" })}
+                      >
+                        <Text style={styles.navigate_away_content}>
+                          Hey Chef, let's finish up your profile so you{"\n"}can start booking!
+                        </Text>
+                        <AntDesign
+                          name='right'
+                          size={20}
+                          color={Theme.SECONDARY_COLOR}
+                          style={{ paddingLeft: 5 }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
+              </ScrollView>
+            </View>
+          </SafeAreaView>
+        );
     }
     else{
         return (

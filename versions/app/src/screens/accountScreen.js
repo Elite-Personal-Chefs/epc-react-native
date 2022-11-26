@@ -197,7 +197,7 @@ export default function AccountScreen({ navigation }) {
                     copy='Profile'
                     params={user}
                   />
-                  <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' />
+                  {/* <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' /> */}
 
                   {/*                                
                                 <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
