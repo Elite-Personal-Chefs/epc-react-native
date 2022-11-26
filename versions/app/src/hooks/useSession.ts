@@ -18,7 +18,7 @@ const useSession = (uid) => {
 
   useEffect(() => {
     setLoading(true);
-		console.log("Starting Session (useSession)");
+    console.log("Starting Session (useSession)");
 
     //SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
     const unsubscribe = firebase.auth().onAuthStateChanged(async (firebaseUser) => {
@@ -71,7 +71,7 @@ const useSession = (uid) => {
   const sendPasswordResetEmail = async (email) => firebase.auth().sendPasswordResetEmail(email);
 
   const updateEmail = async (newEmail, password) => {
-		console.debug("Updating email in useSession");
+    console.debug("Updating email in useSession");
     try {
       await firebase.auth().currentUser?.updateEmail(newEmail);
     } catch (error) {

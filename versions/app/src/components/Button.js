@@ -90,22 +90,8 @@ function SubmitButton({ text, onPress, style, disabled }) {
 
 function InformationButton({ text, onPress }) {
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={onPress}
-      style={forms.information_button}
-      //   style={[styles.informationButtonContainer, disabled && styles.submitButtonDisabled]}
-    >
-      <Text
-        style={forms.information_button_text}
-        // style={[
-        //   styles.informationButtonText,
-        //   style === "on_white" && { color: Theme.WHITE },
-        //   disabled && styles.submitButtonDisabledText,
-        // ]}
-      >
-        {text}
-      </Text>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={forms.information_button}>
+      <Text style={forms.information_button_text}>{text}</Text>
     </TouchableOpacity>
   );
 }

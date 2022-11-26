@@ -5,7 +5,16 @@
 
 // CORE IMPORTS
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { Alert, StyleSheet, Text, TextInput, View, Button } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import AppContext from "../components/AppContext";
 
 // OUTSIDE IMPORTS
@@ -14,7 +23,7 @@ import { firebase, configKeys } from "../config/config";
 // HELPER DEPENDENCIES
 
 // COMPONENTS
-import { InformationButton } from "../components/Button";
+import { CustomButton, InformationButton } from "../components/Button";
 
 // STYLES
 import { globalStyles, forms, modal } from "../styles/styles";
@@ -60,9 +69,15 @@ export default function PersonalInfoScreen({ route, navigation }) {
   );
   const [email, setEmail] = useState(appsGlobalContext.userData.email);
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [doPasswordsMatch, setDoPasswordsMatch] = useState(true);
   const [hide_password, toggleShowPassword] = useState(true);
   const [focusField, setFocusField] = useState(false);
   const [updatingProfile, setUpdatingProfile] = useState(false);
+
+  // MODAL STATE VARIABLES
+  const [modalVisible, setModalVisible] = useState(false);
 
   /*************************************************************/
   //! UPDATE EMAIL
@@ -83,7 +98,6 @@ export default function PersonalInfoScreen({ route, navigation }) {
   };
 
   const updateAccount = async () => {
-
     // email already updated in the state
     // password already updated in the state
     updateFirebaseAuth();
@@ -97,6 +111,26 @@ export default function PersonalInfoScreen({ route, navigation }) {
     Alert.alert("Account Updated!", `Your account was successfully updated!`, [
       { text: "View Profile", onPress: () => navigation.goBack() },
     ]);
+  };
+
+  /*************************************************************/
+  //! UPDATE PASSWORD
+  /*************************************************************/
+  const passwordsMatch = () => {
+    if (newPassword === "" || confirmPassword === "") {
+      Alert.alert("Passwords do not match", "Please make sure your passwords match");
+      setDoPasswordsMatch(false);
+      return;
+    }
+
+    if (newPassword === confirmPassword) {
+      setDoPasswordsMatch(true);
+      appsGlobalContext.updatePassword(newPassword);
+      Alert.alert("Password Updated!", `Your password was successfully updated!`);
+      navigation.goBack();
+    } else {
+      setDoPasswordsMatch(false);
+    }
   };
 
   /*************************************************************/
@@ -247,20 +281,135 @@ export default function PersonalInfoScreen({ route, navigation }) {
           <View style={forms.information_divider}></View>
 
           <View style={forms.information_container}>
-            <Text style={forms.information_header}>Change Password</Text>
+            <Text style={forms.information_header}>Manage Password</Text>
             <Text style={forms.information_text}>
-              You can set a permanent password if you don't want to use temporary login codes. If
-              you lose access to your school email address, you'll be able to log in using your
-              password.
+              You can set a new password if you don't want to use a temporary login codes.
             </Text>
-            <View style={forms.button_gray_container}>
-              <InformationButton
-                text='Change Password'
-                size='small'
-                //onPress={}
-              ></InformationButton>
-            </View>
+            <InformationButton
+              text='Change Password'
+              size='small'
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            ></InformationButton>
           </View>
+
+          <Modal
+            animationType='slide'
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(false);
+              //setIsEdit(false);
+            }}
+          >
+            <View style={modal.modalBackground}>
+              <View style={modal.modal_container}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={modal.close_button}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    //setIsEditing(false);
+                  }}
+                >
+                  <AntDesign name='closecircleo' size={25} color={Theme.SECONDARY_COLOR} />
+                </TouchableOpacity>
+                <View style={[modal.modalHeader, { marginVertical: 20 }]}>
+                  <Text>Please Enter Your New Password</Text>
+                </View>
+
+                <Text style={forms.input_label}>New Password</Text>
+                <View
+                  style={[
+                    forms.input_container,
+                    focusField == "password" ? forms.focused_light : forms.notFocused,
+                  ]}
+                >
+                  <MaterialIcons
+                    name='lock'
+                    size={27}
+                    style={[
+                      forms.input_icon,
+                      focusField == "password" ? forms.focused_light : forms.notFocused,
+                    ]}
+                  />
+                  <TextInput
+                    style={[forms.custom_input]}
+                    placeholder='New Password'
+                    placeholderTextColor={Theme.FAINT}
+                    keyboardType='default'
+                    onChangeText={setNewPassword}
+                    value={newPassword}
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                    secureTextEntry={hide_password}
+                    onFocus={() => setFocusField("newPassword")}
+                    onBlur={() => setFocusField(null)}
+                    setFocus={focusField}
+                  />
+                  <FontAwesome
+                    name={hide_password ? "eye-slash" : "eye"}
+                    size={20}
+                    color={Theme.SECONDARY_COLOR}
+                    style={forms.password_icon}
+                    onPress={() => toggleShowPassword(!hide_password)}
+                  />
+                </View>
+
+                <Text style={[forms.input_label, { marginTop: 20 }]}>Confirm Password</Text>
+                <View
+                  style={[
+                    forms.input_container,
+                    focusField == "confirmPassword" ? forms.focused_light : forms.notFocused,
+                  ]}
+                >
+                  <MaterialIcons
+                    name='lock'
+                    size={27}
+                    style={[
+                      forms.input_icon,
+                      focusField == "confirmPassword" ? forms.focused_light : forms.notFocused,
+                    ]}
+                  />
+                  <TextInput
+                    style={[forms.custom_input]}
+                    placeholder='Confirm Password'
+                    placeholderTextColor={Theme.FAINT}
+                    keyboardType='default'
+                    onChangeText={setConfirmPassword}
+                    value={confirmPassword}
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                    secureTextEntry={hide_password}
+                    onFocus={() => setFocusField("confirmPassword")}
+                    onBlur={() => setFocusField(null)}
+                    setFocus={focusField}
+                  />
+                  <FontAwesome
+                    name={hide_password ? "eye-slash" : "eye"}
+                    size={20}
+                    color={Theme.SECONDARY_COLOR}
+                    style={forms.password_icon}
+                    onPress={() => toggleShowPassword(!hide_password)}
+                  />
+                </View>
+
+                {!doPasswordsMatch ? (
+                  <Text style={forms.input_text}>Passwords don't match. Please try again.</Text>
+                ) : null}
+
+                <CustomButton
+                  text='Save'
+                  size='big'
+                  onPress={() => {
+                    passwordsMatch();
+                  }}
+                  disabled={!doPasswordsMatch}
+                ></CustomButton>
+              </View>
+            </View>
+          </Modal>
 
           <View style={[forms.button_container, forms.button_bottom]}>
             <Button

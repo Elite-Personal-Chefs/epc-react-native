@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import Theme from '../styles/theme.style.js';
+import Theme from "../styles/theme.style.js";
 
 const globalStyles = StyleSheet.create({
   safe_dark: {
@@ -249,6 +249,25 @@ const modal = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(12,30,52, 0.9)",
   },
+  modal_container: {
+    //marginTop: 60,
+    //margin: 20,
+    backgroundColor: Theme.SURFACE_COLOR,
+    justifyContent: "flex-start",
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    width: "90%",
+    height: 420,
+    borderWidth: 1,
+    borderColor: Theme.WHITE,
+  },
   modalView: {
     margin: 20,
     backgroundColor: Theme.SURFACE_COLOR,
@@ -276,6 +295,7 @@ const modal = StyleSheet.create({
     zIndex: 10000,
     fontWeight: Theme.FONT_WEIGHT_HEAVY,
   },
+
   modalHeader: {
     alignItems: "center",
     width: "100%",
