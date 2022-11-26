@@ -272,70 +272,139 @@ React.useEffect(() => {
     // OUTPUT FORM
     /*************************************************************/
     return (
-        <SafeAreaView style={globalStyles.safe_light}>
+      <SafeAreaView style={globalStyles.safe_light}>
         <KeyboardAwareScrollView>
-        <View style={globalStyles.scrollContainer}>
-            <ScrollView >
-                <View style={[globalStyles.page,{padding:20}]} >
-                    <Text style={globalStyles.h1}>Let's Sign Up</Text>
-                    <View style={[globalStyles.container,{width:'90%',paddingBottom:20}]}>
-                        <View style={[forms.input_container,forms.has_comment,focusName == 'name' ? forms.focused_light: forms.notFocused]}>
-                            <MaterialIcons name="person-pin" size={27} style={[forms.input_icon,focusName == 'name' ? forms.focused_light: forms.notFocused]} />
-                            <TextInput
-                                style={[forms.custom_input,{textTransform:'capitalize'}]}
-                                placeholder='Full Name'
-                                placeholderTextColor={Theme.FAINT}
-                                keyboardType='default'
-                                onChangeText={(text) => setName(text)}
-                                value={fullName}
-                                underlineColorAndroid="transparent"
-                                autoCapitalize="none"
-                                onFocus={() => setFocusName("name")}
-                                onBlur={() => setFocusName(null)}
-                                setFocus={focusName}
-                            />    
-                        </View>  
-                        <Text style={forms.input_comment}>This is something other users and chefs will see when you write reviews or have conversations.</Text>
-                       
-                        <View style={[forms.input_container,forms.has_comment,focusName == 'email' ? forms.focused_light: forms.notFocused]}>
-                            <MaterialIcons name="email" size={27} style={[forms.input_icon,focusName == 'email' ? forms.focused_light: forms.notFocused]} />
-                            <TextInput
-                                style={forms.custom_input}
-                                placeholder='Email'
-                                placeholderTextColor={Theme.FAINT}
-                                keyboardType='email-address'
-                                onChangeText={(text) => setEmail(text)}
-                                value={email}
-                                underlineColorAndroid="transparent"
-                                autoCapitalize="none"
-                                onFocus={() => setFocusName("mobile")}
-                                onBlur={() => setFocusName(null)}
-                                setFocus={focusName}
-                            />    
-                        </View>  
-                        <Text style={forms.input_comment}>Your email will not be publicly available to anyone in the app.</Text>
+          <View style={globalStyles.scrollContainer}>
+            <ScrollView>
+              <View style={[globalStyles.page, { padding: 20 }]}>
+                <Text style={globalStyles.h1}>Let's Sign Up</Text>
+                <View style={[globalStyles.container, { width: "90%", paddingBottom: 20 }]}>
+                  <View
+                    style={[
+                      forms.input_container,
+                      forms.has_comment,
+                      focusName == "name" ? forms.focused_light : forms.notFocused,
+                    ]}
+                  >
+                    <MaterialIcons
+                      name='person-pin'
+                      size={27}
+                      style={[
+                        forms.input_icon,
+                        focusName == "name" ? forms.focused_light : forms.notFocused,
+                      ]}
+                    />
+                    <TextInput
+                      style={[forms.custom_input, { textTransform: "capitalize" }]}
+                      placeholder='Full Name'
+                      placeholderTextColor={Theme.FAINT}
+                      keyboardType='default'
+                      onChangeText={(text) => setName(text)}
+                      value={fullName}
+                      underlineColorAndroid='transparent'
+                      autoCapitalize='none'
+                      onFocus={() => setFocusName("name")}
+                      onBlur={() => setFocusName(null)}
+                      setFocus={focusName}
+                    />
+                  </View>
+                  <Text style={forms.input_comment}>
+                    This is something other users and chefs will see when you write reviews or have
+                    conversations.
+                  </Text>
 
+                  <View
+                    style={[
+                      forms.input_container,
+                      forms.has_comment,
+                      focusName == "email" ? forms.focused_light : forms.notFocused,
+                    ]}
+                  >
+                    <MaterialIcons
+                      name='email'
+                      size={27}
+                      style={[
+                        forms.input_icon,
+                        focusName == "email" ? forms.focused_light : forms.notFocused,
+                      ]}
+                    />
+                    <TextInput
+                      style={forms.custom_input}
+                      placeholder='Email'
+                      placeholderTextColor={Theme.FAINT}
+                      keyboardType='email-address'
+                      onChangeText={(text) => setEmail(text)}
+                      value={email}
+                      underlineColorAndroid='transparent'
+                      autoCapitalize='none'
+                      onFocus={() => setFocusName("mobile")}
+                      onBlur={() => setFocusName(null)}
+                      setFocus={focusName}
+                    />
+                  </View>
+                  <Text style={forms.input_comment}>
+                    Your email will not be publicly available to anyone in the app.
+                  </Text>
 
-                        <View style={[forms.input_container,focusName == 'password'  ? forms.focused_light: forms.notFocused]}>
-                            <MaterialIcons name="vpn-key" size={27} style={[forms.input_icon,focusName == 'password' ? forms.focused_light: forms.notFocused]} />
-                            <TextInput
-                                style={forms.custom_input}
-                                placeholder='Password'
-                                placeholderTextColor={Theme.FAINT}
-                                keyboardType='default'
-                                onChangeText={(text) => setPassword(text)}
-                                value={password}
-                                underlineColorAndroid="transparent"
-                                autoCapitalize="none"
-                                secureTextEntry={hide_password}
-                                onFocus={() => setFocusName("password")}
-                                onBlur={() => setFocusName(null)}
-
-                            />    
-                            <FontAwesome name={hide_password ? 'eye-slash' : 'eye'} size={20} color={Theme.SECONDARY_COLOR} style={forms.password_icon}  onPress={() => toggleShowPassword(!hide_password)}/>
-                        </View>  
-                        <CustomButton text='Create Account' onPress={() => signupWithEmail()} size="big" disabled={isDisabled} />
-                        {/*
+                  <View
+                    style={[
+                      forms.input_container,
+                      focusName == "password" ? forms.focused_light : forms.notFocused,
+                    ]}
+                  >
+                    <MaterialIcons
+                      name='vpn-key'
+                      size={27}
+                      style={[
+                        forms.input_icon,
+                        focusName == "password" ? forms.focused_light : forms.notFocused,
+                      ]}
+                    />
+                    <TextInput
+                      style={forms.custom_input}
+                      placeholder='Password'
+                      placeholderTextColor={Theme.FAINT}
+                      keyboardType='default'
+                      onChangeText={(text) => setPassword(text)}
+                      value={password}
+                      underlineColorAndroid='transparent'
+                      autoCapitalize='none'
+                      secureTextEntry={hide_password}
+                      onFocus={() => setFocusName("password")}
+                      onBlur={() => setFocusName(null)}
+                    />
+                    <FontAwesome
+                      name={hide_password ? "eye-slash" : "eye"}
+                      size={20}
+                      color={Theme.SECONDARY_COLOR}
+                      style={forms.password_icon}
+                      onPress={() => toggleShowPassword(!hide_password)}
+                    />
+                  </View>
+                  <Text style={styles.textLinkTextSm}>
+                    {`Want to learn more about EPC's `}
+                    <Text
+                      onPress={() => navigation.navigate("Terms")}
+                      style={{ color: Theme.SECONDARY_COLOR }}
+                    >
+                      Terms &amp; Conditions
+                    </Text>{" "}
+                    {`or `}
+                    <Text
+                      onPress={() => navigation.navigate("Privacy")}
+                      style={{ color: Theme.SECONDARY_COLOR }}
+                    >
+                      Privacy Policy
+                    </Text>
+                    ?
+                  </Text>
+                  <CustomButton
+                    text='Create Account'
+                    onPress={() => signupWithEmail()}
+                    size='big'
+                    disabled={isDisabled}
+                  />
+                  {/*
                         <View style={styles.social_signup}>
                             <Text style={styles.social_signup_text}>Or</Text>
                             <View style={styles.sign_btn_container}>
@@ -343,21 +412,23 @@ React.useEffect(() => {
                             </View>
                         </View>
                         */}
-                    </View>
-                    <Text onPress={() => navigation.navigate('Terms')}  style={styles.textLinkTextSm}>Terms &amp; Conditions</Text>
                 </View>
+              </View>
             </ScrollView>
-        </View>
-        <View style={styles.login_section}>
+          </View>
+          <View style={styles.login_section}>
             <View style={styles.textLink}>
-                <Text onPress={() => navigation.navigate('Login',{chosenFlow:chosenFlow})} style={styles.textLinkText}>Already a member? <Text style={styles.textLinkHighlighted}>Log In</Text></Text>
+              <Text
+                onPress={() => navigation.navigate("Login", { chosenFlow: chosenFlow })}
+                style={styles.textLinkText}
+              >
+                Already a member? <Text style={styles.textLinkHighlighted}>Log In</Text>
+              </Text>
             </View>
-        </View>
-
-
+          </View>
         </KeyboardAwareScrollView>
-        </SafeAreaView>
-    )
+      </SafeAreaView>
+    );
 }
 
 

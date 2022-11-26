@@ -3,6 +3,7 @@
     "name": "EPC",
     "slug": "epc",
     "owner": "elite-personal-chefs",
+    "originalFullName": "Elite Personal Chefs",
     "version": "1.0.12",
     "orientation": "portrait",
     "icon": "./exterior_assets/icon.png",
@@ -16,18 +17,9 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/a6e6932b-8faa-4117-b320-118cecf3a213"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "packagerOpts": {
-      "sourceExts": [
-        "js",
-        "json",
-        "ts",
-        "tsx",
-        "jsx",
-        "vue"
-      ]
+      "sourceExts": ["js", "json", "ts", "tsx", "jsx", "vue"]
     },
     "ios": {
       "bundleIdentifier": "com.epc.epcapp",

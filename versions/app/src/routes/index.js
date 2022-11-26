@@ -77,57 +77,58 @@ import RegistrationScreen from '../screens/registrationScreen'
 import LoginScreen from '../screens/loginScreen'
 import PasswordScreen from '../screens/passwordScreen'
 import TermsScreen from '../screens/termsScreen'
-
+import PrivacyScreen from "../screens/privacyScreen";
 
 /*******************************************************************************/
-//ADDITIONAL STACKS OF SCREENS 
+//ADDITIONAL STACKS OF SCREENS
 /*******************************************************************************/
 
-const AccountScreenStackNav = createStackNavigator(); 
+const AccountScreenStackNav = createStackNavigator();
 const AccountScreenStack = () => {
-    return (
-      <AccountScreenStackNav.Navigator
-        screenOptions={{
-          headerShown: true,
-          headerTruncatedBackTitle: true,
-          headerBackTitleVisible: false,
-        }}
-      >
-        <AccountScreenStackNav.Screen name='Account' component={AccountScreen} />
-        <AccountScreenStackNav.Screen name='Profile' component={ProfileScreen} />
-        <AccountScreenStackNav.Screen name='Refer' component={ReferScreen} />
-        <AccountScreenStackNav.Screen name='Profile Info' component={PersonalInfoScreen} />
+  return (
+    <AccountScreenStackNav.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerTruncatedBackTitle: true,
+        headerBackTitleVisible: false,
+      }}
+    >
+      <AccountScreenStackNav.Screen name='Account' component={AccountScreen} />
+      <AccountScreenStackNav.Screen name='Profile' component={ProfileScreen} />
+      <AccountScreenStackNav.Screen name='Refer' component={ReferScreen} />
+      <AccountScreenStackNav.Screen name='Profile Info' component={PersonalInfoScreen} />
 
-        <AccountScreenStackNav.Screen name='Terms' component={TermsScreen} />
-        <AccountScreenStackNav.Screen name='Payments' component={PaymentsScreen} />
+      <AccountScreenStackNav.Screen name='Terms' component={TermsScreen} />
+      <AccountScreenStackNav.Screen name='Privacy' component={PrivacyScreen} />
+      <AccountScreenStackNav.Screen name='Payments' component={PaymentsScreen} />
 
-        <AccountScreenStackNav.Screen name='Waiver of Liability' component={WaiverScreen} />
-        <AccountScreenStackNav.Screen name='Background Check' component={BackgroundCheckScreen} />
-        <AccountScreenStackNav.Screen name='Professional Resume' component={ResumeScreen} />
-        <AccountScreenStackNav.Screen name="Food Handler's License" component={FoodHandlerScreen} />
+      <AccountScreenStackNav.Screen name='Waiver of Liability' component={WaiverScreen} />
+      <AccountScreenStackNav.Screen name='Background Check' component={BackgroundCheckScreen} />
+      <AccountScreenStackNav.Screen name='Professional Resume' component={ResumeScreen} />
+      <AccountScreenStackNav.Screen name="Food Handler's License" component={FoodHandlerScreen} />
 
-        <AccountScreenStackNav.Screen name='Professional Licenses' component={LicenseScreen} />
-        <AccountScreenStackNav.Screen
-          name='Sanitation Manager License'
-          component={SanitationScreen}
-        />
-        <AccountScreenStackNav.Screen name='Liability Insurance' component={LiabilityScreen} />
+      <AccountScreenStackNav.Screen name='Professional Licenses' component={LicenseScreen} />
+      <AccountScreenStackNav.Screen
+        name='Sanitation Manager License'
+        component={SanitationScreen}
+      />
+      <AccountScreenStackNav.Screen name='Liability Insurance' component={LiabilityScreen} />
 
-        <AccountScreenStackNav.Screen
-          name='Contact'
-          component={ContactScreen}
-          options={{ headerShown: true }}
-        />
-        <AccountScreenStackNav.Screen
-          name='FAQ'
-          component={FaqScreen}
-          options={{ headerShown: true }}
-        />
+      <AccountScreenStackNav.Screen
+        name='Contact'
+        component={ContactScreen}
+        options={{ headerShown: true }}
+      />
+      <AccountScreenStackNav.Screen
+        name='FAQ'
+        component={FaqScreen}
+        options={{ headerShown: true }}
+      />
 
-        <AccountScreenStackNav.Screen name='Playground' component={PlaygroundScreen} />
-      </AccountScreenStackNav.Navigator>
-    );
-}
+      <AccountScreenStackNav.Screen name='Playground' component={PlaygroundScreen} />
+    </AccountScreenStackNav.Navigator>
+  );
+};
 
 
 
@@ -269,14 +270,27 @@ const EventsStack = () => {
 /*******************************************************************************/
 const UnAuthorizedStack = () => {
     return (
-        <UnAuthorizedStackNav.Navigator>
-            <UnAuthorizedStackNav.Screen name="Welcome" component={WelcomeScreen}  options={{ headerShown: false }}/>
-            <UnAuthorizedStackNav.Screen name="Login" component={LoginScreen}  options={{ headerShown: false }}/>
-            <UnAuthorizedStackNav.Screen name="Register" component={RegistrationScreen}  options={{ headerShown: false }}/>
-            <UnAuthorizedStackNav.Screen name="Password" component={PasswordScreen} />
-            <UnAuthorizedStackNav.Screen name="Terms" component={TermsScreen} />
-        </UnAuthorizedStackNav.Navigator>       
-    )
+      <UnAuthorizedStackNav.Navigator>
+        <UnAuthorizedStackNav.Screen
+          name='Welcome'
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        <UnAuthorizedStackNav.Screen
+          name='Login'
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <UnAuthorizedStackNav.Screen
+          name='Register'
+          component={RegistrationScreen}
+          options={{ headerShown: false }}
+        />
+        <UnAuthorizedStackNav.Screen name='Password' component={PasswordScreen} />
+        <UnAuthorizedStackNav.Screen name='Terms' component={TermsScreen} />
+        <UnAuthorizedStackNav.Screen name='Privacy' component={PrivacyScreen} />
+      </UnAuthorizedStackNav.Navigator>
+    );
 }
 
 const AuthorizedStack = () => {

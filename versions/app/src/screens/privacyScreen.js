@@ -2,14 +2,13 @@
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
 import React, { useState } from "react";
-import { WebView } from 'react-native-webview';
+import { WebView } from "react-native-webview";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
+const PrivacyPolicyScreen = () => (
+  <WebView source={{ uri: "https://www.elitepersonalchefs.com/privacy-policy" }} />
+);
 
-
-const FaqScreen = () => <WebView source={{ uri: 'https://www.elitepersonalchefs.com/faqs-2' }} /> 
-
-
-export default FaqScreen;
+export default PrivacyPolicyScreen;
