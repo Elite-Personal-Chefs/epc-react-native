@@ -42,7 +42,6 @@ import { NotoSerif_400Regular } from "@expo-google-fonts/noto-serif";
 /***** assign a default text to the whole app ******/
 Text.defaultProps = Text.defaultProps || {};
 
-
 //Ignore Yellow Timer Warnings caused by firebase and react native packages (Hopefully this will be fixed in the future)
 LogBox.ignoreLogs(["Setting a timer"]);
 LogBox.ignoreLogs(["ViewPropTypes"]);
@@ -72,8 +71,7 @@ export default function App() {
 
 	//SET STATE OF LOGIN/READINESS VARIABLES
 	const { appGlobals, loading } = useSession();
-	const [appIsAwaitingOTAUpdates, setAppIsAwaitingOTAUpdates] =
-		useState(false);
+	const [appIsAwaitingOTAUpdates, setAppIsAwaitingOTAUpdates] = useState(false);
 	// console.log("USER", appGlobals.userData);
 
 	//DIAGNOSTICS OF APP STATE
@@ -105,13 +103,10 @@ export default function App() {
 
 	//IMMEDIATE CHECK FOR CREDENTIALS
 	useEffect(() => {
-		console.log(
-			"++++++++++++++++ USE EFFECT IS RUNNING: FONTS LOADED ++++++++++++++++="
-		);
+		console.log("++++++++++++++++ USE EFFECT IS RUNNING: FONTS LOADED ++++++++++++++++=");
 		checkForUpdates();
 
-		if (fontsLoaded)
-			Text.defaultProps.style = { fontFamily: "Roboto_400Regular" };
+		if (fontsLoaded) Text.defaultProps.style = { fontFamily: "Roboto_400Regular" };
 
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
 	}, [fontsLoaded]);
@@ -127,11 +122,7 @@ export default function App() {
 	return (
 		<AppContext.Provider value={appGlobals}>
 			<SafeAreaProvider>
-				<StatusBar
-					animated={true}
-					backgroundColor={Theme.PRIMARY_COLOR}
-					barStyle="default"
-				/>
+				<StatusBar animated={true} backgroundColor={Theme.PRIMARY_COLOR} barStyle='default' />
 				<Navigator userLoggedIn={appGlobals.userLoggedIn} />
 			</SafeAreaProvider>
 		</AppContext.Provider>
