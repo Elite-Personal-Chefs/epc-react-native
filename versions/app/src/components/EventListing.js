@@ -32,7 +32,7 @@ export default function EventListing({ eventTemplates, pageName, navigation }) {
 			<TouchableWithoutFeedback
 				key={item.index}
 				onPress={() =>
-					navigation.navigate("Event Details", {
+					navigation.navigate("Chef Event Details", {
 						details: item,
 						pageName: pageName,
 					})

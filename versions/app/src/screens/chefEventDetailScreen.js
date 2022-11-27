@@ -259,9 +259,7 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
-			<Text>
-				<Text>Diner Event Details</Text>
-			</Text>
+			<Text>Chef Detail Screen</Text>
 			{eventDetails ? (
 				<ScrollView
 					showsVerticalScrollIndicator={false}
