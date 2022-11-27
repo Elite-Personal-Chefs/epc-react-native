@@ -11,7 +11,7 @@ const useSession = () => {
 	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
 	const [loading, setLoading] = useState(true);
 	const [activeFlow, setActiveFlow] = useState(null); //chefs or guests
-	const [userID, setUserID] = useState(uid ? uid : "");
+	const [userID, setUserID] = useState("");
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [userData, setUserData] = useState(null);
 	const [accessToken, setAccessToken] = useState<string>("");
