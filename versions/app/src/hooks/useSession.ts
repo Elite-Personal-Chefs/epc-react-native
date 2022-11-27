@@ -7,7 +7,7 @@ const ERRORS = {
 	REQUIRES_RECENT_LOGIN: "auth/requires-recent-login",
 };
 
-const useSession = (uid) => {
+const useSession = () => {
 	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
 	const [loading, setLoading] = useState(true);
 	const [activeFlow, setActiveFlow] = useState(null); //chefs or guests
