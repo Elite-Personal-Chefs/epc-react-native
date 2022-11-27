@@ -21,26 +21,23 @@ const useSession = () => {
 		console.log("Starting Session (useSession)");
 
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
-		const unsubscribe = firebase
-			.auth()
-			.onAuthStateChanged(async (firebaseUser) => {
-				if (firebaseUser) {
-					const uid = firebaseUser.uid;
-					loadUserData(uid);
-					setUserID(uid);
-					setAccessToken((await firebaseUser.getIdToken()) as string);
-					getAccessToken(firebaseUser);
-					setUserLoggedIn(true);
-				} else {
-					console.log(
-						"********************************* NO CURRENT USER. USER LOGGEDIN FALSE"
-					);
-					appGlobals.setUserID("");
-					appGlobals.setUserData(null);
-					setUserLoggedIn(false);
-				}
-				setLoading(false);
-			});
+		const unsubscribe = firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+			if (firebaseUser) {
+				console.log("User is logged in");
+				const uid = firebaseUser.uid;
+				loadUserData(uid);
+				setUserID(uid);
+				setAccessToken((await firebaseUser.getIdToken()) as string);
+				getAccessToken(firebaseUser);
+				setUserLoggedIn(true);
+			} else {
+				console.log("********************************* NO CURRENT USER. USER LOGGEDIN FALSE");
+				appGlobals.setUserID("");
+				appGlobals.setUserData(null);
+				setUserLoggedIn(false);
+			}
+			setLoading(false);
+		});
 		return () => unsubscribe();
 	}, []);
 
@@ -48,6 +45,7 @@ const useSession = () => {
 		const token = await firebaseUser.getIdToken();
 		setAccessToken(token);
 	};
+
 	const loadUserData = async (uid) => {
 		const user = (await getUserData(uid)) as any;
 
@@ -70,8 +68,7 @@ const useSession = () => {
 
 	const signOut = async () => firebase.auth().signOut();
 
-	const sendPasswordResetEmail = async (email) =>
-		firebase.auth().sendPasswordResetEmail(email);
+	const sendPasswordResetEmail = async (email) => firebase.auth().sendPasswordResetEmail(email);
 
 	const updateEmail = async (newEmail, password) => {
 		console.debug("Updating email in useSession");
@@ -86,24 +83,18 @@ const useSession = () => {
 					firebase.auth().currentUser?.email as string,
 					password
 				);
-				await firebase
-					.auth()
-					.currentUser?.reauthenticateWithCredential(credential);
+				await firebase.auth().currentUser?.reauthenticateWithCredential(credential);
 				//update email
 				await firebase.auth().currentUser?.updateEmail(newEmail);
 				console.log("Email updated to " + newEmail);
 			} else {
-				console.debug(
-					"Error, Something else",
-					JSON.stringify(error, null, 4)
-				);
+				console.debug("Error, Something else", JSON.stringify(error, null, 4));
 				throw error;
 			}
 		}
 	};
 
-	const updatePassword = async (password) =>
-		firebase.auth().currentUser?.updatePassword(password);
+	const updatePassword = async (password) => firebase.auth().currentUser?.updatePassword(password);
 
 	const reload = async (password) => firebase.auth().currentUser?.reload();
 

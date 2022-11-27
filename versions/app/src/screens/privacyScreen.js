@@ -7,6 +7,8 @@ import { WebView } from "react-native-webview";
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
-const TermsScreen = () => <WebView source={{ uri: "https://www.elitepersonalchefs.com/" }} />;
+const PrivacyPolicyScreen = () => (
+	<WebView source={{ uri: "https://www.elitepersonalchefs.com/privacy-policy" }} />
+);
 
-export default TermsScreen;
+export default PrivacyPolicyScreen;

@@ -1,343 +1,433 @@
 /*******************************************************************************/
-//IMPORT DEPENDENCIES
+//? Personal Info Screen allows the user (chef) to enter and update their personal information such as:
+//? name, email, and password as of November 22, 2020.
 /*******************************************************************************/
-import React, { useState, useRef, useContext, useEffect } from "react";
 
-// OTHER DEPENDENCIES
+// CORE IMPORTS
+import React, { useState, useRef, useContext, useEffect } from "react";
+import {
+	Alert,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+	Button,
+	Modal,
+	TouchableOpacity,
+} from "react-native";
+import AppContext from "../components/AppContext";
+
+// OUTSIDE IMPORTS
 import { firebase, configKeys } from "../config/config";
 
+// HELPER DEPENDENCIES
+
 // COMPONENTS
-import { Alert, StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { CustomButton, GoToButton } from "../components/Button";
-import AppContext from "../components/AppContext";
-import { convertTimestamp } from "../helpers/helpers";
+import { CustomButton, InformationButton } from "../components/Button";
 
 // STYLES
 import { globalStyles, forms, modal } from "../styles/styles";
 import Theme from "../styles/theme.style.js";
-import {
-	MaterialCommunityIcons,
-	FontAwesome,
-	MaterialIcons,
-	AntDesign,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function PersonalInfoScreen({ route, navigation }) {
-	//Get global vars from app context
-	const user = route.params.details;
+	//GLOBAL VARIABLES
 	const appsGlobalContext = useContext(AppContext);
-	const uid = appsGlobalContext.userID;
-	const activeFlow = appsGlobalContext.activeFlow;
+	const {
+		userID: uid,
+		activeFlow: activeFlow,
+		userLoggedIn: userLoggedIn,
+		userData: userDataRef,
+		certifications: certificationsRef,
+	} = appsGlobalContext;
 
-	// States
-	const [focusField, setFocusField] = useState(false);
-	const [password, setPassword] = useState("");
-	const [hide_password, toggleShowPassword] = useState(true);
-    const [updatingEmail, setUpdatingEmail] = useState(false);
+	// console.log(
+	//   `appsGlobalContext in PersonalInfoScreen: ${JSON.stringify(
+	//     appsGlobalContext.userData.searchable.first_name
+	//   )}`
+	// );
 
-	const [userData, setUserData] = useState(false);
+	// GLOBAL STATE VARIABLES
+	const [userData, setUserData] = useState(userDataRef ? userDataRef : {});
+	const [searchableData, setSearchableData] = useState(userDataRef ? userDataRef.searchable : {});
+
+	//? DO WE STILL NEED THIS?
 	const [startDate, setStartDate] = useState("");
 	const [dataLoaded, setDataLoaded] = useState(false);
 
-	/*************************************************************/
-	// GET USER DATA TO RENDER PAGE WITH
-	/*************************************************************/
+	// FORM STATE VARIABLES
+	const [firstName, setFirstName] = useState(
+		searchableData.first_name ? `${searchableData.first_name}` : ""
+	);
+	const [lastName, setLastName] = useState(
+		appsGlobalContext.userData.searchable.last_name
+			? `${appsGlobalContext.userData.searchable.last_name}`
+			: ""
+	);
+	const [email, setEmail] = useState(appsGlobalContext.userData.email);
+	const [password, setPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [doPasswordsMatch, setDoPasswordsMatch] = useState(true);
+	const [hide_password, toggleShowPassword] = useState(true);
+	const [focusField, setFocusField] = useState(false);
+	const [updatingProfile, setUpdatingProfile] = useState(false);
 
-	const getUserData = async (uid) => {
-		//* We get the collection/table in firebase from our firestore cloud DB
+	// MODAL STATE VARIABLES
+	const [modalVisible, setModalVisible] = useState(false);
+
+	/*************************************************************/
+	//! UPDATE EMAIL
+	/*************************************************************/
+	const updateFirebaseAuth = async () => {
+		setUpdatingProfile(true);
+		setDataLoaded(true);
+		await appsGlobalContext.updateEmail(email, password);
+	};
+
+	const updateFirebaseFirestore = async () => {
 		const usersRef = firebase.firestore().collection(activeFlow);
-		const firebaseUser = await usersRef.doc(uid).get();
-
-		if (firebaseUser.exists) {
-			let userData = firebaseUser.data();
-			let userDate = convertTimestamp(userData.createdAt);
-
-			//Set user data throughout page
-			setUserData(userData);
-			setStartDate(userDate[0]);
-			setDataLoaded(true);
-		} else {
-			console.log("No user found");
-		}
-	};
-
-	if (!dataLoaded) {
-		getUserData(uid);
-	}
-
-	/*************************************************************/
-	// UPDATE EMAIL
-	/*************************************************************/
-	const [email, setNewEmail] = useState("");
-
-	const changeEmail = async (text) => {
-		// user.email = null;
-		setNewEmail(text);
-	};
-
-	const updateEmail = async () => {
-        setUpdatingEmail(true);
 		const userData = {
 			email: email,
 		};
 
-		await appsGlobalContext.updateEmail(email, password);
-		const usersRef = firebase.firestore().collection(activeFlow);
 		await usersRef.doc(uid).update(userData); // TODO: Update to use service
-		//Clean up and refresh profile editing
-        appsGlobalContext.reload();
-        setUpdatingEmail(false);
-		setDataLoaded(false);
 	};
 
-	const updateAccount = () => {
-		updateEmail();
-		Alert.alert("Updating account...");
+	const updateAccount = async () => {
+		// email already updated in the state
+		// password already updated in the state
+		updateFirebaseAuth();
+		updateFirebaseFirestore();
+
+		setUpdatingProfile(false);
+		setDataLoaded(false);
+		//Clean up and refresh profile editing
+		appsGlobalContext.reload();
+
+		Alert.alert("Account Updated!", `Your account was successfully updated!`, [
+			{ text: "View Profile", onPress: () => navigation.goBack() },
+		]);
 	};
 
 	/*************************************************************/
-	// SHOW PERSONAL INFO TO USER
+	//! UPDATE PASSWORD
+	/*************************************************************/
+	const passwordsMatch = () => {
+		if (newPassword === "" || confirmPassword === "") {
+			Alert.alert("Passwords do not match", "Please make sure your passwords match");
+			setDoPasswordsMatch(false);
+			return;
+		}
+
+		if (newPassword === confirmPassword) {
+			setDoPasswordsMatch(true);
+			appsGlobalContext.updatePassword(newPassword);
+			Alert.alert("Password Updated!", `Your password was successfully updated!`);
+			navigation.goBack();
+		} else {
+			setDoPasswordsMatch(false);
+		}
+	};
+
+	/*************************************************************/
+	//! SHOW PERSONAL INFO TO USER
 	/*************************************************************/
 	return (
-		<View style={globalStyles.page}>
-			<View style={{ padding: 10, justifyContent: "center", margin: 20 }}>
-				<Text>You can update your email address here.</Text>
+		<>
+			<View style={[globalStyles.page_blank]}>
+				<View style={[forms.form_container, { flex: 1 }]}>
+					<View style={[forms.header_row_container, styles.edit_personal_info_view]}>
+						<Text style={forms.header_text}>Edit Personal Info</Text>
+					</View>
+
+					{/* <View>
+            <Text style={forms.input_label}>First Name</Text>
+            <View
+              style={[
+                forms.input_container,
+                focusField == "firstName" ? forms.focused_light : forms.notFocused,
+              ]}
+            >
+              <MaterialIcons
+                name='edit'
+                size={27}
+                style={[
+                  forms.input_icon,
+                  focusField == "firstName" ? forms.focused_light : forms.notFocused,
+                ]}
+              />
+              <TextInput
+                style={[forms.custom_input]}
+                placeholder={firstName || "First Name"}
+                placeholderTextColor={Theme.FAINT}
+                keyboardType='default'
+                value={firstName}
+                onChangeText={setFirstName}
+                underlineColorAndroid='transparent'
+                autoCapitalize='words'
+                onFocus={() => setFocusField("firstName")}
+                onBlur={() => setFocusField(null)}
+                setFocus={focusField}
+              />
+            </View>
+
+            <Text style={forms.input_label}>Last Name</Text>
+            <View
+              style={[
+                forms.input_container,
+                focusField == "lastName" ? forms.focused_light : forms.notFocused,
+              ]}
+            >
+              <MaterialIcons
+                name='edit'
+                size={27}
+                style={[
+                  forms.input_icon,
+                  focusField == "lastName" ? forms.focused_light : forms.notFocused,
+                ]}
+              />
+              <TextInput
+                style={[forms.custom_input]}
+                placeholder={lastName || "Last Name"}
+                placeholderTextColor={Theme.FAINT}
+                keyboardType='default'
+                value={lastName}
+                onChangeText={setLastName}
+                underlineColorAndroid='transparent'
+                autoCapitalize='words'
+                onFocus={() => setFocusField("firstName")}
+                onBlur={() => setFocusField(null)}
+                setFocus={focusField}
+              />
+            </View>
+          </View> */}
+
+					<Text style={forms.input_label}>Email</Text>
+					<View
+						style={[
+							forms.input_container,
+							focusField == "email" ? forms.focused_light : forms.notFocused,
+						]}
+					>
+						<MaterialIcons
+							name='email'
+							size={27}
+							style={[
+								forms.input_icon,
+								focusField == "email" ? forms.focused_light : forms.notFocused,
+							]}
+						/>
+						<TextInput
+							style={[forms.custom_input]}
+							placeholder={userData.email}
+							placeholderTextColor={Theme.FAINT}
+							keyboardType='default'
+							value={email}
+							onChangeText={setEmail}
+							underlineColorAndroid='transparent'
+							autoCapitalize='none'
+							onFocus={() => setFocusField("email")}
+							onBlur={() => setFocusField(null)}
+							setFocus={focusField}
+						/>
+					</View>
+
+					<Text style={forms.input_label}>Password</Text>
+					<View
+						style={[
+							forms.input_container,
+							focusField == "password" ? forms.focused_light : forms.notFocused,
+						]}
+					>
+						<MaterialIcons
+							name='lock'
+							size={27}
+							style={[
+								forms.input_icon,
+								focusField == "password" ? forms.focused_light : forms.notFocused,
+							]}
+						/>
+						<TextInput
+							style={[forms.custom_input]}
+							placeholder='Password'
+							placeholderTextColor={Theme.FAINT}
+							keyboardType='default'
+							onChangeText={setPassword}
+							value={password}
+							underlineColorAndroid='transparent'
+							autoCapitalize='none'
+							secureTextEntry={hide_password}
+							onFocus={() => setFocusField("password")}
+							onBlur={() => setFocusField(null)}
+							setFocus={focusField}
+						/>
+						<FontAwesome
+							name={hide_password ? "eye-slash" : "eye"}
+							size={20}
+							color={Theme.SECONDARY_COLOR}
+							style={forms.password_icon}
+							onPress={() => toggleShowPassword(!hide_password)}
+						/>
+					</View>
+
+					<Text style={forms.input_text}>
+						You must type in your password in order to save these changes.
+					</Text>
+
+					<View style={forms.information_divider}></View>
+
+					<View style={forms.information_container}>
+						<Text style={forms.information_header}>Manage Password</Text>
+						<Text style={forms.information_text}>
+							You can set a new password if you don't want to use a temporary login codes.
+						</Text>
+						<InformationButton
+							text='Change Password'
+							size='small'
+							onPress={() => {
+								setModalVisible(true);
+							}}
+						></InformationButton>
+					</View>
+
+					<Modal
+						animationType='slide'
+						transparent={true}
+						visible={modalVisible}
+						onRequestClose={() => {
+							setModalVisible(false);
+							//setIsEdit(false);
+						}}
+					>
+						<View style={modal.modalBackground}>
+							<View style={modal.modal_container}>
+								<TouchableOpacity
+									activeOpacity={0.7}
+									style={modal.close_button}
+									onPress={() => {
+										setModalVisible(!modalVisible);
+										//setIsEditing(false);
+									}}
+								>
+									<AntDesign name='closecircleo' size={25} color={Theme.SECONDARY_COLOR} />
+								</TouchableOpacity>
+								<View style={[modal.modalHeader, { marginVertical: 20 }]}>
+									<Text>Please Enter Your New Password</Text>
+								</View>
+
+								<Text style={forms.input_label}>New Password</Text>
+								<View
+									style={[
+										forms.input_container,
+										focusField == "password" ? forms.focused_light : forms.notFocused,
+									]}
+								>
+									<MaterialIcons
+										name='lock'
+										size={27}
+										style={[
+											forms.input_icon,
+											focusField == "password" ? forms.focused_light : forms.notFocused,
+										]}
+									/>
+									<TextInput
+										style={[forms.custom_input]}
+										placeholder='New Password'
+										placeholderTextColor={Theme.FAINT}
+										keyboardType='default'
+										onChangeText={setNewPassword}
+										value={newPassword}
+										underlineColorAndroid='transparent'
+										autoCapitalize='none'
+										secureTextEntry={hide_password}
+										onFocus={() => setFocusField("newPassword")}
+										onBlur={() => setFocusField(null)}
+										setFocus={focusField}
+									/>
+									<FontAwesome
+										name={hide_password ? "eye-slash" : "eye"}
+										size={20}
+										color={Theme.SECONDARY_COLOR}
+										style={forms.password_icon}
+										onPress={() => toggleShowPassword(!hide_password)}
+									/>
+								</View>
+
+								<Text style={[forms.input_label, { marginTop: 20 }]}>Confirm Password</Text>
+								<View
+									style={[
+										forms.input_container,
+										focusField == "confirmPassword" ? forms.focused_light : forms.notFocused,
+									]}
+								>
+									<MaterialIcons
+										name='lock'
+										size={27}
+										style={[
+											forms.input_icon,
+											focusField == "confirmPassword" ? forms.focused_light : forms.notFocused,
+										]}
+									/>
+									<TextInput
+										style={[forms.custom_input]}
+										placeholder='Confirm Password'
+										placeholderTextColor={Theme.FAINT}
+										keyboardType='default'
+										onChangeText={setConfirmPassword}
+										value={confirmPassword}
+										underlineColorAndroid='transparent'
+										autoCapitalize='none'
+										secureTextEntry={hide_password}
+										onFocus={() => setFocusField("confirmPassword")}
+										onBlur={() => setFocusField(null)}
+										setFocus={focusField}
+									/>
+									<FontAwesome
+										name={hide_password ? "eye-slash" : "eye"}
+										size={20}
+										color={Theme.SECONDARY_COLOR}
+										style={forms.password_icon}
+										onPress={() => toggleShowPassword(!hide_password)}
+									/>
+								</View>
+
+								{!doPasswordsMatch ? (
+									<Text style={forms.input_text}>Passwords don't match. Please try again.</Text>
+								) : null}
+
+								<CustomButton
+									text='Save'
+									size='big'
+									onPress={() => {
+										passwordsMatch();
+									}}
+									disabled={!doPasswordsMatch}
+								></CustomButton>
+							</View>
+						</View>
+					</Modal>
+
+					<View style={[forms.button_container, forms.button_bottom]}>
+						<Button
+							color={Theme.WHITE}
+							title={!updatingProfile ? "Update Profile" : "Updating..."}
+							disabled={!email || !password}
+							size='big'
+							onPress={() => updateAccount()}
+						/>
+					</View>
+				</View>
 			</View>
-			<View
-				style={[
-					forms.input_container,
-					focusField == "email"
-						? forms.focused_light
-						: forms.notFocused,
-				]}
-			>
-				<MaterialIcons
-					name="email"
-					size={27}
-					style={[
-						forms.input_icon,
-						focusField == "email"
-							? forms.focused_light
-							: forms.notFocused,
-					]}
-				/>
-				<TextInput
-					style={[forms.custom_input]}
-					placeholder={userData.email}
-					placeholderTextColor={Theme.FAINT}
-					keyboardType="default"
-					value={email}
-					onChangeText={(text) => changeEmail(text)}
-					underlineColorAndroid="transparent"
-					autoCapitalize="none"
-					onFocus={() => setFocusField("email")}
-					onBlur={() => setFocusField(null)}
-					setFocus={focusField}
-				/>
-			</View>
-			<View
-				style={[
-					forms.input_container,
-					focusField == "password"
-						? forms.focused_light
-						: forms.notFocused,
-				]}
-			>
-				<MaterialIcons
-					name="lock"
-					size={27}
-					style={[
-						forms.input_icon,
-						focusField == "password"
-							? forms.focused_light
-							: forms.notFocused,
-					]}
-				/>
-				<TextInput
-					style={[forms.custom_input]}
-					placeholder="Password"
-					placeholderTextColor={Theme.FAINT}
-					keyboardType="default"
-					onChangeText={(text) => setPassword(text)}
-					value={password}
-					underlineColorAndroid="transparent"
-					autoCapitalize="none"
-					secureTextEntry={hide_password}
-					onFocus={() => setFocusField("password")}
-					onBlur={() => setFocusField(null)}
-					setFocus={focusField}
-				/>
-				<FontAwesome
-					name={hide_password ? "eye-slash" : "eye"}
-					size={20}
-					color={Theme.SECONDARY_COLOR}
-					style={forms.password_icon}
-					onPress={() => toggleShowPassword(!hide_password)}
-				/>
-			</View>
-			<View
-				style={{
-					backgroundColor: Theme.SECONDARY_COLOR,
-					width: "100%",
-					borderRadius: 10,
-					height: 50,
-					justifyContent: "center",
-					marginTop: 15,
-				}}
-			>
-				<Button
-					color={"white"}
-					title={!updatingEmail ? "Update Email" : "Updating..."}
-                    disabled={updatingEmail || !email || !password}
-					size="big"
-					onPress={() => updateAccount()}
-				/>
-			</View>
-		</View>
+		</>
 	);
 }
 
 const styles = StyleSheet.create({
-	profile_header: {
-		marginVertical: 15,
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	person_icon: {
-		padding: 5,
-		marginRight: 10,
-	},
-	profile_img: {
-		width: 70,
-		height: 70,
-		borderRadius: 35,
-		borderWidth: 2,
-		borderColor: Theme.SECONDARY_COLOR,
-		marginRight: 15, //So it overlaps on the edit icon above it
-	},
-	profile_name: {
-		fontSize: 21,
-		color: Theme.TEXT_ON_SURFACE_COLOR,
-		fontFamily: Theme.FONT_STANDARD,
-		textTransform: "capitalize",
-	},
-	profile_id: {
-		fontSize: 15,
-		color: Theme.PRIMARY_COLOR,
-		fontFamily: Theme.FONT_LIGHT,
-	},
-	section_header: {
-		fontFamily: Theme.FONT_MEDIUM,
-		color: Theme.TEXT_ON_SURFACE_COLOR,
-		fontSize: 16,
-		padding: 5,
-		marginTop: 10,
-		marginBottom: 5,
-	},
-	info_container: {
-		paddingHorizontal: 25,
-		paddingVertical: 15,
-		marginBottom: 25,
-		backgroundColor: Theme.BORDER_COLOR,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.22,
-		shadowRadius: 2.22,
-	},
-	member_detail: {
-		flexDirection: "row",
-		justifyContent: "flex-start",
-		alignItems: "center",
-		paddingVertical: 10,
-	},
-	member_info_text: {
-		flex: 1,
-		color: Theme.TEXT_ON_SURFACE_COLOR,
-		fontSize: 14,
-	},
-	detail_icons: {
-		paddingRight: 15,
-		color: Theme.PRIMARY_COLOR,
-	},
-	edit_icon: {
-		color: Theme.SECONDARY_COLOR,
-		padding: 10,
-	},
-	promo_text: {
-		color: Theme.SECONDARY_COLOR,
-		fontSize: 12,
-		fontWeight: "bold",
-	},
-	textLinkText: {
-		textAlign: "center",
-		fontFamily: Theme.FONT_MEDIUM,
-		textDecorationLine: "underline",
-		fontSize: 12,
-		padding: 10,
-		marginTop: 6,
-		color: Theme.PRIMARY_COLOR,
-	},
-	versionText: {
-		textAlign: "center",
-		fontFamily: Theme.FONT_STANDARD,
-		fontSize: 10,
-		padding: 5,
-		marginTop: 2,
-		color: Theme.FAINT,
-	},
-	edit_input: {
-		borderWidth: 1,
-		borderColor: Theme.SECONDARY_COLOR,
-		borderRadius: 8,
-		paddingLeft: 11,
-	},
-	modal_text: {
-		textAlign: "center",
-		color: Theme.TEXT_ON_SURFACE_COLOR,
-		fontSize: 15,
-	},
-	verify_input: {
-		paddingLeft: 0,
-		borderWidth: 2,
-		borderColor: Theme.PRIMARY_COLOR,
-		textAlign: "center",
-		fontSize: 16,
-		lineHeight: 20,
-		width: 200,
-		height: 45,
-		borderRadius: 20,
-		fontFamily: Theme.FONT_MEDIUM,
-	},
-	cc_container: {
-		borderRadius: 17,
-		padding: 25,
-		marginVertical: 16,
-		backgroundColor: Theme.SURFACE_COLOR,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.22,
-		shadowRadius: 2.22,
-	},
-	cc_detail_container: {
-		width: "100%",
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-	},
-	small_field: {
-		flex: 2,
-		marginRight: 5,
-		justifyContent: "flex-start",
-		alignContent: "flex-start",
-		alignItems: "flex-start",
+	edit_personal_info_view: {
+		//backgroundColor: Theme.SECONDARY_COLOR,
 	},
 });
