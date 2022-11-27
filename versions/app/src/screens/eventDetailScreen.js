@@ -212,8 +212,8 @@ export default function EventDetailScreen({ route, navigation }) {
 	};
 
 	const sendEmail = () => {
-		let eventTitle = eventDetails.title;
-		let emailList = guestsEmailList.join(",");
+		let eventTitle = `${eventDetails.title} Update`;
+		let emailList = guestsEmailList;
 
 		Linking.openURL(`mailto:${userEmail}?subject=${eventTitle}&bcc=${emailList}`);
 	};
