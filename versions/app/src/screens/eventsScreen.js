@@ -233,117 +233,132 @@ export default function EventsScreen({ navigation, route }) {
 						</MapView>
 						<ScrollView style={styles.places} horizontal={true}>
 							{coordinates &&
-								hasEvents.map((item, index) => (
-									<TouchableWithoutFeedback
-										key={index}
-										onPress={() =>
-											goToMarker(coordinates[index])
-										}
-										onLongPress={() =>
-											navigation.navigate(
-												"Event Details",
-												{ details: item }
-											)
-										}
-									>
-										<View style={styles.scroller}>
-											<Image
-												source={require("../assets/food_pasta.png")}
-												style={styles.scroller_img}
-											/>
-											<View
-												style={styles.scroller_content}
-											>
+								hasEvents.map((item, index) => {
+									const image = item.photos
+										? { uri: item.photos[0] }
+										: require("../assets/event_placeholder.png");
+									return (
+										<TouchableWithoutFeedback
+											key={index}
+											onPress={() =>
+												goToMarker(coordinates[index])
+											}
+											onLongPress={() =>
+												navigation.navigate(
+													"Event Details",
+													{ details: item }
+												)
+											}
+										>
+											<View style={styles.scroller}>
+												<Image
+													source={image}
+													style={styles.scroller_img}
+												/>
 												<View
-													style={styles.upper_content}
+													style={
+														styles.scroller_content
+													}
 												>
-													<View>
-														<Text
-															style={
-																styles.scroller_title
-															}
-														>
-															{item.title}
-														</Text>
-														<Text
-															style={
-																styles.scroller_date_time
-															}
-														>
-															{item.event_date}
-														</Text>
-														<Text
-															style={
-																styles.scroller_date_time
-															}
-														>
-															{item.start_time}-
-															{item.end_time}
-														</Text>
-													</View>
-													<View>
-														<Text
-															style={
-																styles.scroller_price
-															}
-														>
-															${item.cpp}
-														</Text>
-														<Text
-															style={
-																styles.scroller_price_label
-															}
-														>
-															Per Person
-														</Text>
-													</View>
-												</View>
-												<View
-													style={styles.lower_content}
-												>
-													<Text
-														style={
-															styles.scroller_name
-														}
-													>
-														{item.chef_name
-															? item.chef_name
-															: "Chef Name"}
-													</Text>
 													<View
 														style={
-															styles.reviews_and_rating
+															styles.upper_content
 														}
 													>
-														<FontAwesome
-															name="star"
-															size={12}
-															color={
-																Theme.SECONDARY_COLOR
-															}
-														/>
+														<View>
+															<Text
+																style={
+																	styles.scroller_title
+																}
+															>
+																{item.title}
+															</Text>
+															<Text
+																style={
+																	styles.scroller_date_time
+																}
+															>
+																{
+																	item.event_date
+																}
+															</Text>
+															<Text
+																style={
+																	styles.scroller_date_time
+																}
+															>
+																{
+																	item.start_time
+																}
+																-{item.end_time}
+															</Text>
+														</View>
+														<View>
+															<Text
+																style={
+																	styles.scroller_price
+																}
+															>
+																${item.cpp}
+															</Text>
+															<Text
+																style={
+																	styles.scroller_price_label
+																}
+															>
+																Per Person
+															</Text>
+														</View>
+													</View>
+													<View
+														style={
+															styles.lower_content
+														}
+													>
 														<Text
 															style={
-																styles.rating
+																styles.scroller_name
 															}
 														>
-															{item.chef_rating
-																? item.chef_rating
-																: "4.8"}
+															{item.chef_name
+																? item.chef_name
+																: "Chef Name"}
 														</Text>
-														<Text
+														<View
 															style={
-																styles.reviews
+																styles.reviews_and_rating
 															}
 														>
-															(120)
-														</Text>
+															<FontAwesome
+																name="star"
+																size={12}
+																color={
+																	Theme.SECONDARY_COLOR
+																}
+															/>
+															<Text
+																style={
+																	styles.rating
+																}
+															>
+																{item.chef_rating
+																	? item.chef_rating
+																	: "4.8"}
+															</Text>
+															<Text
+																style={
+																	styles.reviews
+																}
+															>
+																(120)
+															</Text>
+														</View>
 													</View>
 												</View>
 											</View>
-										</View>
-									</TouchableWithoutFeedback>
-								))}
+										</TouchableWithoutFeedback>
+									);
+								})}
 						</ScrollView>
 					</View>
 				)
