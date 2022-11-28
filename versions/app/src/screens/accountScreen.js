@@ -33,12 +33,7 @@ import { getEndpoint } from "../helpers/helpers";
 // STYLES
 import { globalStyles, forms, modal } from "../styles/styles";
 import Theme from "../styles/theme.style.js";
-import {
-	MaterialCommunityIcons,
-	FontAwesome,
-	MaterialIcons,
-	AntDesign,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -52,11 +47,6 @@ export default function AccountScreen({ navigation }) {
 	// const [user,setUserData] = useState(false)
 	const [startDate, setStartDate] = useState("");
 	const [dataLoaded, setDataLoaded] = useState(false);
-
-	//? ARE WE USING THESE VARIABLES?
-	const [focusField, setFocusField] = useState(false);
-	const [password, setPassword] = useState("");
-	const [hide_password, toggleShowPassword] = useState(true);
 	const [sectionName, setSectionName] = useState(false);
 
 	/*************************************************************/
@@ -174,17 +164,12 @@ export default function AccountScreen({ navigation }) {
 					<ScrollView>
 						<View style={globalStyles.page}>
 							<View style={styles.profile_header}>
-								<TouchableWithoutFeedback
-									onPress={checkForCount}
-								>
+								<TouchableWithoutFeedback onPress={checkForCount}>
 									{user.profile_img ? (
-										<Image
-											source={{ uri: user.profile_img }}
-											style={styles.profile_img}
-										/>
+										<Image source={{ uri: user.profile_img }} style={styles.profile_img} />
 									) : (
 										<MaterialIcons
-											name="person"
+											name='person'
 											size={60}
 											color={Theme.SECONDARY_COLOR}
 											style={styles.person_icon}
@@ -192,33 +177,22 @@ export default function AccountScreen({ navigation }) {
 									)}
 								</TouchableWithoutFeedback>
 								<View>
-									<Text style={styles.profile_name}>
-										{user.name}
-									</Text>
+									<Text style={styles.profile_name}>{user.name}</Text>
 									<Text style={styles.profile_id}>
-										Member Since:{" "}
-										{convertTimestamp(
-											appsGlobalContext.userData.createdAt
-										)}
+										Member Since: {convertTimestamp(appsGlobalContext.userData.createdAt)}
 									</Text>
-									<Text>
-										{appsGlobalContext.userData.email}
-									</Text>
+									<Text>{appsGlobalContext.userData.email}</Text>
 								</View>
 							</View>
 							{activeFlow == "chefs" && (
 								<>
 									<GoToButton
 										navigation={navigation}
-										navigator="Personal Info"
-										copy="Personal Info"
+										navigator='Profile Info'
+										copy='Profile'
 										params={user}
 									/>
-									<GoToButton
-										navigation={navigation}
-										navigator="Refer"
-										copy="Refer A Chef"
-									/>
+									{/* <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' /> */}
 
 									{/*                                
                                 <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
@@ -236,32 +210,21 @@ export default function AccountScreen({ navigation }) {
 							{activeFlow == "guests" && (
 								<GoToButton
 									navigation={navigation}
-									navigator="Payments"
-									copy="Payments"
+									navigator='Payments'
+									copy='Payments'
 									params={user}
 								/>
 							)}
+							<GoToButton navigation={navigation} navigator='Terms' copy='Terms &amp; Conditions' />
+							<GoToButton navigation={navigation} navigator='Contact' copy='Contact Us' />
 							<GoToButton
 								navigation={navigation}
-								navigator="Terms"
-								copy="Terms &amp; Conditions"
-							/>
-							<GoToButton
-								navigation={navigation}
-								navigator="Contact"
-								copy="Contact Us"
-							/>
-							<GoToButton
-								navigation={navigation}
-								navigator="FAQ"
-								copy="Frequently Asked Questions"
+								navigator='FAQ'
+								copy='Frequently Asked Questions'
 							/>
 
 							<View>
-								<Text
-									onPress={() => logout()}
-									style={styles.textLinkText}
-								>
+								<Text onPress={() => logout()} style={styles.textLinkText}>
 									LOG OUT
 								</Text>
 								<Text style={styles.versionText}>
@@ -272,9 +235,7 @@ export default function AccountScreen({ navigation }) {
 							{devVisible && (
 								<View>
 									<Text
-										onPress={() =>
-											navigation.navigate("Playground")
-										}
+										onPress={() => navigation.navigate("Playground")}
 										style={styles.textLinkText}
 									>
 										DEVELOPER
@@ -294,7 +255,7 @@ export default function AccountScreen({ navigation }) {
 					{ flex: 1, alignItems: "center", justifyContent: "center" },
 				]}
 			>
-				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
+				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 			</View>
 		);
 	}

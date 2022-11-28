@@ -28,10 +28,14 @@ To get started with running the client:
 
 # Known Errors
 
-`[TypeError: undefined is not an object (evaluating 'NativeUnimoduleProxy.viewManagersNames.includes')](https://stackoverflow.com/questions/72487854/typeerror-undefined-is-not-an-object-evaluating-nativeunimoduleproxy-viewmana)`
+## `[TypeError: undefined is not an object (evaluating 'NativeUnimoduleProxy.viewManagersNames.includes')](https://stackoverflow.com/questions/72487854/typeerror-undefined-is-not-an-object-evaluating-nativeunimoduleproxy-viewmana)`
 
 If you run into this error above, run the following command: `expo install expo-modules-core`
 
-
-
 This can happen if you delete the `node_module` folder.
+
+## Cannot use the AuthSession proxy because the project full name is not defined. Prefer AuthRequest (with the useProxy option set to false) in combination with an Expo Development Client build of your application. To continue using the AuthSession proxy, specify the project full name (@owner/slug) using the projectNameForProxy option.
+
+If you run into this error above, then add `"originalFullName": "Elite Personal Chefs",` to the app.json file. I added mine underneath the owner property.
+
+You can run npx expo start per usual and navigate to the screen you need to get to. 

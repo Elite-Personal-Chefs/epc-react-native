@@ -82,6 +82,7 @@ import LoginScreen from "../screens/loginScreen";
 import PasswordScreen from "../screens/passwordScreen";
 import TermsScreen from "../screens/termsScreen";
 import EventDetailScreen from "../screens/diner/eventDetailScreen";
+import PrivacyScreen from "../screens/privacyScreen";
 
 /*******************************************************************************/
 //ADDITIONAL STACKS OF SCREENS
@@ -97,31 +98,14 @@ const AccountScreenStack = () => {
 				headerBackTitleVisible: false,
 			}}
 		>
-			<AccountScreenStackNav.Screen
-				name="Account"
-				component={AccountScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Profile"
-				component={ProfileScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Refer"
-				component={ReferScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Personal Info"
-				component={PersonalInfoScreen}
-			/>
+			<AccountScreenStackNav.Screen name='Account' component={AccountScreen} />
+			<AccountScreenStackNav.Screen name='Profile' component={ProfileScreen} />
+			<AccountScreenStackNav.Screen name='Refer' component={ReferScreen} />
+			<AccountScreenStackNav.Screen name='Profile Info' component={PersonalInfoScreen} />
 
-			<AccountScreenStackNav.Screen
-				name="Terms"
-				component={TermsScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Payments"
-				component={PaymentsScreen}
-			/>
+			<AccountScreenStackNav.Screen name='Terms' component={TermsScreen} />
+			<AccountScreenStackNav.Screen name='Privacy' component={PrivacyScreen} />
+			<AccountScreenStackNav.Screen name='Payments' component={PaymentsScreen} />
 
 			<AccountScreenStackNav.Screen
 				name="Waiver of Liability"
