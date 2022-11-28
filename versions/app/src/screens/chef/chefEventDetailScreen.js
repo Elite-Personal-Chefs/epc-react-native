@@ -16,28 +16,28 @@ import {
 } from "react-native";
 
 //Other Dependencies
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../components/AppContext";
+import { CustomButton } from "../../components/Button";
+import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import { publishEvent, unpublishEvent } from "../data/event";
+import { publishEvent, unpublishEvent } from "../../data/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
 	FontAwesome5,
 	Ionicons,
 } from "@expo/vector-icons";
-import themeStyle from "../styles/theme.style.js";
+import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -51,7 +51,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const details = route.params.details;
 	const pageName = route.params.pageName;
 	const [eventImg, setEventImg] = useState(
-		require("../assets/food_pasta.png")
+		require("../../assets/food_pasta.png")
 	);
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [guestList, setGuestList] = useState(false);

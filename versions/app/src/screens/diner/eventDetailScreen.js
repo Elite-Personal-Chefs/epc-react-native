@@ -13,31 +13,34 @@ import {
 	Dimensions,
 	Image,
 	ActivityIndicator,
+	TextInput,
 } from "react-native";
 
+import { Dropdown } from "react-native-element-dropdown";
+
 //Other Dependencies
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../components/AppContext";
+import { CustomButton } from "../../components/Button";
+import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import { publishEvent, unpublishEvent } from "../data/event";
+import { publishEvent, unpublishEvent } from "../../data/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
 	FontAwesome5,
 	Ionicons,
 } from "@expo/vector-icons";
-import themeStyle from "../styles/theme.style.js";
+import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -50,13 +53,12 @@ export default function EventDetailScreen({ route, navigation }) {
 	const activeFlow = appsGlobalContext.activeFlow;
 	const details = route.params.details;
 	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState(
-		require("../assets/food_pasta.png")
-	);
+	const [eventImg, setEventImg] = useState();
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [guestList, setGuestList] = useState(false);
 	const [menuItems, setMenuItems] = useState(false);
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
+	const [reservationQuantity, setReservationQuantity] = useState(1);
 	const [knownCPP, setKnownCPP] = useState(
 		details.cpp ? +details.cpp : false
 	);
@@ -102,6 +104,8 @@ export default function EventDetailScreen({ route, navigation }) {
 						guest_name: user.name ? user.name : "Guest Name",
 						experience_id: eventDetails.id,
 						title: eventDetails.title,
+						reservationQuantity,
+						email: user.email,
 						readable_date:
 							eventDetails.event_date +
 							" | " +
@@ -176,7 +180,7 @@ export default function EventDetailScreen({ route, navigation }) {
 			console.log("Getting menu from chefs collection");
 			menuRef = firestore
 				.collection("chefs")
-				.doc(uid)
+				.doc(eventDetails.chef_id)
 				.collection("menus")
 				.doc(`${details.menu_template_id}`);
 		}
@@ -259,9 +263,6 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
-			<Text>
-				<Text>Diner Event Details</Text>
-			</Text>
 			{eventDetails ? (
 				<ScrollView
 					showsVerticalScrollIndicator={false}
@@ -275,30 +276,6 @@ export default function EventDetailScreen({ route, navigation }) {
 									{eventDetails.title}
 								</Text>
 							</View>
-							{!eventDetails.published && (
-								<View
-									style={{
-										borderRadius: 15,
-										width: 75,
-										padding: 5,
-										borderColor: Theme.SECONDARY_COLOR,
-										borderWidth: 1,
-										backgroundColor: "white",
-									}}
-								>
-									<Text
-										style={[
-											globalStyles.h4,
-											{
-												color: Theme.SECONDARY_COLOR,
-												textAlign: "center",
-											},
-										]}
-									>
-										Draft
-									</Text>
-								</View>
-							)}
 							{pageName == "Templates" && (
 								<View style={styles.suggested_price_container}>
 									<View
@@ -375,30 +352,67 @@ export default function EventDetailScreen({ route, navigation }) {
 								)}
 							</View>
 						)}
-						{activeFlow == "chefs" && pageName == "Your Events" && (
-							<View style={styles.btn_cont}>
-								<CustomButton
-									text="Edit Event"
-									onPress={() => editEvent(true)}
-									size="big"
-								/>
-							</View>
-						)}
-						{activeFlow == "guests" && !isReservation && (
+
+						{!isReservation && (
 							<View style={styles.btn_cont}>
 								{reserved ? (
-									<CustomButton
-										text="Reserved"
-										size="big"
-										disabled="true"
-										checkmark="true"
-									/>
+									<View>
+										<CustomButton
+											text="Reserved"
+											size="big"
+											disabled="true"
+											checkmark="true"
+										/>
+									</View>
 								) : (
-									<CustomButton
-										text="Reserve this Event"
-										onPress={() => reserveEvent()}
-										size="big"
-									/>
+									<View
+										style={{
+											flexDirection: "row",
+											justifyContent: "space-between",
+											alignContent: "center",
+										}}
+									>
+										<CustomButton
+											text="Reserve this Event"
+											onPress={() => reserveEvent()}
+											size="big"
+										/>
+
+										<Dropdown
+											iconStyle={styles.iconStyle}
+											style={{ width: 60 }}
+											data={[
+												{ label: 1, value: 1 },
+												{ label: 2, value: 2 },
+												{ label: 3, value: 3 },
+												{ label: 4, value: 4 },
+												{ label: 5, value: 5 },
+												{ label: 6, value: 6 },
+												{ label: 7, value: 7 },
+												{ label: 8, value: 8 },
+												{ label: 9, value: 9 },
+												{ label: 10, value: 10 },
+											]}
+											labelField="label"
+											valueField="value"
+											placeholder="Select item"
+											searchPlaceholder="Search..."
+											value={reservationQuantity}
+											onChange={(item) => {
+												setReservationQuantity(
+													item.value
+												);
+											}}
+											renderLeftIcon={() => (
+												<AntDesign
+													style={styles.icon}
+													color="black"
+													name="team"
+													size={20}
+												/>
+											)}
+										/>
+									</View>
 								)}
 							</View>
 						)}
@@ -598,20 +612,6 @@ export default function EventDetailScreen({ route, navigation }) {
 							</View>
 						)}
 					</View>
-					<Button
-						color={
-							eventDetails.published
-								? Theme.SECONDARY_COLOR
-								: "#357aff"
-						}
-						title={`${
-							eventDetails.published ? "Unpublish" : "Publish"
-						} Event`}
-						onPress={changePublishStatus}
-						size="small"
-					>
-						A Button
-					</Button>
 				</ScrollView>
 			) : (
 				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
