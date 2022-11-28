@@ -255,7 +255,6 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
-			<Text>Chef Detail Screen</Text>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
 					<Image source={eventImg} style={styles.image} />

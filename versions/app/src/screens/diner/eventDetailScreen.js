@@ -251,6 +251,8 @@ export default function EventDetailScreen({ route, navigation }) {
 			if (details.photos) {
 				setEventImg({ uri: details.photos[0] });
 				//useState(require('../assets/food_pasta.png'))
+			} else {
+				setEventImg(require("../../assets/event_placeholder.png"));
 			}
 
 			if (activeFlow == "chefs") {
@@ -268,7 +270,7 @@ export default function EventDetailScreen({ route, navigation }) {
 					showsVerticalScrollIndicator={false}
 					style={{ width: "100%" }}
 				>
-					<Image source={eventImg} style={styles.image} />
+					{<Image source={eventImg} style={styles.image} />}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
