@@ -466,7 +466,7 @@ export default function EventDetailScreen({ route, navigation }) {
 														lineHeight: 20,
 													}}
 												>
-													{`${guest.guest_name} (+${guest.numOfGuests})`}
+													{`${guest.guest_name} (total guests: ${guest.numOfGuests})`}
 												</Text>
 											</View>
 										);
