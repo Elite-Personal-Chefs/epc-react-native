@@ -372,6 +372,19 @@ const forms = StyleSheet.create({
 	placeholder_on_dark: {
 		color: "rgba(203, 165, 44, 0.4)",
 	},
+	create_event_input_container: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		paddingLeft: 8,
+		height: 58,
+		borderRadius: 8,
+		marginVertical: 20,
+		borderWidth: 1,
+		backgroundColor: Theme.SURFACE_COLOR,
+		borderColor: Theme.BORDER_COLOR,
+	},
 	input_container: {
 		//width: "100%",
 		flexDirection: "row",
@@ -442,9 +455,9 @@ const forms = StyleSheet.create({
 		// justifyContent: "center",
 	},
 	small_input_container: {
-		// flexDirection: "row",
-		// alignItems: "center",
-		// justifyContent: "space-between",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
 	},
 	small_field: {
 		flex: 2,

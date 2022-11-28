@@ -65,7 +65,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
-		console.log("This is a reservation need more details");
+		//console.log("This is a reservation need more details");
 		const firestore = firebase.firestore();
 		const eventRef = firestore
 			.collection("experiences")
@@ -78,7 +78,7 @@ export default function EventDetailScreen({ route, navigation }) {
 			event.id = eventDoc.id;
 			setEventDetails(event);
 			getMenus(event);
-			console.log("Found event details", event);
+			//console.log("Found event details", event);
 		}
 	};
 
@@ -89,7 +89,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	}
 
 	const reserveEvent = async (menuID) => {
-		console.log("This is the user that is reserving ", user);
+		//console.log("This is the user that is reserving ", user);
 		try {
 			const result = await fetch(getEndpoint(appsGlobalContext, "reserve"), {
 				method: "POST",
@@ -206,12 +206,14 @@ export default function EventDetailScreen({ route, navigation }) {
 			guestListSnapshot.forEach((doc) => {
 				let guest = doc.data();
 				let guestEmail = guest.email;
-				guest.avatar =
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/fe8c4ba1-5d37-4796-b193-c675017fe930?alt=media&token=b83172f7-9d27-49bf-8e1c-31429249ee4b";
+				guest.avatar = guest.avatar
+					? guest.avatar
+					: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/avatar.png?alt=media&token=fce27890-b259-4b12-be4c-1d5e10b950a2";
 				guestsEmailList.push(guestEmail);
 				guests.push(guest);
 			});
 			setGuestList(guests);
+			//console.log(`Guest List ${JSON.stringify(guestList)} is attending`);
 			setGuestsEmailList(guestsEmailList);
 		} else {
 			console.log("NO GUEST LIST FOUND");
@@ -464,7 +466,7 @@ export default function EventDetailScreen({ route, navigation }) {
 														lineHeight: 20,
 													}}
 												>
-													{guest.guest_name}
+													{`${guest.guest_name} (+${guest.numOfGuests})`}
 												</Text>
 											</View>
 										);

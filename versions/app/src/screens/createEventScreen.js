@@ -337,7 +337,7 @@ export default function CreateEventScreen({ route, navigation }) {
 								<>
 									<View
 										style={[
-											forms.input_container,
+											forms.create_event_input_container,
 											focusName == "title"
 												? forms.focused_light
 												: forms.notFocused,
@@ -372,7 +372,7 @@ export default function CreateEventScreen({ route, navigation }) {
 									</View>
 									<View
 										style={[
-											forms.input_container,
+											forms.create_event_input_container,
 											focusName == "description"
 												? forms.focused_light
 												: forms.notFocused,
@@ -486,7 +486,7 @@ export default function CreateEventScreen({ route, navigation }) {
 										>
 											<View
 												style={[
-													forms.input_container,
+													forms.create_event_input_container,
 													forms.small_field,
 													focusName == "start_time"
 														? forms.focused_light
@@ -540,13 +540,14 @@ export default function CreateEventScreen({ route, navigation }) {
 												</View>
 											</View>
 										</TouchableNativeFeedback>
+										
 										<TouchableNativeFeedback
 											style={{ width: "48%" }}
 											onPress={showPickerEnd}
 										>
 											<View
 												style={[
-													forms.input_container,
+													forms.create_event_input_container,
 													forms.small_field,
 													{
 														marginRight: 0,
@@ -605,7 +606,7 @@ export default function CreateEventScreen({ route, navigation }) {
 
 									<View
 										style={[
-											forms.input_container,
+											forms.create_event_input_container,
 											{
 												marginBottom: 4,
 												alignItems: "flex-start",
@@ -719,7 +720,7 @@ export default function CreateEventScreen({ route, navigation }) {
 									<View style={forms.small_input_container}>
 										<View
 											style={[
-												forms.input_container,
+												forms.create_event_input_container,
 												forms.small_field,
 												focusName == "guests"
 													? forms.focused_light
@@ -759,7 +760,7 @@ export default function CreateEventScreen({ route, navigation }) {
 										</View>
 										<View
 											style={[
-												forms.input_container,
+												forms.create_event_input_container,
 												forms.small_field,
 												{
 													marginRight: 0,
@@ -817,7 +818,7 @@ export default function CreateEventScreen({ route, navigation }) {
 
 									<View
 										style={[
-											forms.input_container,
+											forms.create_event_input_container,
 											focusName == "preservice"
 												? forms.focused_light
 												: forms.notFocused,
@@ -897,7 +898,7 @@ export default function CreateEventScreen({ route, navigation }) {
 
 									<View
 										style={[
-											forms.input_container,
+											forms.create_event_input_container,
 											focusName == "postservice"
 												? forms.focused_light
 												: forms.notFocused,
