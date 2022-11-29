@@ -84,14 +84,16 @@ export default function EventsScreen({ navigation, route }) {
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() =>
-					navigation.navigate("Chef Details", { details: item })
-				}
+				onPress={() => navigation.navigate("Chef Details", { details: item })}
 			>
 				<View style={styles.chef_cont}>
 					<View style={styles.chef_img}>
 						<Image
-							source={{ uri: item.profile_img }}
+							source={{
+								uri:
+									item.profile_img ||
+									"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716",
+							}}
 							style={styles.profile_img}
 						/>
 					</View>
@@ -111,9 +113,7 @@ export default function EventsScreen({ navigation, route }) {
                             </View>
                             */}
 							<Text style={styles.cuisines} numberOfLines={1}>
-								{item.cuisines
-									? Object.values(item.cuisines).join(",")
-									: ""}
+								{item.cuisines ? Object.values(item.cuisines).join(",") : ""}
 							</Text>
 						</View>
 					</View>

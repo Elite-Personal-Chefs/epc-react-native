@@ -208,7 +208,7 @@ export default function EventDetailScreen({ route, navigation }) {
 				let guestEmail = guest.email;
 				guest.avatar = guest.avatar
 					? guest.avatar
-					: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/avatar.png?alt=media&token=fce27890-b259-4b12-be4c-1d5e10b950a2";
+					: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716";
 				guestsEmailList.push(guestEmail);
 				guests.push(guest);
 			});
