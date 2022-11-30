@@ -381,7 +381,7 @@ const forms = StyleSheet.create({
 		paddingLeft: 8,
 		height: 58,
 		borderRadius: 8,
-		marginVertical: 20,
+		marginVertical: 15,
 		borderWidth: 1,
 		backgroundColor: Theme.SURFACE_COLOR,
 		borderColor: Theme.BORDER_COLOR,
