@@ -33,12 +33,7 @@ import { publishEvent, unpublishEvent } from "../../data/event";
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
-import {
-	AntDesign,
-	MaterialIcons,
-	FontAwesome5,
-	Ionicons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
@@ -53,17 +48,12 @@ export default function EventDetailScreen({ route, navigation }) {
 	const activeFlow = appsGlobalContext.activeFlow;
 	const details = route.params.details;
 	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState(
-		require("../../assets/food_pasta.png")
-	);
+	const [eventImg, setEventImg] = useState(require("../../assets/food_pasta.png"));
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [guestList, setGuestList] = useState(false);
 	const [guestsEmailList, setGuestsEmailList] = useState(false);
 	const [menuItems, setMenuItems] = useState(false);
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
-
-	console.log(`eventDetails`, eventDetails);
-
 	const [knownCPP, setKnownCPP] = useState(details.cpp ? +details.cpp : false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
@@ -106,7 +96,13 @@ export default function EventDetailScreen({ route, navigation }) {
 					experience_id: eventDetails.id,
 					title: eventDetails.title,
 					readable_date:
-						eventDetails.event_date + " | " + eventDetails.start_time + "-" + eventDetails.end_time,
+						eventDetails.event_start_date +
+						"-" +
+						eventDetails.event_end_date +
+						" | " +
+						eventDetails.start_time +
+						"-" +
+						eventDetails.end_time,
 					//experience_type: uid,
 				}),
 			});
@@ -372,7 +368,9 @@ export default function EventDetailScreen({ route, navigation }) {
 								<View style={styles.detail}>
 									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{eventDetails.event_date ? eventDetails.event_date : "March 22, 2022"}
+										{eventDetails.event_start_date && eventDetails.event_end_date
+											? `${eventDetails.event_start_date} -\n ${eventDetails.event_end_date}`
+											: "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
