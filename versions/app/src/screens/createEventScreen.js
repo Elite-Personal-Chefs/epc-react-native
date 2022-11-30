@@ -236,6 +236,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	};
 
 	const addExperience = async (values) => {
+		//console.log("addExperience", values);
 		//Add the new stripe to user data and create the user in the DB
 		const usersRef = firebase.firestore().collection("experiences");
 		//Add in details about chef
@@ -245,9 +246,12 @@ export default function CreateEventScreen({ route, navigation }) {
 			values.chef_rating = chef.rating;
 		}
 		//If details were passed then we are updating not creating
-		if (details) {
+		//console.log(`details`, details);
+		if (Object.keys(details).length > 0) {
+			//console.log("Updating experience");
 			await usersRef.doc(eventID).update(values);
 		} else {
+			//console.log("Creating experience");
 			const snapshot = await usersRef.add(values);
 			setEventID(snapshot.id);
 		}
@@ -316,7 +320,6 @@ export default function CreateEventScreen({ route, navigation }) {
 								values.chef_id = uid;
 								values.start_time = pickerValueStart;
 								values.end_time = pickerValueEnd;
-								values.event_date = pickerValueDate;
 								values.event_start_date = pickerEventStartDate;
 								values.event_end_date = pickerEventEndDate;
 								values.location = eventLocation;
@@ -743,7 +746,7 @@ export default function CreateEventScreen({ route, navigation }) {
 											forms.create_event_input_container,
 											{
 												marginBottom: 4,
-												alignItems: "flex-start",
+												alignItems: "center",
 												height: "auto",
 											},
 											focusName == "location" ? forms.focused_light : forms.notFocused,
@@ -762,7 +765,7 @@ export default function CreateEventScreen({ route, navigation }) {
 											listViewDisplayed={true} // true/false/undefined
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
-												console.log(data, details);
+												//console.log(data, details);
 												setEventLocation(data.description);
 											}}
 											placeholder='Locations'
@@ -782,6 +785,7 @@ export default function CreateEventScreen({ route, navigation }) {
 													borderWidth: 0,
 													borderRadius: 10,
 													borderColor: Theme.BORDER_COLOR,
+													paddingTop: 3,
 													zIndex: 10000,
 												},
 												poweredContainer: {},
