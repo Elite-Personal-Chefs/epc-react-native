@@ -16,6 +16,10 @@ import uuid from "uuid";
 /*******************************************************************************/
 
 export const convertTimestamp = (dateObj) => {
+	if (dateObj === null) {
+		dateObj = {};
+	}
+
 	//depending on if its a snapshot or not, seconds can be returned with an "_" prepemded or not
 	const seconds = dateObj._seconds ? dateObj._seconds : dateObj.seconds;
 	const dateString = new Date(seconds * 1000).toLocaleDateString("en-US");
