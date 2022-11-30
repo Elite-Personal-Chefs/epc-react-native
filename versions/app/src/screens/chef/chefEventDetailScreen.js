@@ -61,6 +61,9 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [guestsEmailList, setGuestsEmailList] = useState(false);
 	const [menuItems, setMenuItems] = useState(false);
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
+
+	console.log(`eventDetails`, eventDetails);
+
 	const [knownCPP, setKnownCPP] = useState(details.cpp ? +details.cpp : false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
