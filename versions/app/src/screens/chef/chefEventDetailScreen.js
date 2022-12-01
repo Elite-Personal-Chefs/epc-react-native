@@ -205,9 +205,7 @@ export default function EventDetailScreen({ route, navigation }) {
 			guestListSnapshot.forEach((doc) => {
 				let guest = doc.data();
 				let guestEmail = guest.email;
-				guest.avatar = guest.avatar
-					? guest.avatar
-					: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716";
+				guest.avatar ??= "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716";
 				guestsEmailList.push(guestEmail);
 				guests.push(guest);
 			});
