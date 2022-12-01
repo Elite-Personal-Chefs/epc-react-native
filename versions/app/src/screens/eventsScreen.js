@@ -59,8 +59,9 @@ export default function EventsScreen({ navigation, route }) {
 	});
 
 	const getEvents = async (eventPageName) => {
-		console.log("Getting events: " + eventPageName);
+		console.log("💚💚💚 Getting events: " + eventPageName);
 		const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
+		console.log("💚💚💚 Result: ", result);
 		const json = await result.json();
 		if (!json.error) {
 			//console.log(json)

@@ -58,6 +58,9 @@ export const mailto = (email = 'consultation@elitepersonalchefs.com', subject = 
 export const getEndpoint = (appsGlobalContext, endpoint) => {
 	const apiMode = appsGlobalContext.apiMode;
 	const apiBase = appsGlobalContext.configKeys[apiMode];
+	console.log("API BASE: ", apiBase);
+	const apiEndpoint = apiBase + endpoint;
+	console.log("API ENDPOINT: ", apiEndpoint);
 	return apiBase + endpoint;
 };
 
