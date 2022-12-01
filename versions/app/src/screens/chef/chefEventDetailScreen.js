@@ -262,7 +262,7 @@ export default function EventDetailScreen({ route, navigation }) {
 							<View style={styles.title}>
 								<Text style={globalStyles.h1}>{eventDetails.title}</Text>
 							</View>
-							{!eventDetails.published && (
+							{!eventDetails.published && pageName !== "Templates" && (
 								<View
 									style={{
 										borderRadius: 15,
@@ -477,14 +477,16 @@ export default function EventDetailScreen({ route, navigation }) {
 							</>
 						)}
 					</View>
-					<Button
-						color={eventDetails.published ? Theme.SECONDARY_COLOR : "#357aff"}
-						title={`${eventDetails.published ? "Unpublish" : "Publish"} Event`}
-						onPress={changePublishStatus}
-						size='small'
-					>
-						A Button
-					</Button>
+					{pageName !== "Templates" && (
+						<Button
+							color={eventDetails.published ? Theme.SECONDARY_COLOR : "#357aff"}
+							title={`${eventDetails.published ? "Unpublish" : "Publish"} Event`}
+							onPress={changePublishStatus}
+							size='small'
+						>
+							A Button
+						</Button>
+					)}
 				</ScrollView>
 			) : (
 				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
