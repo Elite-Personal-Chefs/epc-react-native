@@ -372,6 +372,20 @@ const forms = StyleSheet.create({
 	placeholder_on_dark: {
 		color: "rgba(203, 165, 44, 0.4)",
 	},
+	//! TODO: This is a hack to get input container to render properly
+	create_event_input_container: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		paddingLeft: 8,
+		height: 58,
+		borderRadius: 8,
+		marginVertical: 15,
+		borderWidth: 1,
+		backgroundColor: Theme.SURFACE_COLOR,
+		borderColor: Theme.BORDER_COLOR,
+	},
 	input_container: {
 		//width: "100%",
 		flexDirection: "row",
@@ -385,6 +399,24 @@ const forms = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: Theme.SURFACE_COLOR,
 		borderColor: Theme.BORDER_COLOR,
+	},
+	input_container_border: {
+		borderWidth: 1,
+		borderColor: Theme.BORDER_COLOR,
+		backgroundColor: Theme.SURFACE_COLOR,
+	},
+	input_container_radius_round: {
+		borderRadius: 8,
+	},
+	input_container_center: {
+		justifyContent: "center",
+		alignContent: "center",
+		alignItems: "center",
+	},
+	input_container_flex_start: {
+		justifyContent: "flex-start",
+		alignContent: "flex-start",
+		alignItems: "center",
 	},
 	input_label: {
 		justifyContent: "flex-start",
@@ -442,9 +474,9 @@ const forms = StyleSheet.create({
 		// justifyContent: "center",
 	},
 	small_input_container: {
-		// flexDirection: "row",
-		// alignItems: "center",
-		// justifyContent: "space-between",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
 	},
 	small_field: {
 		flex: 2,

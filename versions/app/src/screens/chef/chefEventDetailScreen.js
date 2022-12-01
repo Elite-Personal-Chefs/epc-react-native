@@ -33,12 +33,7 @@ import { publishEvent, unpublishEvent } from "../../data/event";
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
-import {
-	AntDesign,
-	MaterialIcons,
-	FontAwesome5,
-	Ionicons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
@@ -53,9 +48,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const activeFlow = appsGlobalContext.activeFlow;
 	const details = route.params.details;
 	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState(
-		require("../../assets/food_pasta.png")
-	);
+	const [eventImg, setEventImg] = useState(require("../../assets/food_pasta.png"));
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [guestList, setGuestList] = useState(false);
 	const [guestsEmailList, setGuestsEmailList] = useState(false);
@@ -65,7 +58,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
-		console.log("This is a reservation need more details");
+		//console.log("This is a reservation need more details");
 		const firestore = firebase.firestore();
 		const eventRef = firestore
 			.collection("experiences")
@@ -78,7 +71,7 @@ export default function EventDetailScreen({ route, navigation }) {
 			event.id = eventDoc.id;
 			setEventDetails(event);
 			getMenus(event);
-			console.log("Found event details", event);
+			//console.log("Found event details", event);
 		}
 	};
 
@@ -89,7 +82,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	}
 
 	const reserveEvent = async (menuID) => {
-		console.log("This is the user that is reserving ", user);
+		//console.log("This is the user that is reserving ", user);
 		try {
 			const result = await fetch(getEndpoint(appsGlobalContext, "reserve"), {
 				method: "POST",
@@ -103,7 +96,13 @@ export default function EventDetailScreen({ route, navigation }) {
 					experience_id: eventDetails.id,
 					title: eventDetails.title,
 					readable_date:
-						eventDetails.event_date + " | " + eventDetails.start_time + "-" + eventDetails.end_time,
+						eventDetails.event_start_date +
+						"-" +
+						eventDetails.event_end_date +
+						" | " +
+						eventDetails.start_time +
+						"-" +
+						eventDetails.end_time,
 					//experience_type: uid,
 				}),
 			});
@@ -206,12 +205,12 @@ export default function EventDetailScreen({ route, navigation }) {
 			guestListSnapshot.forEach((doc) => {
 				let guest = doc.data();
 				let guestEmail = guest.email;
-				guest.avatar =
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/fe8c4ba1-5d37-4796-b193-c675017fe930?alt=media&token=b83172f7-9d27-49bf-8e1c-31429249ee4b";
+				guest.avatar ??= "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716";
 				guestsEmailList.push(guestEmail);
 				guests.push(guest);
 			});
 			setGuestList(guests);
+			//console.log(`Guest List ${JSON.stringify(guestList)} is attending`);
 			setGuestsEmailList(guestsEmailList);
 		} else {
 			console.log("NO GUEST LIST FOUND");
@@ -367,7 +366,9 @@ export default function EventDetailScreen({ route, navigation }) {
 								<View style={styles.detail}>
 									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{eventDetails.event_date ? eventDetails.event_date : "March 22, 2022"}
+										{eventDetails.event_start_date && eventDetails.event_end_date
+											? `${eventDetails.event_start_date} -\n ${eventDetails.event_end_date}`
+											: "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -464,7 +465,7 @@ export default function EventDetailScreen({ route, navigation }) {
 														lineHeight: 20,
 													}}
 												>
-													{guest.guest_name}
+													{`${guest.guest_name} (total guests: ${guest.numOfGuests})`}
 												</Text>
 											</View>
 										);
