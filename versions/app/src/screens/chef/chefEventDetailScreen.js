@@ -58,7 +58,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
-		console.log("getEventDetails");
+		//console.log("getEventDetails");
 		const firestore = firebase.firestore();
 		const eventRef = firestore
 			.collection("experiences")
@@ -157,10 +157,10 @@ export default function EventDetailScreen({ route, navigation }) {
 		let menuDoc;
 
 		if (pageName == "Templates" || details.isTemplate) {
-			console.log("This is a template");
+			//console.log("This is a template");
 			menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
 		} else {
-			console.log("This is a chef menu");
+			//console.log("This is a chef menu");
 			menuRef = firestore
 				.collection("chefs")
 				.doc(eventDetails.chef_id)
