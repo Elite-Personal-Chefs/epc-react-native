@@ -29,7 +29,7 @@ import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import { publishEvent, unpublishEvent } from "../../data/event";
+import * as eventDataHelper from "../../data/event";
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
@@ -88,35 +88,15 @@ export default function EventDetailScreen({ route, navigation }) {
 		getEventDetails();
 	}
 
-	const reserveEvent = async (menuID) => {
+	const reserveEvent = async () => {
 		console.log("This is the user that is reserving ", user);
 		try {
-			const result = await fetch(
-				getEndpoint(appsGlobalContext, "reserve"),
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						guest_id: uid,
-						guest_name: user.name ? user.name : "Guest Name",
-						experience_id: eventDetails.id,
-						title: eventDetails.title,
-						reservationQuantity,
-						email: user.email,
-						readable_date:
-							eventDetails.event_date +
-							" | " +
-							eventDetails.start_time +
-							"-" +
-							eventDetails.end_time,
-						//experience_type: uid,
-					}),
-				}
+			
+			await eventDataHelper.reserveEvent(
+				eventDetails.id,
+				uid,
+				reservationQuantity
 			);
-			const json = await result.json();
 			setReserved(true);
 			alert("Reservation Completed");
 		} catch (error) {
@@ -231,16 +211,6 @@ export default function EventDetailScreen({ route, navigation }) {
 		} else {
 			console.log("NO GUEST LIST FOUND");
 		}
-	};
-
-	const changePublishStatus = async () => {
-		if (eventDetails.published) {
-			await unpublishEvent(eventDetails.id);
-		} else {
-			await publishEvent(eventDetails.id);
-		}
-
-		getEventDetails();
 	};
 
 	/*************************************************************/
