@@ -31,6 +31,8 @@ export default function ReservationsScreen({navigation}) {
     const appsGlobalContext = useContext(AppContext);
     const uid = appsGlobalContext.userID
     const activeFlow = appsGlobalContext.activeFlow
+
+    const user = appsGlobalContext.userData;
     
     const [refreshing, setRefreshing] = useState(false);
     const [hasEvents,setHasEvents] = useState(null)

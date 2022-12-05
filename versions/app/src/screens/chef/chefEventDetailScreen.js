@@ -201,7 +201,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const getGuestList = async (guestListID) => {
 		const firestore = firebase.firestore();
 		const eventRef = firestore.collection("experiences").doc(guestListID);
-		let guestListSnapshot = await eventRef.collection("guest_list").get();
+		let guestListSnapshot = await eventRef.collection("reservations").get();
 		if (!guestListSnapshot.empty) {
 			let guests = [];
 			let guestsEmailList = [];
@@ -468,7 +468,7 @@ export default function EventDetailScreen({ route, navigation }) {
 														lineHeight: 20,
 													}}
 												>
-													{`${guest.guest_name} (total guests: ${guest.numOfGuests})`}
+													{`${guest.userSummary.name} (total guests: ${guest.numOfGuests || 1})`}
 												</Text>
 											</View>
 										);
