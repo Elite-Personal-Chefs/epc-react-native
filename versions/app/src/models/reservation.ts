@@ -1,6 +1,6 @@
 export default interface Reservation {
 	user?: string;
-	numOfPeople?: number;
+	numOfGuests?: number;
 	userSummary?: {
 		name?: string;
 		profileImg?: string;

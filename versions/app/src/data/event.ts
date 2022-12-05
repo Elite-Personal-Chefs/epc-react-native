@@ -63,7 +63,7 @@ const unpublishEvent = async (eventID): Promise<void> => {
 const reserveEvent = async (
 	eventId: string,
 	userID: string,
-	numOfPeople: number = 1
+	numOfGuests: number = 1
 ): Promise<void> => {
 	//get the user, event, and reservations
 	//TODO: Create global constants for collection names
@@ -85,7 +85,7 @@ const reserveEvent = async (
 		const reservationRef = eventReservationsCollection.doc();
 		const reservationData: Reservation = {
 			user: userRef.path,
-			numOfPeople,
+			numOfGuests,
 			userSummary: {
 				name: userData.name,
 				profileImg: userData.avatar.url || "",
