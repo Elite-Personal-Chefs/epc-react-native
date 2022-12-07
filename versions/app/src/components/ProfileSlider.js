@@ -1,7 +1,7 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -40,6 +40,8 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ProfileSlider({ handleFormUpdates, userData }) {
+	console.log(`ProfileSlider.js`);
+
 	const DATA = [
 		{ label: "African", value: "African" },
 		{ label: "Algerian", value: "Algerian" },
@@ -133,7 +135,13 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 		{ label: "Wild Game", value: "Wild Game" },
 	];
 
+	/***********************************************/
+	//! FORMIK STATE VARIABLES
+	/***********************************************/
 	const [cuisines, setCuisines] = useState([]);
+	const [bio, setBio] = useState("");
+	const [fact1, setFact1] = useState("");
+	const [fact2, setFact2] = useState("");
 
 	const renderDataItem = (item) => {
 		return (
@@ -141,20 +149,22 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 				<Text style={styles.selectedTextStyle}>{item.label}</Text>
 				<AntDesign style={styles.icon} color='black' name='check' size={20} />
 			</View>
-		)
+		);
 	};
 
 	/***********************************************/
-	// SAVE PROFILE IMAGE
+	//! SAVE PROFILE IMAGE
 	/***********************************************/
+	//! This is not updating properly
 	const [profileImg, setProfileImg] = useState(null);
+
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);
 		setProfileImg(url);
 	};
 
 	/***********************************************/
-	// SETUP SCROLLING CAROSUEL
+	//! SETUP SCROLLING CAROSUEL
 	/***********************************************/
 	let totalScreens = 3;
 	let screenWidth = Math.trunc(windowWidth * 0.9);
@@ -162,7 +172,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	const [activeImage, setActiveImage] = useState(1); //the first image is active
 
 	/*******************/
-	// Setup Pager Dots
+	//! SETUP PAGER DOTS
 	/*******************/
 	const determineCurrentImage = (offset) => {
 		console.log("*************************");
@@ -175,7 +185,8 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 		//by the width of the screen and adding 1 to figure out the NEW active one
 		return Math.round(offset / windowWidth) + 1;
 	};
-	//Create array of pager dots
+
+	//! CREATE ARRAY OF PAGER DOTS
 	let bullets = [];
 	for (let i = 1; i <= totalScreens; i++) {
 		//If the bullet number matches the active image then change its opacity
@@ -187,7 +198,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	}
 
 	/*******************/
-	// Setup Prev/Next Button
+	//! SETUP PREV AND NEXT BUTTONS
 	/*******************/
 
 	const scrollViewRef = useRef();
@@ -223,8 +234,20 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	};
 
 	/***********************************************/
-	// END SCROLLING CAROSUEL
+	//! END SCROLLING CAROSUEL
 	/***********************************************/
+
+	useEffect(() => {
+		//SET FORMIK STATE VARIABLES
+		if (userData.chefProfile) {
+			setCuisines(userData.chefProfile.cuisines);
+			setBio(userData.chefProfile.bio);
+			setFact1(userData.chefProfile.facts[0]);
+			setFact2(userData.chefProfile.facts[1]);
+			setProfileImg(userData.chefProfile.profile_img);
+			console.log(`We have a profile image: ${userData.chefProfile.profile_img}`);
+		}
+	}, []);
 
 	return (
 		<View style={styles.carousel}>
@@ -232,13 +255,22 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 				enableReinitialize={true}
 				initialValues={userData}
 				onSubmit={(values) => {
+					values.chefProfile = {
+						cuisines: cuisines,
+						bio: bio,
+						facts: [fact1, fact2],
+					};
 					//If an image was added make sure we add it
 					console.log("Is there profile image?", profileImg);
-					if (profileImg) values.profile_img = profileImg;
-					//Add an onboarding flag as complete IF they have added:
-					// photo, bio, cuisines
-					if (values.cuisines && values.profile_img && values.bio) values.isOnboarded = true;
-					//Upda the form
+					if (profileImg) values.chefProfile.profile_img = profileImg;
+
+					if (cuisines && profileImg && bio) {
+						console.log(`conditions are truthy`);
+						values.certifications["Complete Profile"].is_approved = true;
+						values.certifications["Complete Profile"].is_submitted = true;
+					}
+
+					//UPDATE CHEF OBJECT IN FIREBASE
 					handleFormUpdates(values);
 				}}
 				validationSchema={yup.object().shape({
@@ -289,8 +321,6 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 										searchPlaceholder='Search...'
 										onChange={(item) => {
 											setCuisines(item);
-											setFieldValue(cuisines, cuisines);
-											console.log("selected items", cuisines);
 										}}
 										renderLeftIcon={() => (
 											<MaterialCommunityIcons
@@ -326,9 +356,9 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 											textAlignVertical='top'
 											style={[forms.input, forms.textarea]}
 											placeholder='Start Typing...'
-											onChangeText={handleChange("bio")}
+											onChangeText={setBio}
 											onBlur={handleBlur("bio")}
-											value={values.bio}
+											value={bio}
 										/>
 										<Text style={globalStyles.h2}>How about some fun facts? (Optional)</Text>
 										<TextInput
@@ -336,18 +366,18 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 											textAlignVertical='top'
 											style={[forms.input, forms.textarea_short]}
 											placeholder='Fun Fact 1'
-											onChangeText={handleChange("facts1")}
+											onChangeText={setFact1}
 											onBlur={handleBlur("facts1")}
-											value={values.facts1}
+											value={fact1}
 										/>
 										<TextInput
 											multiline={true}
 											textAlignVertical='top'
 											style={[forms.input, forms.textarea_short]}
 											placeholder='Fun Fact 2'
-											onChangeText={handleChange("facts2")}
+											onChangeText={setFact2}
 											onBlur={handleBlur("facts2")}
-											value={values.facts2}
+											value={fact2}
 										/>
 									</ScrollView>
 								</View>
@@ -364,7 +394,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 											First impressions matter. Upload a professional and clear photo.
 										</Text>
 										<ImageUploader
-											currentImg={values.profile_img}
+											currentImg={profileImg}
 											getImageUrl={getImageUrl}
 											shape='round'
 										/>
