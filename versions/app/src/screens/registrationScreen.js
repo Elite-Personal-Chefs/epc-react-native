@@ -145,8 +145,8 @@ export default function RegistrationScreen({ route, navigation }) {
 			userData.chef_status = "Elite Chef";
 			userData.certifications = {
 				"Complete Profile": {
-					is_submitted: true,
-					is_approved: true,
+					is_submitted: false,
+					is_approved: false,
 				},
 				"Waiver of Liability": {
 					is_submitted: false,

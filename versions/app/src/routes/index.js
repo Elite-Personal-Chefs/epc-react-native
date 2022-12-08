@@ -298,25 +298,38 @@ const UnAuthorizedStack = () => {
 	return (
 		<UnAuthorizedStackNav.Navigator>
 			<UnAuthorizedStackNav.Screen
-				name="Welcome"
+				name='Welcome'
 				component={WelcomeScreen}
 				options={{ headerShown: false }}
 			/>
 			<UnAuthorizedStackNav.Screen
-				name="Login"
+				name='Login'
 				component={LoginScreen}
-				options={{ headerShown: false }}
+				options={({ route }) => ({
+					//headerShown: false,
+					headerTintColor: Theme.WHITE,
+					headerTransparent: true,
+					headerTruncatedBackTitle: true,
+					headerBackTitleVisible: false,
+					title: "",
+					headerTitle: null,
+					headerBackground: () => (
+						<LinearGradient
+							start={{ x: 1, y: 0 }}
+							end={{ x: 1, y: 1 }}
+							colors={["rgba(0,0,0,0.8)", "transparent"]}
+							style={{ flex: 1 }}
+						/>
+					),
+				})}
 			/>
 			<UnAuthorizedStackNav.Screen
-				name="Register"
+				name='Register'
 				component={RegistrationScreen}
 				options={{ headerShown: false }}
 			/>
-			<UnAuthorizedStackNav.Screen
-				name="Password"
-				component={PasswordScreen}
-			/>
-			<UnAuthorizedStackNav.Screen name="Terms" component={TermsScreen} />
+			<UnAuthorizedStackNav.Screen name='Password' component={PasswordScreen} />
+			<UnAuthorizedStackNav.Screen name='Terms' component={TermsScreen} />
 		</UnAuthorizedStackNav.Navigator>
 	);
 };
