@@ -163,9 +163,9 @@ export default function EventDetailScreen({ route, navigation }) {
 			//console.log("This is a chef menu");
 			menuRef = firestore
 				.collection("chefs")
-				.doc(eventDetails.chef_id)
+				.doc(eventDetails.chefId)
 				.collection("menus")
-				.doc(`${details.menu_template_id}`);
+				.doc(`${details.menuId}`);
 		}
 
 		menuDoc = await menuRef.get();

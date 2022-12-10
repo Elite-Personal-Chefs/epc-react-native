@@ -7,7 +7,7 @@ import Reservation from "../models/reservation";
 import User from "../models/user";
 
 // CRUD Events in firestore
-const createEvent = async (chef, data): Promise<void> => {
+const createEvent = async (data): Promise<void> => {
 	const eventCollection = db.collection("experiences");
 	await eventCollection.add(data);
 };
@@ -16,6 +16,15 @@ const getEvent = async (eventID): Promise<Event> => {
 	const eventCollection = db.collection("experiences");
 	const event = await eventCollection.doc(eventID).get();
 	return event.data() as Event;
+};
+
+const getEventsByChef = async (chefId): Promise<Event[]> => {
+	const eventCollection = db.collection("experiences").where("chefId", "==", chefId) as any;
+	const events = await eventCollection.get();
+
+	const results = events.docs.map((doc) => doc.data()) as Event[];
+	console.debug("Events retrieved from firestore", results);
+	return results;
 };
 
 const getEvents = async (
@@ -132,6 +141,7 @@ export {
 	createEvent,
 	getEvent,
 	getEvents,
+	getEventsByChef,
 	getPublishedEvents,
 	updateEvent,
 	publishEvent,

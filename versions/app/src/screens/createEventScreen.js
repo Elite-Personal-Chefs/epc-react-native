@@ -30,17 +30,24 @@ import {
 	LogBox,
 } from "react-native";
 import AppContext from "../components/AppContext";
-import { getEndpoint } from "../helpers/helpers";
 import { CustomButton } from "../components/Button";
 import { Formik, useFormikContext, Field } from "formik";
 import ImageUploader from "../components/ImageUploader";
 import * as yup from "yup";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { createEvent } from "../data/event";
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms, modal } from "../styles/styles";
+import {
+	globalStyles,
+	TouchableHighlight,
+	footer,
+	forms,
+	modal,
+} from "../styles/styles";
 import {
 	MaterialCommunityIcons,
 	MaterialIcons,
@@ -72,7 +79,9 @@ export default function CreateEventScreen({ route, navigation }) {
 	const [value, setValue] = useState(null);
 	const [menusList, setMenusList] = useState([]);
 	const [currentMenuID, setCurrentMenuID] = useState(
-		route.params && route.params.details ? route.params.details.menu_template_id : value
+		route.params && route.params.details
+			? route.params.details.menu_template_id
+			: value
 	);
 
 	const [details, setDetails] = useState(
@@ -82,7 +91,9 @@ export default function CreateEventScreen({ route, navigation }) {
 	//console.log("details:", details);
 
 	const eventRef = useRef();
-	const [eventLocation, setEventLocation] = useState(details.location ? details.location : "");
+	const [eventLocation, setEventLocation] = useState(
+		details.location ? details.location : ""
+	);
 	const [eventID, setEventID] = useState(details ? details.id : null);
 
 	const getCurrentLocation = async () => {
@@ -123,32 +134,26 @@ export default function CreateEventScreen({ route, navigation }) {
 		"Thank you again for booking with me! It was such a pleasure to cook for you and your guests. We rely on positive feedback from amazing clients like yourself. If you have a moment, please let us know how your event went!";
 	if (details) {
 		preserviceMsg = details.preservice ? details.preservice : preserviceMsg;
-		postserviceMsg = details.postservice ? details.postservice : postserviceMsg;
+		postserviceMsg = details.postservice
+			? details.postservice
+			: postserviceMsg;
 	}
 
 	/***********************************************/
 	//! DATE PICKER
 	/***********************************************/
-
-	console.log(`is details.start valid date ${details.start}}`);
-	console.log(moment(details.start).isValid());
-
 	// ===START DATE STATES===
-	if (details.start === undefined) console.log(`yup`);
-
-	function dateIsValid(date) {
-		return date instanceof Date && !isNaN(date);
-	}
-
-	console.log(`datils.start is valid date ${dateIsValid(details.start)}`);
-
 	const [start, setStart] = useState(details?.start || new Date());
+
 	const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-	const [showStartTimePicker, setShowStartTimePicker] = useState(false);
 	const displayStartDate = () => setShowStartDatePicker(true);
-	const handleStartDateCancel = () => setShowStartDatePicker(false);
+	const hideStartDate = () => setShowStartDatePicker(false);
+	const handleStartDateCancel = () => hideStartDate();
+
+	const [showStartTimePicker, setShowStartTimePicker] = useState(false);
 	const displayStartTime = () => setShowStartTimePicker(true);
-	const handleStartTimeCancel = () => setShowStartTimePicker(false);
+	const hideStartTime = () => setShowStartTimePicker(false);
+	const handleStartTimeCancel = () => hideStartTime();
 
 	const handleStartDateConfirm = (date) => {
 		const newDate = set(start, {
@@ -158,7 +163,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		});
 
 		setStart(newDate);
-		setShowStartDatePicker(false);
+		hideStartDate();
 	};
 
 	const handleStartTimeConfirm = (time) => {
@@ -169,16 +174,20 @@ export default function CreateEventScreen({ route, navigation }) {
 			minutes: time.getMinutes(),
 		});
 		setStart(newDate);
-		setShowStartTimePicker(false);
+		hideStartTime();
 	};
 
 	// ===END DATE STATES===
 	const [end, setEnd] = useState(details.end || new Date());
+
 	const [showEndDate, setShowEndDate] = useState(false);
-	const [showEndTime, setShowEndTime] = useState(false);
 	const displayEndDate = () => setShowEndDate(true);
+	const hideEndDate = () => setShowEndDate(false);
 	const handleEndDateCancel = () => setShowEndDate(false);
+
+	const [showEndTime, setShowEndTime] = useState(false);
 	const displayEndTime = () => setShowEndTime(true);
+	const hideEndTime = () => setShowEndTime(false);
 	const handleEndTimeCancel = () => setShowEndTime(false);
 
 	const handleEndDateConfirm = (date) => {
@@ -189,7 +198,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		});
 
 		setEnd(newDate);
-		setShowStartTimePicker(false);
+		hideEndDate();
 	};
 
 	const handleEndTimeConfirm = (time) => {
@@ -200,7 +209,7 @@ export default function CreateEventScreen({ route, navigation }) {
 			minutes: time.getMinutes(),
 		});
 		setEnd(newDate);
-		setShowEndTime(false);
+		hideEndTime();
 	};
 
 	/***********************************************/
@@ -236,9 +245,9 @@ export default function CreateEventScreen({ route, navigation }) {
 		const usersRef = firebase.firestore().collection("experiences");
 		//Add in details about chef
 		const chef = appsGlobalContext.userData;
-		values.chef_name = chef.name;
+		values.chefName = chef.name;
 		if (_.has(chef, "rating")) {
-			values.chef_rating = chef.rating;
+			values.chefRating = chef.rating;
 		}
 
 		//If details were passed then we are updating not creating
@@ -252,6 +261,7 @@ export default function CreateEventScreen({ route, navigation }) {
 			setEventID(snapshot.id);
 		}
 
+		createEvent(values);
 		//MENU ADDED NOW GO TO PHOTOS
 		setPhotoMode(true);
 	};
@@ -272,9 +282,11 @@ export default function CreateEventScreen({ route, navigation }) {
 			photos: firebase.firestore.FieldValue.arrayUnion(eventImg),
 		});
 		setPhotoMode(false);
-		Alert.alert("Congratulations", `Your event has been ${details ? "updated" : "created"}.`, [
-			{ text: "View Events", onPress: () => navigation.goBack() },
-		]);
+		Alert.alert(
+			"Congratulations",
+			`Your event has been ${details ? "updated" : "created"}.`,
+			[{ text: "View Events", onPress: () => navigation.goBack() }]
+		);
 	};
 
 	useEffect(() => {
@@ -285,19 +297,42 @@ export default function CreateEventScreen({ route, navigation }) {
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
-			<KeyboardAwareScrollView keyboardShouldPersistTaps='handled'>
+			<KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
 				{isPhotoMode ? (
-					<View style={[globalStyles.page, { alignItems: "center", justifyContent: "center" }]}>
+					<View
+						style={[
+							globalStyles.page,
+							{ alignItems: "center", justifyContent: "center" },
+						]}
+					>
 						<ScrollView>
-							<Text style={[globalStyles.h1, styles.headline_text]}>Add Photos</Text>
-							<Text style={[globalStyles.subtitle, styles.subtitle_text]}>
-								Showcase your event with at least one high quality pic.
+							<Text
+								style={[globalStyles.h1, styles.headline_text]}
+							>
+								Add Photos
+							</Text>
+							<Text
+								style={[
+									globalStyles.subtitle,
+									styles.subtitle_text,
+								]}
+							>
+								Showcase your event with at least one high
+								quality pic.
 							</Text>
 							<View style={{ paddingVertical: 20 }}>
-								<ImageUploader currentImg={eventImg} getImageUrl={getImageUrl} shape='rectangle' />
+								<ImageUploader
+									currentImg={eventImg}
+									getImageUrl={getImageUrl}
+									shape="rectangle"
+								/>
 							</View>
 							{eventImg && (
-								<CustomButton size='big' onPress={() => addPhotoToEvent()} text='Submit Photo' />
+								<CustomButton
+									size="big"
+									onPress={() => addPhotoToEvent()}
+									text="Submit Photo"
+								/>
 							)}
 						</ScrollView>
 					</View>
@@ -310,14 +345,13 @@ export default function CreateEventScreen({ route, navigation }) {
 								description: details ? details.description : "",
 								guests: details ? details.guests : "",
 								cpp: details ? details.cpp : "",
-								menu_template_id: details ? details.menu_template_id : "",
+								menuId: details ? details.menuId : "",
 							}}
 							onSubmit={(values) => {
 								console.log("values", values);
 
 								setIsDisabled(false);
-								values.chef_id = uid;
-
+								values.chefId = uid;
 								values.start = start;
 								values.end = end;
 
@@ -325,7 +359,10 @@ export default function CreateEventScreen({ route, navigation }) {
 								// console.log(`😈 values.end`, values.end);
 
 								values.location = eventLocation;
-								//addExperience(values);
+
+								console.log("Creating this event", values);
+								addExperience(values);
+								//	(values);
 							}}
 							validationSchema={yup.object().shape({
 								//name: yup.string().required('Please, provide your name!'),
@@ -345,30 +382,36 @@ export default function CreateEventScreen({ route, navigation }) {
 									<View
 										style={[
 											forms.create_event_input_container,
-											focusName == "title" ? forms.focused_light : forms.notFocused,
+											focusName == "title"
+												? forms.focused_light
+												: forms.notFocused,
 										]}
 									>
 										<MaterialIcons
-											name='event'
+											name="event"
 											size={23}
 											style={[
 												forms.input_icon,
-												focusName == "title" ? forms.focused_light : forms.notFocused,
+												focusName == "title"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										/>
 										<TextInput
-											name='title'
+											name="title"
 											value={values.title}
 											style={forms.custom_input}
-											placeholder='Event Title'
+											placeholder="Event Title"
 											onChangeText={handleChange("title")}
 											onBlur={handleBlur("title")}
-											onFocus={() => setFocusName("title")}
+											onFocus={() =>
+												setFocusName("title")
+											}
 											setFocus={focusName}
 											placeholderTextColor={Theme.FAINT}
-											underlineColorAndroid='transparent'
-											autoCapitalize='none'
-											keyboardType='default'
+											underlineColorAndroid="transparent"
+											autoCapitalize="none"
+											keyboardType="default"
 										/>
 									</View>
 
@@ -376,7 +419,9 @@ export default function CreateEventScreen({ route, navigation }) {
 									<View
 										style={[
 											forms.create_event_input_container,
-											focusName == "description" ? forms.focused_light : forms.notFocused,
+											focusName == "description"
+												? forms.focused_light
+												: forms.notFocused,
 											{
 												height: 85,
 												alignItems: "flex-start",
@@ -385,15 +430,17 @@ export default function CreateEventScreen({ route, navigation }) {
 										]}
 									>
 										<Entypo
-											name='text'
+											name="text"
 											size={23}
 											style={[
 												forms.input_icon,
-												focusName == "description" ? forms.focused_light : forms.notFocused,
+												focusName == "description"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										/>
 										<TextInput
-											name='description'
+											name="description"
 											value={values.description}
 											style={[
 												forms.custom_input,
@@ -402,22 +449,29 @@ export default function CreateEventScreen({ route, navigation }) {
 													paddingTop: 5,
 												},
 											]}
-											placeholder='Event Description'
-											onChangeText={handleChange("description")}
+											placeholder="Event Description"
+											onChangeText={handleChange(
+												"description"
+											)}
 											onBlur={handleBlur("description")}
-											onFocus={() => setFocusName("description")}
+											onFocus={() =>
+												setFocusName("description")
+											}
 											setFocus={focusName}
 											multiline={true}
 											numberOfLines={3}
 											placeholderTextColor={Theme.FAINT}
-											underlineColorAndroid='transparent'
-											autoCapitalize='none'
-											keyboardType='default'
+											underlineColorAndroid="transparent"
+											autoCapitalize="none"
+											keyboardType="default"
 										/>
 									</View>
 
 									{/* //!Event Start Date */}
-									<Pressable style={[forms.input_container_center]} onPress={displayStartDate}>
+									<Pressable
+										style={[forms.input_container_center]}
+										onPress={displayStartDate}
+									>
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -428,86 +482,121 @@ export default function CreateEventScreen({ route, navigation }) {
 											]}
 										>
 											<Fontisto
-												name='date'
+												name="date"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "start_date" ? forms.focused_light : forms.notFocused,
+													focusName == "start_date"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<Text
 												style={[
 													forms.custom_input,
 													{
-														color: start ? "black" : Theme.FAINT,
+														color: start
+															? "black"
+															: Theme.FAINT,
 														flex: 0,
 													},
 												]}
 											>
-												{start ? format(start, "PPPP") : "Event Start Date"}
+												{start
+													? format(start, "PPPP")
+													: "Event Start Date"}
 											</Text>
 											<DateTimePickerModal
 												isVisible={showStartDatePicker}
-												mode='date'
-												value={start}
-												onConfirm={handleStartDateConfirm}
+												mode="date"
+												minimumDate={new Date()}
+												date={start}
+												onConfirm={
+													handleStartDateConfirm
+												}
 												onCancel={handleStartDateCancel}
 											/>
 										</View>
 									</Pressable>
 
 									{/* //!Event Start Time */}
-									<TouchableNativeFeedback onPress={displayStartTime}>
+									<TouchableNativeFeedback
+										onPress={displayStartTime}
+									>
 										<View
 											style={[
 												forms.create_event_input_container,
 												forms.input_container_border,
 												forms.input_container_radius_round,
-												focusName == "start_time" ? forms.focused_light : forms.notFocused,
+												focusName == "start_time"
+													? forms.focused_light
+													: forms.notFocused,
 												{
 													width: windowWidth * 0.95,
 												},
 											]}
 										>
 											<MaterialIcons
-												name='access-time'
+												name="access-time"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "start_time" ? forms.focused_light : forms.notFocused,
+													focusName == "start_time"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<View
 												style={[
 													forms.custom_input,
 													{
-														alignItems: "flex_start",
+														alignItems:
+															"flex_start",
 													},
 												]}
 											>
 												<Text
 													style={[
 														{
-															color: start ? "black" : Theme.FAINT,
+															color: start
+																? "black"
+																: Theme.FAINT,
 															flex: 0,
 														},
 													]}
 												>
-													{start ? format(start, "p") : "Start Time"}
+													{start
+														? format(start, "p")
+														: "Start Time"}
 												</Text>
+												{console.log(
+													"Start time",
+													start
+												)}
 												<DateTimePickerModal
-													isVisible={showStartTimePicker}
-													mode='time'
-													value={start}
-													onConfirm={(date) => handleStartTimeConfirm(date, "end")}
-													onCancel={handleStartTimeCancel}
+													isVisible={
+														showStartTimePicker
+													}
+													mode="time"
+													minimumDate={new Date()}
+													minuteInterval={15}
+													date={start}
+													onConfirm={
+														handleStartTimeConfirm
+													}
+													onCancel={
+														handleStartTimeCancel
+													}
 												/>
 											</View>
 										</View>
 									</TouchableNativeFeedback>
 
 									{/* //* END DATE */}
-									<Pressable style={forms.input_container_center} onPress={displayEndDate}>
+									<Pressable
+										style={forms.input_container_center}
+										onPress={displayEndDate}
+									>
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -518,27 +607,35 @@ export default function CreateEventScreen({ route, navigation }) {
 											]}
 										>
 											<Fontisto
-												name='date'
+												name="date"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "end_date" ? forms.focused_light : forms.notFocused,
+													focusName == "end_date"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<Text
 												style={[
 													forms.custom_input,
 													{
-														color: end ? "black" : Theme.FAINT,
+														color: end
+															? "black"
+															: Theme.FAINT,
 														flex: 0,
 													},
 												]}
 											>
-												{end ? format(parseISO(end), "PPPP") : "Event End Date"}
+												{end
+													? format(end, "PPPP")
+													: "Event End Date"}
 											</Text>
 											<DateTimePickerModal
 												isVisible={showEndDate}
-												mode='date'
+												mode="date"
+												minimumDate={new Date()}
+												date={end}
 												onConfirm={handleEndDateConfirm}
 												onCancel={handleEndDateCancel}
 											/>
@@ -546,49 +643,67 @@ export default function CreateEventScreen({ route, navigation }) {
 									</Pressable>
 
 									{/* //* END TIME */}
-									<TouchableNativeFeedback onPress={displayEndTime}>
+									<TouchableNativeFeedback
+										onPress={displayEndTime}
+									>
 										<View
 											style={[
 												forms.create_event_input_container,
 												forms.input_container_border,
 												forms.input_container_radius_round,
-												focusName == "end_time" ? forms.focused_light : forms.notFocused,
+												focusName == "end_time"
+													? forms.focused_light
+													: forms.notFocused,
 												{
 													width: windowWidth * 0.95,
 												},
 											]}
 										>
 											<MaterialIcons
-												name='access-time'
+												name="access-time"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "end_time" ? forms.focused_light : forms.notFocused,
+													focusName == "end_time"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<View
 												style={[
 													forms.custom_input,
 													{
-														alignItems: "flex_start",
+														alignItems:
+															"flex_start",
 													},
 												]}
 											>
 												<Text
 													style={[
 														{
-															color: endTime ? "black" : Theme.FAINT,
+															color: end
+																? "black"
+																: Theme.FAINT,
 															flex: 0,
 														},
 													]}
 												>
-													{endTime ? format(parseISO(endTime), "p") : "End Time"}
+													{end
+														? format(end, "p")
+														: "End Time"}
 												</Text>
 												<DateTimePickerModal
 													isVisible={showEndTime}
-													mode='time'
-													onConfirm={handleEndTimeConfirm}
-													onCancel={handleEndTimeCancel}
+													mode="time"
+													minimumDate={new Date()}
+													minuteInterval={15}
+													date={end}
+													onConfirm={
+														handleEndTimeConfirm
+													}
+													onCancel={
+														handleEndTimeCancel
+													}
 												/>
 											</View>
 										</View>
@@ -603,15 +718,19 @@ export default function CreateEventScreen({ route, navigation }) {
 												alignItems: "center",
 												height: "auto",
 											},
-											focusName == "location" ? forms.focused_light : forms.notFocused,
+											focusName == "location"
+												? forms.focused_light
+												: forms.notFocused,
 										]}
 									>
 										<MaterialIcons
-											name='location-on'
+											name="location-on"
 											size={23}
 											style={[
 												forms.input_icon,
-												focusName == "location" ? forms.focused_light : forms.notFocused,
+												focusName == "location"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										/>
 										{/* VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead. */}
@@ -620,9 +739,11 @@ export default function CreateEventScreen({ route, navigation }) {
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
 												//console.log(data, details);
-												setEventLocation(data.description);
+												setEventLocation(
+													data.description
+												);
 											}}
-											placeholder='Locations'
+											placeholder="Locations"
 											ref={eventRef}
 											textInputProps={{
 												placeholderTextColor: "#b9b9b9",
@@ -638,7 +759,8 @@ export default function CreateEventScreen({ route, navigation }) {
 													width: "99%",
 													borderWidth: 0,
 													borderRadius: 10,
-													borderColor: Theme.BORDER_COLOR,
+													borderColor:
+														Theme.BORDER_COLOR,
 													paddingTop: 3,
 													zIndex: 10000,
 												},
@@ -657,7 +779,8 @@ export default function CreateEventScreen({ route, navigation }) {
 											},
 										]}
 									>
-										Exact location will only be revealed after completed purchase.
+										Exact location will only be revealed
+										after completed purchase.
 									</Text>
 
 									<DropDownPicker
@@ -670,9 +793,13 @@ export default function CreateEventScreen({ route, navigation }) {
 										closeAfterSelecting={true}
 										itemSeparator={true}
 										onChangeValue={(value) => {
-											setFieldValue("menu_template_id", value, false);
+											setFieldValue(
+												"menuId",
+												value,
+												false
+											);
 										}}
-										placeholder='Select a Menu'
+										placeholder="Select a Menu"
 										placeholderStyle={{
 											color: Theme.FAINT,
 											fontSize: 18,
@@ -702,30 +829,40 @@ export default function CreateEventScreen({ route, navigation }) {
 											style={[
 												forms.create_event_input_container,
 												forms.small_field,
-												focusName == "guests" ? forms.focused_light : forms.notFocused,
+												focusName == "guests"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										>
 											<MaterialIcons
-												name='people'
+												name="people"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "guests" ? forms.focused_light : forms.notFocused,
+													focusName == "guests"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<TextInput
-												name='guests'
+												name="guests"
 												value={values.guests}
 												style={forms.custom_input}
-												placeholder='# of Guests'
-												onChangeText={handleChange("guests")}
+												placeholder="# of Guests"
+												onChangeText={handleChange(
+													"guests"
+												)}
 												onBlur={handleBlur("guests")}
-												onFocus={() => setFocusName("guests")}
+												onFocus={() =>
+													setFocusName("guests")
+												}
 												setFocus={focusName}
-												placeholderTextColor={Theme.FAINT}
-												underlineColorAndroid='transparent'
-												autoCapitalize='none'
-												keyboardType='default'
+												placeholderTextColor={
+													Theme.FAINT
+												}
+												underlineColorAndroid="transparent"
+												autoCapitalize="none"
+												keyboardType="default"
 											/>
 										</View>
 										<View
@@ -736,30 +873,40 @@ export default function CreateEventScreen({ route, navigation }) {
 													marginRight: 0,
 													marginLeft: 5,
 												},
-												focusName == "cpp" ? forms.focused_light : forms.notFocused,
+												focusName == "cpp"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										>
 											<MaterialIcons
-												name='attach-money'
+												name="attach-money"
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "cpp" ? forms.focused_light : forms.notFocused,
+													focusName == "cpp"
+														? forms.focused_light
+														: forms.notFocused,
 												]}
 											/>
 											<TextInput
-												name='cpp'
+												name="cpp"
 												value={values.cpp}
 												style={forms.custom_input}
-												placeholder='Cost Per Person'
-												onChangeText={handleChange("cpp")}
+												placeholder="Cost Per Person"
+												onChangeText={handleChange(
+													"cpp"
+												)}
 												onBlur={handleBlur("cpp")}
-												onFocus={() => setFocusName("cpp")}
+												onFocus={() =>
+													setFocusName("cpp")
+												}
 												setFocus={focusName}
-												placeholderTextColor={Theme.FAINT}
-												underlineColorAndroid='transparent'
-												autoCapitalize='none'
-												keyboardType='default'
+												placeholderTextColor={
+													Theme.FAINT
+												}
+												underlineColorAndroid="transparent"
+												autoCapitalize="none"
+												keyboardType="default"
 											/>
 										</View>
 									</View>
@@ -779,7 +926,9 @@ export default function CreateEventScreen({ route, navigation }) {
 									<View
 										style={[
 											forms.create_event_input_container,
-											focusName == "preservice" ? forms.focused_light : forms.notFocused,
+											focusName == "preservice"
+												? forms.focused_light
+												: forms.notFocused,
 											{
 												height: 130,
 												alignItems: "flex-start",
@@ -788,15 +937,17 @@ export default function CreateEventScreen({ route, navigation }) {
 										]}
 									>
 										<MaterialCommunityIcons
-											name='message-text-outline'
+											name="message-text-outline"
 											size={23}
 											style={[
 												forms.input_icon,
-												focusName == "preservice" ? forms.focused_light : forms.notFocused,
+												focusName == "preservice"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										/>
 										<TextInput
-											name='preservice'
+											name="preservice"
 											defaultValue={preserviceMsg}
 											value={values.preservice}
 											style={[
@@ -806,17 +957,21 @@ export default function CreateEventScreen({ route, navigation }) {
 													paddingTop: 5,
 												},
 											]}
-											placeholder='Pre-Service Message'
-											onChangeText={handleChange("preservice")}
+											placeholder="Pre-Service Message"
+											onChangeText={handleChange(
+												"preservice"
+											)}
 											onBlur={handleBlur("preservice")}
-											onFocus={() => setFocusName("preservice")}
+											onFocus={() =>
+												setFocusName("preservice")
+											}
 											setFocus={focusName}
 											numberOfLines={4}
 											multiline={true}
 											placeholderTextColor={Theme.FAINT}
-											underlineColorAndroid='transparent'
-											autoCapitalize='none'
-											keyboardType='default'
+											underlineColorAndroid="transparent"
+											autoCapitalize="none"
+											keyboardType="default"
 										/>
 									</View>
 									<Text
@@ -831,7 +986,8 @@ export default function CreateEventScreen({ route, navigation }) {
 											},
 										]}
 									>
-										Preservice message will be sent to your clients via text the day before your
+										Preservice message will be sent to your
+										clients via text the day before your
 										appointment.
 									</Text>
 
@@ -850,7 +1006,9 @@ export default function CreateEventScreen({ route, navigation }) {
 									<View
 										style={[
 											forms.create_event_input_container,
-											focusName == "postservice" ? forms.focused_light : forms.notFocused,
+											focusName == "postservice"
+												? forms.focused_light
+												: forms.notFocused,
 											{
 												height: 130,
 												alignItems: "flex-start",
@@ -859,15 +1017,17 @@ export default function CreateEventScreen({ route, navigation }) {
 										]}
 									>
 										<MaterialCommunityIcons
-											name='message-text-outline'
+											name="message-text-outline"
 											size={23}
 											style={[
 												forms.input_icon,
-												focusName == "postservice" ? forms.focused_light : forms.notFocused,
+												focusName == "postservice"
+													? forms.focused_light
+													: forms.notFocused,
 											]}
 										/>
 										<TextInput
-											name='postservice'
+											name="postservice"
 											defaultValue={postserviceMsg}
 											value={values.postservice}
 											style={[
@@ -877,17 +1037,21 @@ export default function CreateEventScreen({ route, navigation }) {
 													paddingTop: 5,
 												},
 											]}
-											placeholder='Pre-Service Message'
-											onChangeText={handleChange("postservice")}
+											placeholder="Pre-Service Message"
+											onChangeText={handleChange(
+												"postservice"
+											)}
 											onBlur={handleBlur("postservice")}
-											onFocus={() => setFocusName("postservice")}
+											onFocus={() =>
+												setFocusName("postservice")
+											}
 											setFocus={focusName}
 											numberOfLines={4}
 											multiline={true}
 											placeholderTextColor={Theme.FAINT}
-											underlineColorAndroid='transparent'
-											autoCapitalize='none'
-											keyboardType='default'
+											underlineColorAndroid="transparent"
+											autoCapitalize="none"
+											keyboardType="default"
 										/>
 									</View>
 									<Text
@@ -902,14 +1066,15 @@ export default function CreateEventScreen({ route, navigation }) {
 											},
 										]}
 									>
-										Post-service message will be sent to your clients via text the day after your
+										Post-service message will be sent to
+										your clients via text the day after your
 										appointment.
 									</Text>
 
 									<CustomButton
-										text='Save and Continue'
+										text="Save and Continue"
 										onPress={handleSubmit}
-										size='big'
+										size="big"
 										disabled={isDisabled}
 									/>
 								</>
