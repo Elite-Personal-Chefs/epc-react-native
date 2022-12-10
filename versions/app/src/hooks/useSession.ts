@@ -104,7 +104,7 @@ const useSession = () => {
 		configKeys: configKeys,
 		activeFlow: activeFlow,
 		userLoggedIn,
-		apiMode: "api_local", //possible options: local, live, dev
+		apiMode: "api_live", //possible options: local, live, dev
 		accessToken,
 		setActiveFlow,
 		setUserLoggedIn,

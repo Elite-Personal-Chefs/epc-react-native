@@ -13,6 +13,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
+import { set, formatISO, format, parseISO } from "date-fns";
 
 // COMPONENTS
 import {
@@ -78,7 +79,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		route.params && route.params.details ? route.params.details : {}
 	);
 
-	console.log("details:", details);
+	//console.log("details:", details);
 
 	const eventRef = useRef();
 	const [eventLocation, setEventLocation] = useState(details.location ? details.location : "");
@@ -111,7 +112,7 @@ export default function CreateEventScreen({ route, navigation }) {
             */
 		}
 		let location = await Location.getLastKnownPositionAsync();
-		console.log(location);
+		//console.log(location);
 	};
 
 	getCurrentLocation();
@@ -125,97 +126,88 @@ export default function CreateEventScreen({ route, navigation }) {
 		postserviceMsg = details.postservice ? details.postservice : postserviceMsg;
 	}
 
-	//PICKER FOR: DATE
-	const [pickerValueDate, setPickerValueDate] = useState(details ? details.event_date : false);
-
+	/***********************************************/
 	//! DATE PICKER
-	const [pickerEventStartDate, setPickerEventStartDate] = useState(
-		details.event_start_date ? details.event_start_date : "Start Date"
-	);
+	/***********************************************/
 
-	const [pickerEventEndDate, setPickerEventEndDate] = useState(
-		details ? details.event_end_date : false
-	);
+	console.log(`is details.start valid date ${details.start}}`);
+	console.log(moment(details.start).isValid());
 
-	const [pickerDateVisible, setPickerDateVisible] = useState(false);
-	const [pickerStartDateVisible, setPickerStartDateVisible] = useState(false);
-	const [pickerEndDateVisible, setPickerEndDateVisible] = useState(false);
+	// ===START DATE STATES===
+	if (details.start === undefined) console.log(`yup`);
 
-	const showPickerStartDate = () => {
-		setPickerStartDateVisible(true);
+	function dateIsValid(date) {
+		return date instanceof Date && !isNaN(date);
+	}
+
+	console.log(`datils.start is valid date ${dateIsValid(details.start)}`);
+
+	const [start, setStart] = useState(details?.start || new Date());
+	const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+	const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+	const displayStartDate = () => setShowStartDatePicker(true);
+	const handleStartDateCancel = () => setShowStartDatePicker(false);
+	const displayStartTime = () => setShowStartTimePicker(true);
+	const handleStartTimeCancel = () => setShowStartTimePicker(false);
+
+	const handleStartDateConfirm = (date) => {
+		const newDate = set(start, {
+			date: date.getDate(),
+			month: date.getMonth(),
+			year: date.getFullYear(),
+		});
+
+		setStart(newDate);
+		setShowStartDatePicker(false);
 	};
 
-	const showPickerEndDate = () => {
-		setPickerEndDateVisible(true);
+	const handleStartTimeConfirm = (time) => {
+		console.log(`in handleStartTimeConfirm: ${time}`);
+
+		const newDate = set(end, {
+			hours: time.getHours(),
+			minutes: time.getMinutes(),
+		});
+		setStart(newDate);
+		setShowStartTimePicker(false);
 	};
 
-	const showPickerDate = () => {
-		setPickerDateVisible(true);
+	// ===END DATE STATES===
+	const [end, setEnd] = useState(details.end || new Date());
+	const [showEndDate, setShowEndDate] = useState(false);
+	const [showEndTime, setShowEndTime] = useState(false);
+	const displayEndDate = () => setShowEndDate(true);
+	const handleEndDateCancel = () => setShowEndDate(false);
+	const displayEndTime = () => setShowEndTime(true);
+	const handleEndTimeCancel = () => setShowEndTime(false);
+
+	const handleEndDateConfirm = (date) => {
+		const newDate = set(end, {
+			date: date.getDate(),
+			month: date.getMonth(),
+			year: date.getFullYear(),
+		});
+
+		setEnd(newDate);
+		setShowStartTimePicker(false);
 	};
 
-	const hidePickerDate = () => {
-		setPickerDateVisible(false);
-		setPickerStartDateVisible(false);
-		setPickerEndDateVisible(false);
+	const handleEndTimeConfirm = (time) => {
+		console.log(`in handleEndTimeConfirm: ${time}`);
+
+		const newDate = set(end, {
+			hours: time.getHours(),
+			minutes: time.getMinutes(),
+		});
+		setEnd(newDate);
+		setShowEndTime(false);
 	};
 
-	const confirmPickerDate = (date) => {
-		console.log("A date has been picked: ", date);
-		const readableDate = moment(date).format("dddd, MMMM Do, YYYY");
-		console.log(readableDate);
-		setPickerValueDate(readableDate);
-		hidePickerDate();
-	};
-
-	const pickerStartDateHandler = (date) => {
-		const readableDate = moment(date).format("dddd, MMMM Do, YYYY");
-		setPickerEventStartDate(readableDate);
-		setPickerStartDateVisible(false);
-	};
-
-	const pickerEndDateHandler = (date) => {
-		const readableDate = moment(date).format("dddd, MMMM Do, YYYY");
-		setPickerEventEndDate(readableDate);
-		setPickerEndDateVisible(false);
-	};
-
-	//PICKER FOR: START TIME
-	const [pickerValueStart, setPickerValueStart] = useState(details ? details.start_time : false);
-	const [pickerStartVisible, setPickerStartVisible] = useState(false);
-
-	const showPickerStart = () => {
-		setPickerStartVisible(true);
-	};
-	const hidePickerStart = () => {
-		setPickerStartVisible(false);
-	};
-	const confirmPickerStart = (date) => {
-		console.log("A date has been picked: ", date);
-		const readableDate = moment(date).format("h:mmA");
-		console.log(readableDate);
-		setPickerValueStart(readableDate);
-		hidePickerStart();
-	};
-
-	//PICKER FOR: END TIME
-	const [pickerValueEnd, setPickerValueEnd] = useState(details ? details.end_time : false);
-	const [pickerEndVisible, setPickerEndVisible] = useState(false);
-	const showPickerEnd = () => {
-		setPickerEndVisible(true);
-	};
-	const hidePickerEnd = () => {
-		setPickerEndVisible(false);
-	};
-	const confirmPickerEnd = (date) => {
-		console.log("A date has been picked: ", date);
-		const readableDate = moment(date).format("h:mmA");
-		console.log(readableDate);
-		setPickerValueEnd(readableDate);
-		hidePickerEnd();
-	};
-
+	/***********************************************/
+	//
+	/***********************************************/
 	const getMenus = async (uid) => {
-		console.log(appsGlobalContext);
+		//console.log(appsGlobalContext);
 		const menusRef = await firebase
 			.firestore()
 			.collection("chefs")
@@ -229,15 +221,18 @@ export default function CreateEventScreen({ route, navigation }) {
 				menus.push({ label: menu.title, value: doc.id });
 			});
 			setMenusList(menus);
-			console.log("menusList", menus);
+			//console.log("menusList", menus);
 		} else {
 			console.log("No menus found");
 		}
 	};
 
+	/***********************************************/
+	//
+	/***********************************************/
 	const addExperience = async (values) => {
-		//console.log("addExperience", values);
-		//Add the new stripe to user data and create the user in the DB
+		console.log(`values`, values);
+
 		const usersRef = firebase.firestore().collection("experiences");
 		//Add in details about chef
 		const chef = appsGlobalContext.userData;
@@ -245,6 +240,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		if (_.has(chef, "rating")) {
 			values.chef_rating = chef.rating;
 		}
+
 		//If details were passed then we are updating not creating
 		//console.log(`details`, details);
 		if (Object.keys(details).length > 0) {
@@ -255,6 +251,7 @@ export default function CreateEventScreen({ route, navigation }) {
 			const snapshot = await usersRef.add(values);
 			setEventID(snapshot.id);
 		}
+
 		//MENU ADDED NOW GO TO PHOTOS
 		setPhotoMode(true);
 	};
@@ -316,14 +313,19 @@ export default function CreateEventScreen({ route, navigation }) {
 								menu_template_id: details ? details.menu_template_id : "",
 							}}
 							onSubmit={(values) => {
+								console.log("values", values);
+
 								setIsDisabled(false);
 								values.chef_id = uid;
-								values.start_time = pickerValueStart;
-								values.end_time = pickerValueEnd;
-								values.event_start_date = pickerEventStartDate;
-								values.event_end_date = pickerEventEndDate;
+
+								values.start = start;
+								values.end = end;
+
+								// console.log(`😈 values.start`, values.start);
+								// console.log(`😈 values.end`, values.end);
+
 								values.location = eventLocation;
-								addExperience(values);
+								//addExperience(values);
 							}}
 							validationSchema={yup.object().shape({
 								//name: yup.string().required('Please, provide your name!'),
@@ -415,7 +417,7 @@ export default function CreateEventScreen({ route, navigation }) {
 									</View>
 
 									{/* //!Event Start Date */}
-									<Pressable style={[forms.input_container_center]} onPress={showPickerStartDate}>
+									<Pressable style={[forms.input_container_center]} onPress={displayStartDate}>
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -430,31 +432,32 @@ export default function CreateEventScreen({ route, navigation }) {
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "event_start_date" ? forms.focused_light : forms.notFocused,
+													focusName == "start_date" ? forms.focused_light : forms.notFocused,
 												]}
 											/>
 											<Text
 												style={[
 													forms.custom_input,
 													{
-														color: pickerValueDate ? "black" : Theme.FAINT,
+														color: start ? "black" : Theme.FAINT,
 														flex: 0,
 													},
 												]}
 											>
-												{pickerEventStartDate ? pickerEventStartDate : "Event Start Date"}
+												{start ? format(start, "PPPP") : "Event Start Date"}
 											</Text>
 											<DateTimePickerModal
-												isVisible={pickerStartDateVisible}
+												isVisible={showStartDatePicker}
 												mode='date'
-												onConfirm={pickerStartDateHandler}
-												onCancel={hidePickerDate}
+												value={start}
+												onConfirm={handleStartDateConfirm}
+												onCancel={handleStartDateCancel}
 											/>
 										</View>
 									</Pressable>
 
 									{/* //!Event Start Time */}
-									<TouchableNativeFeedback onPress={showPickerStart}>
+									<TouchableNativeFeedback onPress={displayStartTime}>
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -485,25 +488,26 @@ export default function CreateEventScreen({ route, navigation }) {
 												<Text
 													style={[
 														{
-															color: Theme.FAINT,
+															color: start ? "black" : Theme.FAINT,
 															flex: 0,
 														},
 													]}
 												>
-													{pickerValueStart ? pickerValueStart : "Start Time"}
+													{start ? format(start, "p") : "Start Time"}
 												</Text>
 												<DateTimePickerModal
-													isVisible={pickerStartVisible}
+													isVisible={showStartTimePicker}
 													mode='time'
-													onConfirm={confirmPickerStart}
-													onCancel={hidePickerStart}
+													value={start}
+													onConfirm={(date) => handleStartTimeConfirm(date, "end")}
+													onCancel={handleStartTimeCancel}
 												/>
 											</View>
 										</View>
 									</TouchableNativeFeedback>
 
-									{/* //!Event End Date */}
-									<Pressable style={forms.input_container_center} onPress={showPickerEndDate}>
+									{/* //* END DATE */}
+									<Pressable style={forms.input_container_center} onPress={displayEndDate}>
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -518,37 +522,37 @@ export default function CreateEventScreen({ route, navigation }) {
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "event_end_date" ? forms.focused_light : forms.notFocused,
+													focusName == "end_date" ? forms.focused_light : forms.notFocused,
 												]}
 											/>
 											<Text
 												style={[
 													forms.custom_input,
 													{
-														color: pickerValueDate ? "black" : Theme.FAINT,
+														color: end ? "black" : Theme.FAINT,
 														flex: 0,
 													},
 												]}
 											>
-												{pickerEventEndDate ? pickerEventEndDate : "End Date"}
+												{end ? format(parseISO(end), "PPPP") : "Event End Date"}
 											</Text>
 											<DateTimePickerModal
-												isVisible={pickerEndDateVisible}
+												isVisible={showEndDate}
 												mode='date'
-												onConfirm={pickerEndDateHandler}
-												onCancel={hidePickerDate}
+												onConfirm={handleEndDateConfirm}
+												onCancel={handleEndDateCancel}
 											/>
 										</View>
 									</Pressable>
 
-									{/* //!Event End Time */}
-									<TouchableNativeFeedback onPress={showPickerEnd}>
+									{/* //* END TIME */}
+									<TouchableNativeFeedback onPress={displayEndTime}>
 										<View
 											style={[
 												forms.create_event_input_container,
 												forms.input_container_border,
 												forms.input_container_radius_round,
-												focusName == "start_time" ? forms.focused_light : forms.notFocused,
+												focusName == "end_time" ? forms.focused_light : forms.notFocused,
 												{
 													width: windowWidth * 0.95,
 												},
@@ -559,186 +563,36 @@ export default function CreateEventScreen({ route, navigation }) {
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "start_time" ? forms.focused_light : forms.notFocused,
-												]}
-											/>
-											<View
-												style={[
-													forms.custom_input,
-													{
-														alignItems: "flex_start",
-													},
-												]}
-											>
-												<Text
-													style={[
-														{
-															color: Theme.FAINT,
-															flex: 0,
-														},
-													]}
-												>
-													{pickerValueEnd ? pickerValueEnd : "End Time"}
-												</Text>
-												<DateTimePickerModal
-													isVisible={pickerEndVisible}
-													mode='time'
-													onConfirm={confirmPickerEnd}
-													onCancel={hidePickerEnd}
-												/>
-											</View>
-										</View>
-									</TouchableNativeFeedback>
-
-									{/* //!Event Date */}
-									{/* <Pressable
-										onPress={showPickerDate}
-										style={{
-											width: windowWidth,
-											flexDirection: "row",
-											justifyContent: "center",
-											alignItems: "center",
-											horizontalPadding: 8,
-										}}
-									>
-										<View
-											style={{
-												width: "95%",
-												flexDirection: "row",
-												justifyContent: "center",
-												alignItems: "center",
-												paddingLeft: 8,
-												horizontalMargin: "20%",
-												height: 58,
-												borderRadius: 8,
-												borderWidth: 1,
-												backgroundColor: Theme.SURFACE_COLOR,
-												borderColor: Theme.BORDER_COLOR,
-											}}
-										>
-											<Fontisto
-												name='date'
-												size={23}
-												style={[
-													forms.input_icon,
-													focusName == "event_date" ? forms.focused_light : forms.notFocused,
-												]}
-											/>
-											<Text
-												style={[
-													forms.custom_input,
-													{
-														color: pickerValueDate ? "black" : Theme.FAINT,
-														flex: 0,
-													},
-												]}
-											>
-												{pickerValueDate ? pickerValueDate : "When?"}
-											</Text>
-											<DateTimePickerModal
-												isVisible={pickerDateVisible}
-												mode='date'
-												onConfirm={confirmPickerDate}
-												onCancel={hidePickerDate}
-											/>
-										</View>
-									</Pressable> */}
-
-									{/* //!Event Time Container */}
-									{/* <View style={[forms.small_input_container]}> */}
-									{/* //!Event Start Time */}
-									{/* <TouchableNativeFeedback style={{ width: "48%" }} onPress={showPickerStart}>
-											<View
-												style={[
-													forms.create_event_input_container,
-													forms.small_field,
-													focusName == "start_time" ? forms.focused_light : forms.notFocused,
-												]}
-											>
-												<MaterialIcons
-													name='access-time'
-													size={23}
-													style={[
-														forms.input_icon,
-														focusName == "start_time" ? forms.focused_light : forms.notFocused,
-													]}
-												/>
-												<View
-													style={[
-														forms.custom_input,
-														{
-															alignItems: "flex-start",
-														},
-													]}
-												>
-													<Text
-														style={[
-															{
-																color: Theme.FAINT,
-																flex: 0,
-															},
-														]}
-													>
-														{pickerValueStart ? pickerValueStart : "Start Time"}
-													</Text>
-													<DateTimePickerModal
-														isVisible={pickerStartVisible}
-														mode='time'
-														onConfirm={confirmPickerStart}
-														onCancel={hidePickerStart}
-													/>
-												</View>
-											</View>
-										</TouchableNativeFeedback>
-
-										<TouchableNativeFeedback style={{ width: "48%" }} onPress={showPickerEnd}>
-											<View
-												style={[
-													forms.create_event_input_container,
-													forms.small_field,
-													{
-														marginRight: 0,
-														marginLeft: 5,
-													},
 													focusName == "end_time" ? forms.focused_light : forms.notFocused,
 												]}
+											/>
+											<View
+												style={[
+													forms.custom_input,
+													{
+														alignItems: "flex_start",
+													},
+												]}
 											>
-												<MaterialIcons
-													name='access-time'
-													size={23}
+												<Text
 													style={[
-														forms.input_icon,
-														focusName == "end_time" ? forms.focused_light : forms.notFocused,
-													]}
-												/>
-												<View
-													style={[
-														forms.custom_input,
 														{
-															alignItems: "flex-start",
+															color: endTime ? "black" : Theme.FAINT,
+															flex: 0,
 														},
 													]}
 												>
-													<Text
-														style={[
-															{
-																color: Theme.FAINT,
-																flex: 0,
-															},
-														]}
-													>
-														{pickerValueEnd ? pickerValueEnd : "End Time"}
-													</Text>
-													<DateTimePickerModal
-														isVisible={pickerEndVisible}
-														mode='time'
-														onConfirm={confirmPickerEnd}
-														onCancel={hidePickerEnd}
-													/>
-												</View>
+													{endTime ? format(parseISO(endTime), "p") : "End Time"}
+												</Text>
+												<DateTimePickerModal
+													isVisible={showEndTime}
+													mode='time'
+													onConfirm={handleEndTimeConfirm}
+													onCancel={handleEndTimeCancel}
+												/>
 											</View>
-										</TouchableNativeFeedback>
-									</View> */}
+										</View>
+									</TouchableNativeFeedback>
 
 									{/* //! Event Location */}
 									<View
