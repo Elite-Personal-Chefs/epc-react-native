@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 //OTHER DEPENDENCIES
 import { firebase, configKeys } from '../config/config'
 import { useFocusEffect } from '@react-navigation/native';
+import { getEventsByChefId } from "../data/event";
 
 // COMPONENTS
 import { Text, StyleSheet, View, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
@@ -50,12 +51,12 @@ export default function ChefEventScreen({navigation, route}) {
             else if(eventPageName == 'Your Events'){
                 console.log("your events",uid)
                 //Your Events show what a guest has signed up 
-                const result = await fetch(getEndpoint(appsGlobalContext,'events/'+uid)); //apiBase
-                const json = await result.json()
-                console.log("b",json.transactions)
-                if(!json.error){ //&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
-                    console.log("Events", json)
-                    setEventTemplates(json.transactions ? json.transactions : json)
+                // const result = await fetch(getEndpoint(appsGlobalContext,'events/'+uid)); //apiBase
+                const events = await getEventsByChefId(uid);
+                console.log("Events Received by Chef Event Screen",events)
+                if(events){ //&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
+                    console.log("Events", events)
+                    setEventTemplates(events.transactions ? events.transactions : events)
                 }
                 else{
                     setEventTemplates(null)

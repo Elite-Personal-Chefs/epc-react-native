@@ -28,7 +28,7 @@ import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import { publishEvent, unpublishEvent } from "../../data/event";
+import { publishEvent, unpublishEvent, getEventById } from "../../data/event";
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
@@ -57,18 +57,18 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [knownCPP, setKnownCPP] = useState(details.cpp ? +details.cpp : false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
+	console.log("Passed in details", details);
+
 	const getEventDetails = async () => {
-		//console.log("getEventDetails");
-		const firestore = firebase.firestore();
-		const eventRef = firestore
-			.collection("experiences")
-			.doc(eventDetails.id || eventDetails.experience_id);
-		const eventDoc = await eventRef.get();
-		if (!eventDoc.exists) {
+
+		const event = await getEventById(
+			eventDetails.id || eventDetails.experience_id
+		);
+
+		if (!event) {
 			console.log("No event found");
 			getMenus(details, pageName);
 		} else {
-			let event = eventDoc.data();
 			event.id = eventDoc.id;
 			setEventDetails(event);
 			getMenus(event);
@@ -155,12 +155,13 @@ export default function EventDetailScreen({ route, navigation }) {
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
+		console.log("This is a chef menu", details.menuId);
 
 		if (pageName == "Templates" || details.isTemplate) {
 			//console.log("This is a template");
 			menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
 		} else {
-			//console.log("This is a chef menu");
+			console.log("This is a chef menu", details.menuId);
 			menuRef = firestore
 				.collection("chefs")
 				.doc(eventDetails.chefId)
@@ -200,7 +201,7 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	const getGuestList = async (guestListID) => {
 		const firestore = firebase.firestore();
-		const eventRef = firestore.collection("experiences").doc(guestListID);
+		const eventRef = firestore.collection("events").doc(guestListID);
 		let guestListSnapshot = await eventRef.collection("reservations").get();
 		if (!guestListSnapshot.empty) {
 			let guests = [];

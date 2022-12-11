@@ -35,7 +35,7 @@ import { Formik, useFormikContext, Field } from "formik";
 import ImageUploader from "../components/ImageUploader";
 import * as yup from "yup";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { createEvent } from "../data/event";
+import { createEvent, updateEvent } from "../data/event";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -242,26 +242,23 @@ export default function CreateEventScreen({ route, navigation }) {
 	const addExperience = async (values) => {
 		console.log(`values`, values);
 
-		const usersRef = firebase.firestore().collection("experiences");
 		//Add in details about chef
 		const chef = appsGlobalContext.userData;
-		values.chefName = chef.name;
-		if (_.has(chef, "rating")) {
-			values.chefRating = chef.rating;
-		}
 
+		values.chefName = chef.name;
+	
 		//If details were passed then we are updating not creating
 		//console.log(`details`, details);
 		if (Object.keys(details).length > 0) {
-			//console.log("Updating experience");
-			await usersRef.doc(eventID).update(values);
+			console.log("Updating experience", values);
+			await updateEvent(eventID, values);
 		} else {
-			//console.log("Creating experience");
-			const snapshot = await usersRef.add(values);
+			console.log("Creating experience", values);
+			const snapshot = await createEvent(values);
+			console.log("Snapshot", snapshot)
 			setEventID(snapshot.id);
 		}
 
-		createEvent(values);
 		//MENU ADDED NOW GO TO PHOTOS
 		setPhotoMode(true);
 	};
@@ -277,8 +274,8 @@ export default function CreateEventScreen({ route, navigation }) {
 	};
 
 	const addPhotoToEvent = async (url) => {
-		const usersRef = firebase.firestore().collection("experiences");
-		await usersRef.doc(eventID).update({
+		const eventsRef = firebase.firestore().collection("events");
+		await eventsRef.doc(eventID).update({
 			photos: firebase.firestore.FieldValue.arrayUnion(eventImg),
 		});
 		setPhotoMode(false);
@@ -343,7 +340,9 @@ export default function CreateEventScreen({ route, navigation }) {
 							initialValues={{
 								title: details ? details.title : "",
 								description: details ? details.description : "",
-								guests: details ? details.guests : "",
+								guestCapacity: details
+									? details.guestCapacity
+									: "",
 								cpp: details ? details.cpp : "",
 								menuId: details ? details.menuId : "",
 							}}
@@ -829,7 +828,7 @@ export default function CreateEventScreen({ route, navigation }) {
 											style={[
 												forms.create_event_input_container,
 												forms.small_field,
-												focusName == "guests"
+												focusName == "guestCapacity"
 													? forms.focused_light
 													: forms.notFocused,
 											]}
@@ -839,22 +838,22 @@ export default function CreateEventScreen({ route, navigation }) {
 												size={23}
 												style={[
 													forms.input_icon,
-													focusName == "guests"
+													focusName == "guestCapacity"
 														? forms.focused_light
 														: forms.notFocused,
 												]}
 											/>
 											<TextInput
-												name="guests"
-												value={values.guests}
+												name="guestCapacity"
+												value={values.guestCapacity}
 												style={forms.custom_input}
 												placeholder="# of Guests"
 												onChangeText={handleChange(
-													"guests"
+													"guestCapacity"
 												)}
-												onBlur={handleBlur("guests")}
+												onBlur={handleBlur("guestCapacity")}
 												onFocus={() =>
-													setFocusName("guests")
+													setFocusName("guestCapacity")
 												}
 												setFocus={focusName}
 												placeholderTextColor={

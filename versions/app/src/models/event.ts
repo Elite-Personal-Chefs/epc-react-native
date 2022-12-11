@@ -5,11 +5,10 @@ export default interface Event {
 	published?: boolean;
 	location?: string;
 	chefName?: string;
-	chef_name?: string;
 	cpp?: number;
 	start?: Date;
 	end?: Date;
 	guestCapacity?: number;
 	chef?: string;
-	menu?: string;
+	menuId?: string;
 }

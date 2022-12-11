@@ -68,7 +68,7 @@ export default function EventDetailScreen({ route, navigation }) {
 		console.log("This is a reservation need more details");
 		const firestore = firebase.firestore();
 		const eventRef = firestore
-			.collection("experiences")
+			.collection("events")
 			.doc(eventDetails.id || eventDetails.experience_id);
 		const eventDoc = await eventRef.get();
 		if (!eventDoc.exists) {
@@ -196,7 +196,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const getGuestList = async (guestListID) => {
 		console.log("Getting guest list", guestListID);
 		const firestore = firebase.firestore();
-		const eventRef = firestore.collection("experiences").doc(guestListID);
+		const eventRef = firestore.collection("events").doc(guestListID);
 		let guestListSnapshot = await eventRef.collection("guest_list").get();
 		if (!guestListSnapshot.empty) {
 			let guests = [];
