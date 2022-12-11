@@ -28,7 +28,12 @@ import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import { publishEvent, unpublishEvent, getEventById } from "../../data/event";
+import {
+	publishEvent,
+	unpublishEvent,
+	getEventById,
+	getEventReservations,
+} from "../../data/event";
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
@@ -50,7 +55,7 @@ export default function EventDetailScreen({ route, navigation }) {
 	const pageName = route.params.pageName;
 	const [eventImg, setEventImg] = useState(require("../../assets/food_pasta.png"));
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
-	const [guestList, setGuestList] = useState(false);
+	const [guestList, setGuestList] = useState([]);
 	const [guestsEmailList, setGuestsEmailList] = useState(false);
 	const [menuItems, setMenuItems] = useState(false);
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
@@ -199,23 +204,11 @@ export default function EventDetailScreen({ route, navigation }) {
 	// EMAIL GUESTS
 	/*******************************************************************************/
 
-	const getGuestList = async (guestListID) => {
-		const firestore = firebase.firestore();
-		const eventRef = firestore.collection("events").doc(guestListID);
-		let guestListSnapshot = await eventRef.collection("reservations").get();
-		if (!guestListSnapshot.empty) {
-			let guests = [];
-			let guestsEmailList = [];
-			guestListSnapshot.forEach((doc) => {
-				let guest = doc.data();
-				let guestEmail = guest.email;
-				guest.avatar ??= "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty%20profile%20icon.png?alt=media&token=ea1d720b-c6f0-4bf7-8848-4d831955c716";
-				guestsEmailList.push(guestEmail);
-				guests.push(guest);
-			});
-			setGuestList(guests);
-			//console.log(`Guest List ${JSON.stringify(guestList)} is attending`);
-			setGuestsEmailList(guestsEmailList);
+	const getReservations = async (eventId) => {
+		const reservations = getEventReservations(eventId);
+		console.log("RESERVATIONS", reservations);
+		if (reservations) {
+			setGuestList(reservations);
 		} else {
 			console.log("NO GUEST LIST FOUND");
 		}
@@ -249,7 +242,7 @@ export default function EventDetailScreen({ route, navigation }) {
 			}
 
 			if (activeFlow == "chefs") {
-				getGuestList(details.id);
+				getReservations(details.id);
 			}
 
 			getEventDetails();

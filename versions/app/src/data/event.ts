@@ -23,7 +23,9 @@ const getEventById = async (eventId: string): Promise<Event> => {
 };
 
 const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
-	const eventCollection = db.collection("events").where("chefId", "==", chefId) as any;
+	const eventCollection = db
+		.collection("events")
+		.where("chefId", "==", chefId) as any;
 	const events = await eventCollection.get();
 
 	const results = events.docs.map((doc) => doc.data()) as Event[];
@@ -36,14 +38,20 @@ const getEvents = async (
 	end?: Date,
 	published?: boolean
 ): Promise<Event[]> => {
-	console.debug("getEvents arguments", {start,end,published})
+	console.debug("getEvents arguments", { start, end, published });
 	let eventCollection = firebase.firestore().collection("events");
 
-	if (start) eventCollection = eventCollection.where("end", ">=", start) as any;
+	if (start)
+		eventCollection = eventCollection.where("end", ">=", start) as any;
 
 	if (end) eventCollection = eventCollection.where("end", "<=", end) as any;
 
-	if (published) eventCollection = eventCollection.where("published", "==", published) as any;
+	if (published)
+		eventCollection = eventCollection.where(
+			"published",
+			"==",
+			published
+		) as any;
 
 	const events = await eventCollection.get();
 
@@ -85,6 +93,13 @@ const unpublishEvent = async (eventID): Promise<void> => {
 		.update({ published: false });
 
 	return event;
+};
+
+const getEventReservations = async (eventId: string): Promise<Reservation[]> => {
+	const eventRef = db.collection("events").doc(eventId);
+	const eventReservationsCollection = await eventRef.collection("reservations").get();
+	
+	return eventReservationsCollection.docs.map(doc => doc.data()) as Reservation[];
 };
 
 const reserveEvent = async (
@@ -147,6 +162,7 @@ export {
 	getEvents,
 	getEventsByChefId,
 	getPublishedEvents,
+	getEventReservations,
 	updateEvent,
 	publishEvent,
 	unpublishEvent,

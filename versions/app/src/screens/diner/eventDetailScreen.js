@@ -22,6 +22,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { firebase, configKeys } from "../../config/config";
 import _ from "underscore";
 
+
 // COMPONENTS
 import AppContext from "../../components/AppContext";
 import { CustomButton } from "../../components/Button";
@@ -193,26 +194,6 @@ export default function EventDetailScreen({ route, navigation }) {
 		}
 	};
 
-	const getGuestList = async (guestListID) => {
-		console.log("Getting guest list", guestListID);
-		const firestore = firebase.firestore();
-		const eventRef = firestore.collection("events").doc(guestListID);
-		let guestListSnapshot = await eventRef.collection("guest_list").get();
-		if (!guestListSnapshot.empty) {
-			let guests = [];
-			guestListSnapshot.forEach((doc) => {
-				let guest = doc.data();
-				guest.avatar =
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/fe8c4ba1-5d37-4796-b193-c675017fe930?alt=media&token=b83172f7-9d27-49bf-8e1c-31429249ee4b";
-				guests.push(guest);
-			});
-			console.log("Guests", guests);
-			setGuestList(guests);
-		} else {
-			console.log("NO GUEST LIST FOUND");
-		}
-	};
-
 	/*************************************************************/
 	// RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
 	/*************************************************************/
@@ -225,9 +206,6 @@ export default function EventDetailScreen({ route, navigation }) {
 				setEventImg(require("../../assets/event_placeholder.png"));
 			}
 
-			if (activeFlow == "chefs") {
-				getGuestList(details.id);
-			}
 
 			getEventDetails();
 		}, [])
