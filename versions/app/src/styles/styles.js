@@ -1,6 +1,27 @@
 import { StyleSheet } from "react-native";
 import Theme from "../styles/theme.style.js";
 
+const emptyGlobalStyles = StyleSheet.create({
+	empty_state: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		// width: "100%",
+	},
+	empty_image: {
+		height: "40%",
+		resizeMode: "contain",
+		margin: 0,
+		padding: 0,
+	},
+	empty_text: {
+		color: Theme.GRAY,
+		fontSize: 13,
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+});
+
 const globalStyles = StyleSheet.create({
 	safe_dark: {
 		flex: 1,
@@ -36,7 +57,8 @@ const globalStyles = StyleSheet.create({
 		backgroundColor: Theme.BACKGROUND_COLOR,
 		alignItems: "center",
 		justifyContent: "center",
-		padding: 10,
+		padding: 0,
+		margin: 0,
 	},
 	page_top: {
 		flex: 1,
@@ -303,6 +325,20 @@ const modal = StyleSheet.create({
 	},
 });
 
+const eventGlobalStyles = StyleSheet.create({
+	lower_right_create_event_circle: {
+		position: "absolute",
+		right: 15,
+		bottom: 15,
+		width: 50,
+		height: 50,
+		borderRadius: 100,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: Theme.SECONDARY_COLOR,
+	},
+});
+
 const forms = StyleSheet.create({
 	form_column: {
 		flexDirection: "column",
@@ -525,4 +561,4 @@ const forms = StyleSheet.create({
 	},
 });
 
-export { globalStyles, menusStyles, forms, modal };
+export { emptyGlobalStyles, globalStyles, menusStyles, eventGlobalStyles, forms, modal };

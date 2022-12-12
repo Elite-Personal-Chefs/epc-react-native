@@ -4,7 +4,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Theme from "../styles/theme.style.js";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { globalStyles, forms } from "../styles/styles.js";
 
 /*******************************************************************************/
@@ -96,6 +96,14 @@ function InformationButton({ text, onPress }) {
 	);
 }
 
+function CreateEventButton({ onPress, style }) {
+	return (
+		<TouchableOpacity style={style} onPress={onPress}>
+			<MaterialIcons name='add' size={25} color={Theme.WHITE} />
+		</TouchableOpacity>
+	);
+}
+
 const styles = StyleSheet.create({
 	buttonContainer: {
 		flexDirection: "row",
@@ -150,4 +158,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export { GoToButton, CustomButton, SubmitButton, InformationButton };
+export { GoToButton, CustomButton, SubmitButton, InformationButton, CreateEventButton };
