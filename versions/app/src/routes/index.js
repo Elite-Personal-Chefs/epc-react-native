@@ -48,7 +48,7 @@ const UnAuthorizedStackNav = createStackNavigator(); //This can be drawers, stac
 /*** AUTHORIZED ****/
 import HomeScreen from "../screens/homeScreen";
 import EventsScreen from "../screens/eventsScreen";
-import CreateEventScreen from "../screens/createEventScreen";
+import CreateEventScreen from "../screens/chef/createEventScreen";
 import ChefEventDetailScreen from "../screens/chef/chefEventDetailScreen";
 import MenuScreen from "../screens/menuScreen";
 import CreateMenuScreen from "../screens/createMenuScreen";

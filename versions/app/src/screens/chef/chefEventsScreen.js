@@ -14,7 +14,7 @@ import { Text, StyleSheet, View } from "react-native";
 import AppContext from "../../components/AppContext";
 import NoEventsPlaceholder from "../../components/emptyStates/NoEventsPlaceholder";
 import { CreateEventButton } from "../../components/Button";
-import EventListing from "../../components/EventListing";
+import EventListing from "../../components/chefComponents/EventListing";
 import { dynamicSort } from "../../helpers/helpers";
 
 // STYLES
