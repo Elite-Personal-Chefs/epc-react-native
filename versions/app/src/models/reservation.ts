@@ -1,4 +1,5 @@
 export default interface Reservation {
+	id?: string;
 	user?: string;
 	numOfGuests?: number;
 	userSummary?: {
