@@ -14,13 +14,13 @@ import {
 import _ from "underscore";
 
 //Custom Components
-import MenuItem from "../components/MenuItem";
+import MenuItem from "../MenuItem";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 //Styles
-import { globalStyles, modal, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, modal, footer, forms } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -39,26 +39,14 @@ export default function EventListing({ eventTemplates, pageName, navigation }) {
 				}
 			>
 				<View style={globalStyles.navigate_away}>
-					<Text
-						style={[
-							globalStyles.navigate_away_content,
-							{ fontWeight: "bold" },
-						]}
-					>
+					<Text style={[globalStyles.navigate_away_content, { fontWeight: "bold" }]}>
 						{item.title +
 							` ${
-                                // TODO: Make this more readable
-								!item.published && pageName === "Your Events"
-									? "[Draft]"
-									: ""
+								// TODO: Make this more readable
+								!item.published && pageName === "Your Events" ? "[Draft]" : ""
 							}`}
 					</Text>
-					<AntDesign
-						name="right"
-						size={20}
-						color={Theme.FAINT}
-						style={{ paddingLeft: 5 }}
-					/>
+					<AntDesign name='right' size={20} color={Theme.FAINT} style={{ paddingLeft: 5 }} />
 				</View>
 			</TouchableWithoutFeedback>
 		);
@@ -66,11 +54,7 @@ export default function EventListing({ eventTemplates, pageName, navigation }) {
 
 	return (
 		<View style={{ flex: 1, width: "100%" }}>
-			<FlatList
-				data={eventTemplates}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.id}
-			/>
+			<FlatList data={eventTemplates} renderItem={renderItem} keyExtractor={(item) => item.id} />
 		</View>
 	);
 }

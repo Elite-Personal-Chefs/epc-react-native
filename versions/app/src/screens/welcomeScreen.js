@@ -117,97 +117,133 @@ export default function WelcomeScreen({navigation}) {
     }
 
     return (
-        <SafeAreaView style={globalStyles.safe_light}>
-        {firstLaunch
-        ?  !activeFlow
-                ? <View style={[globalStyles.page_centered,{backgroundColor:Theme.SURFACE_COLOR}]}>
-                    <Text style={globalStyles.h1}>Welcome! Let’s get started!</Text>
-                    <Text style={globalStyles.subtitle}>First, tell us what brings you to EPC.</Text>
-                    <View style={styles.choose_flow}>
-                        <Image style={styles.empty_image} source={require('../assets/onboard/table.png')} />
-                        <CustomButton text="I'm a Diner"
-                            onPress={() => {
-                                setActiveFlow(guestFlow)
-                                setChosenFlow('guests')
-                            }} size="big" 
-                        />
-                    </View>
-                    <View style={[styles.choose_flow]}>
-                        <Image style={styles.empty_image} source={require('../assets/onboard/standing_chefs.png')} />
-                        <CustomButton text="I'm a Chef" 
-                            onPress={() => {
-                                setActiveFlow(chefFlow) 
-                                setChosenFlow('chefs')
-                            }} size="big"
-                        />
-                    </View>
-                    <Text style={[globalStyles.p]}>And don't worry, <Text style={{fontStyle:'italic',fontWeight:'bold'}}>you can always be both! </Text></Text>
-                </View>
-                : <View style={styles.carousel}>
-                    <ScrollView
-                        horizontal={true}
-                        contentContainerStyle={{ width: scrollerWidth }}
-                        showsHorizontalScrollIndicator={false}
-                        scrollEventThrottle={200}
-                        decelerationRate="fast"
-                        pagingEnabled
-                        //Using Momemtum End we can get the X value of where the scroller is after it stops
-                        onMomentumScrollEnd={data => {
-                            setActiveImage(determineCurrentImage(data.nativeEvent.contentOffset.x));
-                        }}
-                    >
-                        {activeFlow ?
-                                activeFlow.map((flow,index) => {
-                                    return(
-                                        <View style={styles.screen} key={index}>
-                                            <>{flow.title}</>
-                                            <Image style={styles.benefit_icon} resizeMode='contain' source={flow.img} />
-                                        </View>
-                                    )
-                                })
-                            : <ActivityIndicator />
-                        }
-        
-                    </ScrollView>
-                    <View style={styles.onboard_float}>
-                        <View style={styles.bullets}>{bullets}</View>
-                        <Text style={styles.signin_text} onPress={() => onBoardingComplete('Login',chosenFlow) }>Been here before? Sign in</Text>
-                        <View style={styles.button_bg}>
-                            <View style={styles.button_container}>
-                                <CustomButton text="Sign Up" size="big" onPress={()=> onBoardingComplete('Register',chosenFlow) }/>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-        :   <View style={[globalStyles.page_centered,{padding:30}]}>
-                <Text style={globalStyles.h1}>Welcome back!</Text>
-                <Text style={globalStyles.subtitle}>Please choose how you will login.</Text>
-                <View style={styles.choose_flow}>
-                    <Image style={styles.empty_image} source={require('../assets/onboard/table.png')} />
-                    <CustomButton text="I'm a Diner"
-                        onPress={() => {
-                            /* in this case they don't need to see the onbaording slides.
+			<SafeAreaView style={globalStyles.safe_light}>
+				{firstLaunch ? (
+					!activeFlow ? (
+						<View
+							style={[
+								globalStyles.page_centered,
+								{ backgroundColor: Theme.SURFACE_COLOR, padding: 10 },
+							]}
+						>
+							<Text style={globalStyles.h1}>Welcome! Let’s get started!</Text>
+							<Text style={globalStyles.subtitle}>First, tell us what brings you to EPC.</Text>
+							<View style={styles.choose_flow}>
+								<Image style={styles.empty_image} source={require("../assets/onboard/table.png")} />
+								<CustomButton
+									text="I'm a Diner"
+									onPress={() => {
+										setActiveFlow(guestFlow);
+										setChosenFlow("guests");
+									}}
+									size='big'
+								/>
+							</View>
+							<View style={[styles.choose_flow]}>
+								<Image
+									style={styles.empty_image}
+									source={require("../assets/onboard/standing_chefs.png")}
+								/>
+								<CustomButton
+									text="I'm a Chef"
+									onPress={() => {
+										setActiveFlow(chefFlow);
+										setChosenFlow("chefs");
+									}}
+									size='big'
+								/>
+							</View>
+							<Text style={[globalStyles.p]}>
+								And don't worry,{" "}
+								<Text style={{ fontStyle: "italic", fontWeight: "bold" }}>
+									you can always be both!{" "}
+								</Text>
+							</Text>
+						</View>
+					) : (
+						<View style={styles.carousel}>
+							<ScrollView
+								horizontal={true}
+								contentContainerStyle={{ width: scrollerWidth }}
+								showsHorizontalScrollIndicator={false}
+								scrollEventThrottle={200}
+								decelerationRate='fast'
+								pagingEnabled
+								//Using Momemtum End we can get the X value of where the scroller is after it stops
+								onMomentumScrollEnd={(data) => {
+									setActiveImage(determineCurrentImage(data.nativeEvent.contentOffset.x));
+								}}
+							>
+								{activeFlow ? (
+									activeFlow.map((flow, index) => {
+										return (
+											<View style={styles.screen} key={index}>
+												<>{flow.title}</>
+												<Image style={styles.benefit_icon} resizeMode='contain' source={flow.img} />
+											</View>
+										);
+									})
+								) : (
+									<ActivityIndicator />
+								)}
+							</ScrollView>
+							<View style={styles.onboard_float}>
+								<View style={styles.bullets}>{bullets}</View>
+								<Text
+									style={styles.signin_text}
+									onPress={() => onBoardingComplete("Login", chosenFlow)}
+								>
+									Been here before? Sign in
+								</Text>
+								<View style={styles.button_bg}>
+									<View style={styles.button_container}>
+										<CustomButton
+											text='Sign Up'
+											size='big'
+											onPress={() => onBoardingComplete("Register", chosenFlow)}
+										/>
+									</View>
+								</View>
+							</View>
+						</View>
+					)
+				) : (
+					<View style={[globalStyles.page_centered, { padding: 30 }]}>
+						<Text style={globalStyles.h1}>Welcome back!</Text>
+						<Text style={globalStyles.subtitle}>Please choose how you will login.</Text>
+						<View style={styles.choose_flow}>
+							<Image style={styles.empty_image} source={require("../assets/onboard/table.png")} />
+							<CustomButton
+								text="I'm a Diner"
+								onPress={() => {
+									/* in this case they don't need to see the onbaording slides.
                             We just need to them to choose a path for the login screen to determine
                             how to get them signed up */
-                            onBoardingComplete('Login','guests')
-                        }} size="big" 
-                    />
-                </View>
-                <View style={[styles.choose_flow]}>
-                    <Image style={styles.empty_image} source={require('../assets/onboard/standing_chefs.png')} />
-                    <CustomButton text="I'm a Chef" 
-                        onPress={() => {
-                            /* in this case they don't need to see the onbaording slides.
+									onBoardingComplete("Login", "guests");
+								}}
+								size='big'
+							/>
+						</View>
+						<View style={[styles.choose_flow]}>
+							<Image
+								style={styles.empty_image}
+								source={require("../assets/onboard/standing_chefs.png")}
+							/>
+							<CustomButton
+								text="I'm a Chef"
+								onPress={() => {
+									/* in this case they don't need to see the onbaording slides.
                             We just need to them to choose a path for the login screen to determine
                             how to get them signed up */
-                            onBoardingComplete('Login','chefs')
-                        }} size="big"
-                    />
-                </View>
-            </View>
-        }
-        </SafeAreaView>
-  )
+									onBoardingComplete("Login", "chefs");
+								}}
+								size='big'
+							/>
+						</View>
+					</View>
+				)}
+			</SafeAreaView>
+		);
 }
 
 const styles = StyleSheet.create({

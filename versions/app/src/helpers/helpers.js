@@ -58,6 +58,9 @@ export const mailto = (email = 'consultation@elitepersonalchefs.com', subject = 
 export const getEndpoint = (appsGlobalContext, endpoint) => {
 	const apiMode = appsGlobalContext.apiMode;
 	const apiBase = appsGlobalContext.configKeys[apiMode];
+	console.log("API BASE: ", apiBase);
+	const apiEndpoint = apiBase + endpoint;
+	console.log("API ENDPOINT: ", apiEndpoint);
 	return apiBase + endpoint;
 };
 
@@ -98,4 +101,19 @@ export const uploadFile = async (uri) => {
 	const fileUrl = await snapshot.ref.getDownloadURL();
 	console.log(fileUrl);
 	return fileUrl;
+};
+
+export const dynamicSort = (property) => {
+	var sortOrder = 1;
+	if (property[0] === "-") {
+		sortOrder = -1;
+		property = property.substr(1);
+	}
+	return function (a, b) {
+		/* next line works with strings and numbers,
+		 * and you may want to customize it to your needs
+		 */
+		var result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+		return result * sortOrder;
+	};
 };

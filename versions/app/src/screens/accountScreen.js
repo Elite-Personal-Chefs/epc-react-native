@@ -43,6 +43,7 @@ export default function AccountScreen({ navigation }) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const activeFlow = appsGlobalContext.activeFlow;
+	const [profileImg, setProfileImg] = useState(false);
 	console.log("Account UID", uid + " " + activeFlow);
 	// const [user,setUserData] = useState(false)
 	const [startDate, setStartDate] = useState("");
@@ -157,6 +158,13 @@ export default function AccountScreen({ navigation }) {
 
 	const { userData: user } = appsGlobalContext;
 
+	useEffect(() => {
+		//! This is not updating properly
+		if (_.has(user, "chefProfile.profile_img")) {
+			setProfileImg(user.chefProfile.profile_img);
+		}
+	}, [user]);
+
 	if (user) {
 		return (
 			<View style={globalStyles.scrollContainer}>
@@ -165,7 +173,7 @@ export default function AccountScreen({ navigation }) {
 						<View style={globalStyles.page}>
 							<View style={styles.profile_header}>
 								<TouchableWithoutFeedback onPress={checkForCount}>
-									{user.profile_img ? (
+									{profileImg ? (
 										<Image source={{ uri: user.profile_img }} style={styles.profile_img} />
 									) : (
 										<MaterialIcons

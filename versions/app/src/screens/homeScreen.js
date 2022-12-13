@@ -47,6 +47,9 @@ export default function HomeScreen({ navigation }) {
 	const uid = appsGlobalContext.userID;
 	const [refreshing, setRefreshing] = useState(false);
 	const [user, setUserData] = useState(false);
+	const [certifications, setCertifications] = useState(
+		user.certifications ? user.certifications : false
+	);
 	const [emailIsNotVerified, setEmailIsNotVerified] = useState(false);
 
 	/*************************************************************/
@@ -58,6 +61,7 @@ export default function HomeScreen({ navigation }) {
 		const firebaseUser = await usersRef.doc(uid).get();
 		if (firebaseUser.exists) {
 			let userData = firebaseUser.data();
+			let userCertifications = userData.certifications;
 			//console.log("Setting new user data")
 			//console.log("Is this user verified?")
 			if (_.has(userData, "isEmailVerified") && userData.isEmailVerified == false) {
@@ -66,8 +70,10 @@ export default function HomeScreen({ navigation }) {
 			} else {
 				setEmailIsNotVerified(false);
 			}
+
 			appsGlobalContext.setUserData(userData);
 			setUserData(userData);
+			setCertifications(userCertifications);
 		} else {
 			console.log("No user found", uid);
 			const signout = await firebase.auth().signOut();
@@ -135,7 +141,9 @@ export default function HomeScreen({ navigation }) {
 							</View>
 						)}
 
-						{_.has(user, "isOnboarded") && user.isOnboarded === true ? (
+						{_.has(user.certifications, "Complete Profile") &&
+						user.certifications["Complete Profile"].is_submitted === true &&
+						user.certifications["Complete Profile"].is_approved === true ? (
 							<>
 								{/*
                             <View style={globalStyles.card}>
