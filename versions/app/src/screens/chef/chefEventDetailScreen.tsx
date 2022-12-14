@@ -1,7 +1,7 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -13,21 +13,21 @@ import {
 	Dimensions,
 	Image,
 	ActivityIndicator,
-	TouchableOpacity,
 	Linking,
+	Alert,
 } from "react-native";
+import { format } from "date-fns";
+
+import Event from "../../models/event";
 
 //Other Dependencies
-import { firebase, configKeys } from "../../config/config";
+import { firebase } from "../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
 import AppContext from "../../components/AppContext";
 import { CustomButton } from "../../components/Button";
-import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-import Tooltip from "react-native-walkthrough-tooltip";
 import {
 	publishEvent,
 	unpublishEvent,
@@ -36,7 +36,7 @@ import {
 } from "../../data/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import { globalStyles, menusStyles } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
 import {
 	AntDesign,
@@ -44,111 +44,63 @@ import {
 	FontAwesome5,
 	Ionicons,
 } from "@expo/vector-icons";
-import themeStyle from "../../styles/theme.style.js";
+import Reservation from "../../models/reservation";
+
+interface EventDetailProps {
+	route: any;
+	navigation: any;
+}
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function EventDetailScreen({ route, navigation }) {
+export default function EventDetailScreen({
+	route,
+	navigation,
+}: EventDetailProps) {
 	const appsGlobalContext = useContext(AppContext);
+
 	const uid = appsGlobalContext.userID;
-	const user = appsGlobalContext.userData;
 	const userEmail = appsGlobalContext.userData.email;
 	const activeFlow = appsGlobalContext.activeFlow;
 	const routeParams = route.params.details;
-	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState(
-		require("../../assets/food_pasta.png")
-	);
-	const [reserved, setReserved] = useState(
-		routeParams.reserved ? true : false
-	);
-	const [guestList, setGuestList] = useState();
-	const [menuItems, setMenuItems] = useState(false);
-	const [eventDetails, setEventDetails] = useState(
-		routeParams ? routeParams : null
-	);
-	const [knownCPP, setKnownCPP] = useState(
-		routeParams.cpp ? +routeParams.cpp : false
-	);
-	const [toolTipVisible, setToolTipVisible] = useState(false);
+	const placeholderImg = require("../../assets/food_pasta.png");
+
+	const [reservations, setReservations] = useState<Reservation[] | null>();
+	const [menuItems, setMenuItems] = useState();
+	const [eventDetails, setEventDetails] = useState<Event | null>();
 
 	const getEventDetails = async () => {
-		const event = await getEventById(eventDetails.id);
-		console.log("Event Details", event);
+		const event = await getEventById(routeParams.id);
 		if (!event) {
 			console.log("No event found");
-			getMenus(routeParams, pageName);
-		} else {
-			setEventDetails(event);
-			console.log("Eventing Menus from this event", event);
-			getMenus(event);
+			getMenus(routeParams);
+			return;
 		}
+		console.debug("Event", event);
+		setEventDetails(event);
+		getMenus(event);
 	};
 
 	//If we are coming from Reservation page then we need more details on the event
-	const isReservation = route.params.isReservation;
-	if (isReservation) {
-		getEventDetails();
-	}
-
-	const [added, setAdded] = useState(false);
-
-	const addToMyEvents = async (eventID) => {
-		try {
-			const result = await fetch(
-				getEndpoint(appsGlobalContext, "copy_event_template"),
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						event_template_id: eventID,
-						add_data: {
-							chef_id: uid,
-							is_custom: false,
-							is_published: false,
-							event_template_id: eventID,
-						},
-					}),
-				}
-			);
-			const json = await result.json();
-			setAdded(true);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
 	const editEvent = () => {
-		console.log("Lets edit the envet");
 		navigation.navigate("Create Event", {
 			details: eventDetails || routeParams,
 		});
 	};
 
-	const getMenus = async (details, pageName) => {
-		//If this is a template page look for the menu in templates
-		//otherwise look into the chefs colelction of menus
-		console.log("Getting menus for event", details, pageName);
+	const getMenus = async (event: Event) => {
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
 
-		if (pageName == "Templates" || details.isTemplate) {
-			menuRef = firestore
-				.collection("menu_templates")
-				.doc(details.menu_template_id);
-		} else {
-			menuRef = firestore
-				.collection("chefs")
-				.doc(eventDetails.chefId)
-				.collection("menus")
-				.doc(`${details.menuId}`);
-		}
+		menuRef = firestore
+			.collection("chefs")
+			.doc(event.chefId)
+			.collection("menus")
+			.doc(`${event.menuId}`);
 
 		menuDoc = await menuRef.get();
 
@@ -180,11 +132,11 @@ export default function EventDetailScreen({ route, navigation }) {
 	// EMAIL GUESTS
 	/*******************************************************************************/
 
-	const getReservations = async (eventId) => {
+	const getReservations = async (eventId: string) => {
 		const reservations = await getEventReservations(eventId);
 		console.log("RESERVATIONS", reservations);
 		if (reservations) {
-			setGuestList(reservations);
+			setReservations(reservations);
 		} else {
 			console.log("NO GUEST LIST FOUND");
 			``;
@@ -192,21 +144,26 @@ export default function EventDetailScreen({ route, navigation }) {
 	};
 
 	const sendEmail = () => {
-		let eventTitle = `${eventDetails.title} Update`;
-		let emailList = guestList
-			.map((guest) => guest.userSummary.email)
+		if (!reservations || reservations.length < 1) {
+			Alert.alert("There are no reservations on this event.");
+			return;
+		}
+
+		let emailSubject = `${eventDetails?.title} Update`;
+		let emailList = reservations
+			.map((guest) => guest?.userSummary?.email)
 			.join(";");
 
 		Linking.openURL(
-			`mailto:${userEmail}?subject=${eventTitle}&bcc=${emailList}`
+			`mailto:${userEmail}?subject=${emailSubject}&bcc=${emailList}`
 		);
 	};
 
 	const changePublishStatus = async () => {
-		if (eventDetails.published) {
-			await unpublishEvent(eventDetails.id);
+		if (eventDetails!.published) {
+			await unpublishEvent(eventDetails!.id as string);
 		} else {
-			await publishEvent(eventDetails.id);
+			await publishEvent(eventDetails!.id as string);
 		}
 
 		getEventDetails();
@@ -217,19 +174,15 @@ export default function EventDetailScreen({ route, navigation }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			if (routeParams.photos) {
-				setEventImg({ uri: routeParams.photos[0] });
-				//useState(require('../assets/food_pasta.png'))
-			}
 			console.log("Passed in ID", routeParams.id);
-			if (activeFlow == "chefs") {
-				getReservations(routeParams.id);
-			}
 
+			getReservations(routeParams.id);
 			getEventDetails();
 		}, [])
 	);
-
+	const eventPhoto = eventDetails?.photos
+		? eventDetails.photos[0]
+		: placeholderImg;
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
@@ -237,7 +190,7 @@ export default function EventDetailScreen({ route, navigation }) {
 					showsVerticalScrollIndicator={false}
 					style={{ width: "100%" }}
 				>
-					<Image source={eventImg} style={styles.image} />
+					<Image source={eventPhoto} style={styles.image} />
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
@@ -245,116 +198,41 @@ export default function EventDetailScreen({ route, navigation }) {
 									{eventDetails.title}
 								</Text>
 							</View>
-							{!eventDetails.published &&
-								pageName !== "Templates" && (
-									<View
-										style={{
-											borderRadius: 15,
-											width: 75,
-											padding: 5,
-											borderColor: Theme.SECONDARY_COLOR,
-											borderWidth: 1,
-											backgroundColor: "white",
-										}}
+							{!eventDetails.published && (
+								<View
+									style={{
+										borderRadius: 15,
+										width: 75,
+										padding: 5,
+										borderColor: Theme.SECONDARY_COLOR,
+										borderWidth: 1,
+										backgroundColor: "white",
+									}}
+								>
+									<Text
+										style={[
+											globalStyles.h4,
+											{
+												color: Theme.SECONDARY_COLOR,
+												textAlign: "center",
+											},
+										]}
 									>
-										<Text
-											style={[
-												globalStyles.h4,
-												{
-													color: Theme.SECONDARY_COLOR,
-													textAlign: "center",
-												},
-											]}
-										>
-											Draft
-										</Text>
-									</View>
-								)}
-							{pageName == "Templates" && (
-								<View style={styles.suggested_price_container}>
-									<View
-										style={
-											styles.price_label_and_icon_container
-										}
-									>
-										<Text style={styles.price_label}>
-											EPC Suggested Price
-										</Text>
-										<Tooltip
-											isVisible={toolTipVisible}
-											content={
-												<View>
-													<Text>
-														Your cost per person is
-														your event price and
-														will be shown to your
-														guests.
-													</Text>
-												</View>
-											}
-											placement="bottom"
-											onClose={() =>
-												setToolTipVisible(false)
-											}
-											useInteractionManager={true} // need this prop to wait for react navigation
-											// below is for the status bar of react navigation bar
-											// topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
-										>
-											<TouchableOpacity
-												style={[
-													{ width: "100%" },
-													styles.button,
-												]}
-												onPress={() =>
-													setToolTipVisible(true)
-												}
-											>
-												<AntDesign
-													name="infocirlceo"
-													size={17}
-													color="black"
-												/>
-											</TouchableOpacity>
-										</Tooltip>
-									</View>
-									<Text style={styles.price}>
-										${knownCPP}
-										<Text style={styles.price_label}>
-											/Person
-										</Text>
+										Draft
 									</Text>
 								</View>
 							)}
 						</View>
-						{pageName == "Templates" && (
-							<View style={styles.btn_cont}>
-								{added ? (
-									<CustomButton
-										text="Added to My Events"
-										size="big"
-										disabled="true"
-										checkmark="true"
-									/>
-								) : (
-									<CustomButton
-										text="Add to My Events"
-										onPress={() =>
-											addToMyEvents(routeParams.id)
-										}
-										size="big"
-									/>
-								)}
-							</View>
-						)}
-						{activeFlow == "chefs" && pageName == "Your Events" && (
-							<View style={styles.btn_cont}>
-								<CustomButton
-									text="Edit Event"
-									onPress={() => editEvent(true)}
-									size="big"
-								/>
-							</View>
-						)}
+
+						<View style={styles.btn_cont}>
+							<CustomButton
+								text="Edit Event"
+								onPress={() => editEvent()}
+								size="big"
+								disabled={undefined}
+								checkmark={undefined}
+							/>
+						</View>
 						<View style={[globalStyles.card, { width: "100%" }]}>
 							<View style={globalStyles.card_header}>
 								<Text style={globalStyles.card_header_text}>
@@ -372,9 +250,11 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.event_start_date &&
-										eventDetails.event_end_date
-											? `${eventDetails.event_start_date} -\n ${eventDetails.event_end_date}`
+										{eventDetails.start && eventDetails.end
+											? `${format(
+													eventDetails.start,
+													"PPPP"
+											  )}`
 											: "No Date Found"}
 									</Text>
 								</View>
@@ -385,11 +265,11 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.start_time
-											? eventDetails.start_time +
+										{eventDetails.start && eventDetails.end
+											? format(eventDetails.start, "p") +
 											  "-" +
-											  eventDetails.end_time
-											: "5pm-8pm"}
+											  format(eventDetails.end, "p")
+											: "No Time Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -404,7 +284,7 @@ export default function EventDetailScreen({ route, navigation }) {
 									<Text style={styles.detail_label}>
 										{eventDetails.location
 											? eventDetails.location
-											: "Chicago"}
+											: "No Location Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -417,9 +297,9 @@ export default function EventDetailScreen({ route, navigation }) {
 										]}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.guests
-											? eventDetails.guests + " Guests"
-											: "22 Guests"}
+										{reservations
+											? `${reservations.length} Guest(s) Reserved`
+											: "No guest yet"}
 									</Text>
 								</View>
 							</View>
@@ -522,7 +402,7 @@ export default function EventDetailScreen({ route, navigation }) {
 						)}
 
 						{/* GUEST LIST */}
-						{guestList && (
+						{reservations && (
 							<>
 								<View
 									style={[
@@ -539,12 +419,12 @@ export default function EventDetailScreen({ route, navigation }) {
 											Guest List
 										</Text>
 									</View>
-									{guestList.map((guest) => {
+									{reservations.map((guest) => {
 										return (
 											<View style={styles.guest}>
 												<Image
 													source={{
-														uri: guest.avatar,
+														uri: guest.userSummary?.profileImg,
 													}}
 													style={styles.profile_img}
 												/>
@@ -555,7 +435,7 @@ export default function EventDetailScreen({ route, navigation }) {
 													}}
 												>
 													{`${
-														guest.userSummary.name
+														guest?.userSummary?.name
 													} (total guests: ${
 														guest.numOfGuests || 1
 													})`}
@@ -567,28 +447,26 @@ export default function EventDetailScreen({ route, navigation }) {
 										<CustomButton
 											text="Email All Guests"
 											onPress={sendEmail}
+											size={undefined}
 										></CustomButton>
 									</View>
 								</View>
 							</>
 						)}
 					</View>
-					{pageName !== "Templates" && (
-						<Button
-							color={
-								eventDetails.published
-									? Theme.SECONDARY_COLOR
-									: "#357aff"
-							}
-							title={`${
-								eventDetails.published ? "Unpublish" : "Publish"
-							} Event`}
-							onPress={changePublishStatus}
-							size="small"
-						>
-							A Button
-						</Button>
-					)}
+					<Button
+						color={
+							eventDetails.published
+								? Theme.SECONDARY_COLOR
+								: "#357aff"
+						}
+						title={`${
+							eventDetails.published ? "Unpublish" : "Publish"
+						} Event`}
+						onPress={changePublishStatus}
+					>
+						A Button
+					</Button>
 				</ScrollView>
 			) : (
 				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
