@@ -147,9 +147,9 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 	// /*************************************************************/
 
 	//on mount grab the menu template data
-	useEffect(() => {
+	useEffect(async () => {
 		if (eventDetails) {
-			getMenuTemplateData(eventDetails.event.menu_template_id);
+			await getMenuTemplateData(eventDetails.event.menu_template_id);
 		}
 	}, [eventDetails]);
 
