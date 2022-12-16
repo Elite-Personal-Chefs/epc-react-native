@@ -7,7 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 //OTHER DEPENDENCIES
 import { firebase, configKeys } from "../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
-import { getEventsByChefId, getEventTemplates } from "../../data/event";
+import { getEventsByChefId } from "../../data/event";
+import { getEventTemplates } from "../../data/eventTemplates";
 
 // COMPONENTS
 import { Text, StyleSheet, View } from "react-native";
@@ -15,7 +16,7 @@ import AppContext from "../../components/AppContext";
 import NoEventsPlaceholder from "../../components/emptyStates/NoEventsPlaceholder";
 import { CreateEventButton } from "../../components/Button";
 import EventListing from "../../components/chefComponents/EventListing";
-import { dynamicSort } from "../../helpers/helpers";
+import { dynamicSort, find } from "../../helpers/helpers";
 
 // STYLES
 import { globalStyles, eventGlobalStyles } from "../../styles/styles";
@@ -36,13 +37,10 @@ export default function ChefEventScreen({ navigation, route }) {
 		try {
 			if (eventPageName == "Templates") {
 				try {
-					//* GET EVENT TEMPLATES
 					const events = await getEventTemplates();
-
-					//* SORT EVENT TEMPLATES BY TITLE
 					events.sort(dynamicSort("title"));
-
 					setEvents(events);
+					console.log(`returned events ${JSON.stringify(events[0].menu_template_id)}`);
 				} catch (error) {
 					console.log(error);
 				}
@@ -74,6 +72,7 @@ export default function ChefEventScreen({ navigation, route }) {
 
 	useEffect(() => {
 		getEvents(eventPageName);
+		console.log(`chef event screen is mounted`);
 	}, [1]);
 
 	/*************************************************************/

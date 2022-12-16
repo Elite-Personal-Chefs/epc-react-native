@@ -61,17 +61,11 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [eventImg, setEventImg] = useState(
 		require("../../assets/food_pasta.png")
 	);
-	const [reserved, setReserved] = useState(
-		routeParams.reserved ? true : false
-	);
+	const [reserved, setReserved] = useState(routeParams?.reserved ? true : false);
 	const [guestList, setGuestList] = useState();
 	const [menuItems, setMenuItems] = useState(false);
-	const [eventDetails, setEventDetails] = useState(
-		routeParams ? routeParams : null
-	);
-	const [knownCPP, setKnownCPP] = useState(
-		routeParams.cpp ? +routeParams.cpp : false
-	);
+	const [eventDetails, setEventDetails] = useState(routeParams ? routeParams : null);
+	const [knownCPP, setKnownCPP] = useState(routeParams?.cpp ? +routeParams.cpp : false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
@@ -97,25 +91,22 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	const addToMyEvents = async (eventID) => {
 		try {
-			const result = await fetch(
-				getEndpoint(appsGlobalContext, "copy_event_template"),
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
+			const result = await fetch(getEndpoint(appsGlobalContext, "copy_event_template"), {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					event_template_id: eventID,
+					add_data: {
+						chef_id: uid,
+						is_custom: false,
+						is_published: false,
 						event_template_id: eventID,
-						add_data: {
-							chef_id: uid,
-							is_custom: false,
-							is_published: false,
-							event_template_id: eventID,
-						},
-					}),
-				}
-			);
+					},
+				}),
+			});
 			const json = await result.json();
 			setAdded(true);
 		} catch (error) {
@@ -139,9 +130,7 @@ export default function EventDetailScreen({ route, navigation }) {
 		let menuDoc;
 
 		if (pageName == "Templates" || details.isTemplate) {
-			menuRef = firestore
-				.collection("menu_templates")
-				.doc(details.menu_template_id);
+			menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
 		} else {
 			menuRef = firestore
 				.collection("chefs")
@@ -193,13 +182,9 @@ export default function EventDetailScreen({ route, navigation }) {
 
 	const sendEmail = () => {
 		let eventTitle = `${eventDetails.title} Update`;
-		let emailList = guestList
-			.map((guest) => guest.userSummary.email)
-			.join(";");
+		let emailList = guestList.map((guest) => guest.userSummary.email).join(";");
 
-		Linking.openURL(
-			`mailto:${userEmail}?subject=${eventTitle}&bcc=${emailList}`
-		);
+		Linking.openURL(`mailto:${userEmail}?subject=${eventTitle}&bcc=${emailList}`);
 	};
 
 	const changePublishStatus = async () => {
@@ -217,13 +202,13 @@ export default function EventDetailScreen({ route, navigation }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			if (routeParams.photos) {
-				setEventImg({ uri: routeParams.photos[0] });
+			if (routeParams?.photos) {
+				setEventImg({ uri: routeParams?.photos[0] });
 				//useState(require('../assets/food_pasta.png'))
 			}
-			console.log("Passed in ID", routeParams.id);
+			console.log("Passed in ID", routeParams?.id);
 			if (activeFlow == "chefs") {
-				getReservations(routeParams.id);
+				getReservations(routeParams?.id);
 			}
 
 			getEventDetails();

@@ -27,16 +27,20 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function EventListing({ eventTemplates, pageName, navigation }) {
+	let navigateTo = "";
+
+	if (pageName === "Templates") navigateTo = "Chef Event Template Details";
+	if (pageName === "Your Events") navigateTo = "Chef Event Details";
+
 	const renderItem = ({ item }) => {
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() =>
-					navigation.navigate("Chef Event Details", {
-						details: item,
-						pageName: pageName,
-					})
-				}
+				onPress={() => {
+					navigation.navigate(navigateTo, {
+						event: item,
+					});
+				}}
 			>
 				<View style={globalStyles.navigate_away}>
 					<Text style={[globalStyles.navigate_away_content, { fontWeight: "bold" }]}>
