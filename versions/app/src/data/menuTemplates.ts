@@ -38,12 +38,24 @@ const getMenuTemplatesById = async (id: string): Promise<Menu> => {
 	}
 };
 
-const getSubcollections = async (id: string) => {
-	const sfRef = db.collection("menu_templates").doc(id);
-	const collections = await sfRef.listCollections();
-	collections.forEach((collection) => {
-		console.log("Found subcollection with id:", collection.id);
-	});
+const getMenuTemplateCourses = async (menuId: string, courses: any): Promise<Course> => {
+	let menuItems = [];
+
+	for (const course of courses) {
+		let courseSnapshot = await db.collection("menu_templates").doc(menuId).collection(course).get();
+
+		if (!courseSnapshot.empty) {
+			let meals = [];
+
+			courseSnapshot.forEach((doc) => {
+				meals.push({ ...doc.data(), id: doc.id });
+			});
+			menuItems.push({ course: course, meals: meals });
+		}
+	}
+
+	return menuItems as Course;
+	console.log(`\n\nmenuItems ${JSON.stringify(menuItems)}\n\n`);
 };
 
 // const getMenuTemplateCourses = async (menuId: string, course: any): Promise<Course> => {
@@ -135,7 +147,7 @@ const unpublishMenu = async (menuID): Promise<void> => {
 export {
 	getMenuTemplates,
 	getMenuTemplatesById,
-	getSubcollections,
+	getMenuTemplateCourses,
 	getMenusByChefId,
 	getMenus,
 	getPublishedMenus,

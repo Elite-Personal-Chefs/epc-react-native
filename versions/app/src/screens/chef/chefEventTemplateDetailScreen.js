@@ -32,7 +32,7 @@ import { getEndpoint } from "../../helpers/helpers";
 
 import Tooltip from "react-native-walkthrough-tooltip";
 import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../data/event";
-import { getMenuTemplatesById, getSubcollections } from "../../data/menuTemplates";
+import { getMenuTemplatesById, getMenuTemplateCourses } from "../../data/menuTemplates";
 
 // STYLES
 import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../styles/styles";
@@ -92,24 +92,12 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 	// 	}
 	// };
 
-	// //If we are coming from Reservation page then we need more details on the event
-	// const isReservation = route.params.isReservation;
-	// if (isReservation) {
-	// 	getEventDetails();
-	// }
-
-	// const editEvent = () => {
-	// 	console.log("Lets edit the envet");
-	// 	navigation.navigate("Create Event", {
-	// 		details: eventDetails || routeParams,
-	// 	});
-	// };
-
-	//! HEY THIS IS WHERE WE ARE GETTING THE MENU TEMPLATE DATA
-	// const getMenuTemplateById = async (menuID) => {
-	// 	const menuTemplateDoc = await getMenuTemplateById(menuID);
-	// 	setMenuTemplate(menuTemplateDoc);
-	// };
+	const getMenuCoursesAndMeals = async (menuId, courses) => {
+		await getMenuTemplateCourses(menuId, courses).then((menuItems) => {
+			console.log("MENU ITEMS", menuItems);
+			setMenuItems(menuItems);
+		});
+	};
 
 	const getMenuTemplateData = async (menuId) => {
 		const menuTemplateDoc = await getMenuTemplatesById(menuId);
@@ -118,76 +106,9 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 
 		let courses = menuTemplateDoc.courses;
 		setCourses(courses);
-		console.log(`courses[0]`, courses[0], "types of", typeof courses[0]);
 
-		let courseRef;
-		courseRef = db.collection("menu_templates").doc(menuId).collection(courses[0]).get();
-
-		console.log(`courseRef ${JSON.stringify(courseRef)}}`);
-
-		//! Testing collectionGroup group query
-		// const theCollectionGroup = db.collectionGroup("dessert").get();
-		// console.log(`theCollectionGroup ${JSON.stringify(theCollectionGroup)}`);
-
-		//! Testing teasing out the courses by specifing the course name in the collection
-
-		// courses.forEach((course) => {
-		// 	console.log(`Next course is: `, course);
-
-		// 	return courseRef.docs.map((doc) => {
-		// 		if (!doc.exists) {
-		// 			console.log("No such document!");
-		// 			return;
-		// 		} else {
-		// 			console.log("Document data:", doc.data());
-		// 			return menuItems.push({ ...doc.data(), id: doc.id });
-		// 		}
-		// 	});
-		// });
-		console.log(`menuItems`, menuItems);
+		await getMenuCoursesAndMeals(menuId, courses);
 	};
-
-	// courses.forEach((course) => {
-	// 	menuItems.push(...course.menuItems);
-	// });
-	// console.log(`menuItems`, menuItems);
-
-	// //If this is a template page look for the menu in templates
-	// //otherwise look into the chefs colelction of menus
-	// console.log("Getting menus for event", details, pageName);
-	// const firestore = firebase.firestore();
-	// let menuRef;
-	// let menuDoc;
-	// if (pageName == "Templates" || details.isTemplate) {
-	// 	menuRef = firestore.collection("menu_templates").doc(details.menu_template_id);
-	// } else {
-	// 	menuRef = firestore
-	// 		.collection("chefs")
-	// 		.doc(eventDetails.chefId)
-	// 		.collection("menus")
-	// 		.doc(`${details.menuId}`);
-	// }
-	// menuDoc = await menuRef.get();
-	// if (!menuDoc.exists) {
-	// 	console.log("No menu found");
-	// } else {
-	// 	let menu = menuDoc.data();
-	// 	let courses = menu.courses;
-	// 	let menuItems = [];
-	// 	for await (const course of courses) {
-	// 		//Get all courses for this menu
-	// 		let courseSnapshot = await menuRef.collection(course).get();
-	// 		if (!courseSnapshot.empty) {
-	// 			let items = [];
-	// 			courseSnapshot.forEach((doc) => {
-	// 				let item = doc.data();
-	// 				items.push(item);
-	// 			});
-	// 			menuItems.push({ items, course: course });
-	// 		}
-	// 	}
-	// 	setMenuItems(menuItems);
-	// }
 
 	// /*******************************************************************************/
 	// // EMAIL GUESTS
@@ -267,7 +188,7 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 						></AddEventTemplateButton>
 						<EventTemplateCard description={eventDescription}></EventTemplateCard>
 					</View>
-					<MenuCard menu={menuTemplateDetails}></MenuCard>
+					<MenuCard menuItems={menuItems}></MenuCard>
 				</ScrollView>
 			) : (
 				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />

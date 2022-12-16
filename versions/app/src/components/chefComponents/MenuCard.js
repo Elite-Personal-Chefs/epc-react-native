@@ -19,8 +19,13 @@ import {
 import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
 
-export default function MenuCard(menuDetails) {
-	console.log(`menuDetails in MenuCard ${JSON.stringify(menuDetails)}`);
+export default function MenuCard(menuItems) {
+	console.log(`menuItems: ${JSON.stringify(menuItems)}`);
+
+	menuItems.map((menu, index) => {
+		console.log(`menu: ${JSON.stringify(menu)}`);
+	});
+
 	// const [menuItems, setMenuItems] = useState(null);
 	// const [loading, setLoading] = useState(true);
 
