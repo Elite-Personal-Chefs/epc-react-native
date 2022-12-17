@@ -47,6 +47,9 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 	const [menuTemplateDetails, setMenuTemplateDetails] = useState(null);
 
 	// PASSING TO CHILD COMPONENTS
+	const [Img, setImg] = useState([
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
+	]);
 	const [eventId, setEventId] = useState(route.params.event.id);
 	const [CPP, setCPP] = useState(routeParams.event.cpp ? +routeParams.event.cpp : false);
 	const [eventDescription, setEventDescription] = useState(routeParams.event.description);
@@ -81,7 +84,7 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 				<ScrollView showsVerticalScrollIndicator={false}>
 					<Image
 						source={{
-							uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
+							uri: Img[0],
 						}}
 						style={eventGlobalStyles.image}
 						resizeMode={"cover"}
@@ -95,9 +98,11 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 							<EventTemplateSuggestedPricing CPP={CPP}></EventTemplateSuggestedPricing>
 						</View>
 						<AddEventTemplateButton
-							eventId={eventId}
 							chefId={uid}
-							menuId={menuId}
+							image={Img}
+							event={eventDetails}
+							courses={courses}
+							menuItems={menuItems}
 						></AddEventTemplateButton>
 						<EventTemplateCard description={eventDescription}></EventTemplateCard>
 					</View>

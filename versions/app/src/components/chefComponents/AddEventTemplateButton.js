@@ -16,30 +16,23 @@ import {
 import { CustomButton } from "../Button";
 
 // SERVICES
-import { getEventsByChefId } from "../../data/event";
-import { getEventTemplateById } from "../../data/eventTemplates";
+import { addEventTemplateToChef } from "../../data/chef";
 
 // STYLES
 import { globalStyles, eventGlobalStyles } from "../../styles/styles";
 
-export default function AddEventTemplateButton({ eventId, chefId, menuId }) {
-	console.log(`what is eventId: ${eventId}`);
-	console.log(`what is chefId: ${chefId}`);
-	console.log(`what is menuId: ${menuId}`);
-
+export default function AddEventTemplateButton({ chefId, image, event, courses, menuItems }) {
 	//SET added is already found in my events
 	const [added, setAdded] = useState(false);
-	const [eventTemplate, setEventTemplate] = useState(null);
-	const [menuTemplate, setMenuTemplate] = useState(null);
 
-	//console.log(`eventTemplate: ${JSON.stringify(eventTemplate)}`);
+	const addToMyEvents = async (chefId, image, event, courses, menuItems) => {
+		console.log(`what is chefId: ${chefId}`);
+		console.log(`what is image: ${image}`);
+		console.log(`what is event: ${JSON.stringify(event)}`);
+		console.log(`what is courses: ${JSON.stringify(courses)}`);
+		console.log(`what is menu: ${JSON.stringify(menuItems)}`);
 
-	// const getEventTemplateById = async (eventID) => {
-	// 	const eventTemplateDoc = await getEventTemplateById(eventID);
-	// 	setEventTemplate(eventTemplateDoc);
-	// };
-
-	const addToMyEvents = async (eventID) => {
+		addEventTemplateToChef(chefId, image, event, courses, menuItems);
 		//Grab experience template from firestore
 		//Add template to events collection with with template model data
 		// And all the event model data set to null
@@ -81,7 +74,7 @@ export default function AddEventTemplateButton({ eventId, chefId, menuId }) {
 			) : (
 				<CustomButton
 					text='Added to My Events'
-					onPress={() => addToMyEvents(eventID)}
+					onPress={() => addToMyEvents(chefId, image, event, courses, menuItems)}
 					size='big'
 					disabled={added}
 				/>

@@ -32,7 +32,7 @@ const getEventTemplateById = async (id: string): Promise<EventTemplate> => {
 				console.log("No such document!");
 				return;
 			} else {
-				//console.log("Document data:", doc.data());
+				console.log("Document data:", doc.data());
 			}
 		})
 		.catch((err) => {
