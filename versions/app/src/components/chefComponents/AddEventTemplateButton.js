@@ -22,7 +22,11 @@ import { getEventTemplateById } from "../../data/eventTemplates";
 // STYLES
 import { globalStyles, eventGlobalStyles } from "../../styles/styles";
 
-export default function AddEventTemplateButton({ eventID, chefID, menuID }) {
+export default function AddEventTemplateButton({ eventId, chefId, menuId }) {
+	console.log(`what is eventId: ${eventId}`);
+	console.log(`what is chefId: ${chefId}`);
+	console.log(`what is menuId: ${menuId}`);
+
 	//SET added is already found in my events
 	const [added, setAdded] = useState(false);
 	const [eventTemplate, setEventTemplate] = useState(null);

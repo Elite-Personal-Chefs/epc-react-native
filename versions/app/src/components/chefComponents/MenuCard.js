@@ -1,17 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-	Button,
-	Text,
-	StyleSheet,
-	View,
-	ScrollView,
-	Image,
-	ActivityIndicator,
-	TouchableOpacity,
-	Linking,
-} from "react-native";
+import { Text, View, ActivityIndicator } from "react-native";
 
 //OTHER DEPENDENCIES
 
@@ -19,16 +9,27 @@ import {
 import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
 
-export default function MenuCard(menuItems) {
-	console.log(`menuItems: ${JSON.stringify(menuItems)}`);
-
-	// const [menuItems, setMenuItems] = useState(null);
-	// const [loading, setLoading] = useState(true);
+export default function MenuCard(menuCoursesAndMeals) {
+	const renderMenu = menuCoursesAndMeals.menuItems.map((menu) => {
+		return (
+			<View style={menusStyles.menu_course_cont} key={menu.id}>
+				<Text style={menusStyles.menu_course}>-{menu.course}-</Text>
+				{menu.meals.map((meal) => {
+					return (
+						<View style={menusStyles.menu_item_cont} key={meal.id}>
+							<Text style={menusStyles.menu_name}>{meal.title}</Text>
+							{meal.description && <Text style={menusStyles.menu_desc}>{meal.description}</Text>}
+						</View>
+					);
+				})}
+			</View>
+		);
+	});
 
 	return (
-		<View style={[globalStyles.card, { width: "100%" }]}>
-			{menuItems ? (
-				<Text>Menu Card</Text>
+		<View style={[globalStyles.card]}>
+			{menuCoursesAndMeals ? (
+				renderMenu
 			) : (
 				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 			)}

@@ -117,10 +117,10 @@ const globalStyles = StyleSheet.create({
 	},
 	card: {
 		paddingVertical: 15,
-		paddingHorizontal: 12,
+		paddingHorizontal: 15,
 		borderRadius: 8,
 		backgroundColor: Theme.SURFACE_COLOR,
-		margin: 5,
+		marginHorizontal: 15,
 		shadowColor: Theme.FAINT,
 		shadowOffset: {
 			width: 2,

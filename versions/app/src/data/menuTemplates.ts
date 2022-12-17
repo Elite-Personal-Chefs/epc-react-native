@@ -44,49 +44,23 @@ const getMenuTemplateCourses = async (menuId: string, courses: any): Promise<Cou
 	for (const course of courses) {
 		let courseSnapshot = await db.collection("menu_templates").doc(menuId).collection(course).get();
 
+		//console.log(`what is courseSnapshot? ${JSON.stringify(courseSnapshot)}`);
+
 		if (!courseSnapshot.empty) {
 			let meals = [];
 
 			courseSnapshot.forEach((doc) => {
 				meals.push({ ...doc.data(), id: doc.id });
 			});
-			menuItems.push({ course: course, meals: meals });
+			menuItems.push({ course: course, menuTemplateId: menuId, meals: meals });
 		}
 	}
-
 	return menuItems as Course;
-	console.log(`\n\nmenuItems ${JSON.stringify(menuItems)}\n\n`);
 };
 
-// const getMenuTemplateCourses = async (menuId: string, course: any): Promise<Course> => {
-// 	const menuTemplateCollection = db.collection("menu_templates");
 
-// 	try {
-// 		const courseCollection = await menuTemplateCollection.doc(menuId).collection("courses").doc(course.id).get();
-// 	}
 
-// const getMenuTemplateCourses = async (id: string): Promise<Course> => {
-//   const menuTemplateCollection = db.collection("menu_templates");
-//   const menuTemplate = await menuTemplateCollection
-//     .doc(id)
-//     .get()
-//     .then((doc) => {
-//       if (!doc.exists) {
-//         console.log("No such document!");
-//         return -1;
-//       } else {
-//         let courses = doc.data().courses;
-//         console.log("Document data:", courses);
-
-//         console.log("Document data:", doc.data());
-//       }
-//     })
-//     .catch((err) => {
-//       console.log("Error getting document", err);
-//       Alert.alert("Tried to get a template doc that doesn't exist!", err.message, [{ text: "OK" }]);
-//     });
-//   return { ...menuTemplate.data(), id: menuTemplate.id } as Menu;
-// };
+//! CHECK ON THE CODE BELOW
 
 const getMenusByChefId = async (chefId: string): Promise<Menu[]> => {
 	const menuCollection = db.collection("menus").where("chefId", "==", chefId);
