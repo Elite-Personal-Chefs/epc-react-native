@@ -15,13 +15,13 @@ import {
 	ActivityIndicator,
 	TextInput,
 } from "react-native";
+import { format } from "date-fns";
 
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
 import { firebase, configKeys } from "../../config/config";
 import _ from "underscore";
-
 
 // COMPONENTS
 import AppContext from "../../components/AppContext";
@@ -31,6 +31,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
 import * as eventDataHelper from "../../data/event";
+import {reserveEvent, getEventById}from "../../data/event";
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
@@ -66,21 +67,16 @@ export default function EventDetailScreen({ route, navigation }) {
 	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
-		console.log("This is a reservation need more details");
-		const firestore = firebase.firestore();
-		const eventRef = firestore
-			.collection("events")
-			.doc(eventDetails.id || eventDetails.experience_id);
-		const eventDoc = await eventRef.get();
-		if (!eventDoc.exists) {
+		console.log("Trying to get these details", eventDetails);
+		const event = await getEventById(eventDetails.id);
+
+		if (!event) {
 			console.log("No event found");
-		} else {
-			let event = eventDoc.data();
-			event.id = eventDoc.id;
-			setEventDetails(event);
-			getMenus(event);
-			console.log("Found event details", event);
+			return;
 		}
+		setEventDetails(event);
+		getMenus(event);
+		console.log("Found event details", event);
 	};
 
 	//If we are coming from Reservation page then we need more details on the event
@@ -89,11 +85,10 @@ export default function EventDetailScreen({ route, navigation }) {
 		getEventDetails();
 	}
 
-	const reserveEvent = async () => {
+	const reserve = async () => {
 		console.log("This is the user that is reserving ", user);
 		try {
-			
-			await eventDataHelper.reserveEvent(
+			await reserveEvent(
 				eventDetails.id,
 				uid,
 				reservationQuantity
@@ -152,19 +147,12 @@ export default function EventDetailScreen({ route, navigation }) {
 		let menuRef;
 		let menuDoc;
 
-		if (pageName == "Templates" || details.isTemplate) {
-			console.log(`pageName \n ${pageName}`);
-			menuRef = firestore
-				.collection("menu_templates")
-				.doc(details.menu_template_id);
-		} else {
-			console.log("Getting menu from chefs collection");
-			menuRef = firestore
-				.collection("chefs")
-				.doc(eventDetails.chef_id)
-				.collection("menus")
-				.doc(`${details.menu_template_id}`);
-		}
+		console.log("Getting menu from chefs collection");
+		menuRef = firestore
+			.collection("chefs")
+			.doc(eventDetails.chefId)
+			.collection("menus")
+			.doc(`${details.menuId}`);
 
 		menuDoc = await menuRef.get();
 
@@ -205,7 +193,6 @@ export default function EventDetailScreen({ route, navigation }) {
 			} else {
 				setEventImg(require("../../assets/event_placeholder.png"));
 			}
-
 
 			getEventDetails();
 		}, [])
@@ -324,7 +311,7 @@ export default function EventDetailScreen({ route, navigation }) {
 									>
 										<CustomButton
 											text="Reserve this Event"
-											onPress={() => reserveEvent()}
+											onPress={() => reserve()}
 											size="big"
 										/>
 
@@ -383,9 +370,12 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.event_date
-											? eventDetails.event_date
-											: "March 22, 2022"}
+										{eventDetails.start && eventDetails.end
+											? `${format(
+													eventDetails.start,
+													"PPPP"
+											  )}`
+											: "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -395,11 +385,11 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.start_time
-											? eventDetails.start_time +
+										{eventDetails.start && eventDetails.end
+											? format(eventDetails.start, "p") +
 											  "-" +
-											  eventDetails.end_time
-											: "5pm-8pm"}
+											  format(eventDetails.end, "p")
+											: "No Time Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>

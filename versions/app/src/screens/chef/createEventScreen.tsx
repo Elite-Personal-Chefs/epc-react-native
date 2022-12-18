@@ -7,13 +7,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 // OTHER DEPENDENCIES
 import _ from "underscore";
-import { firebase, configKeys } from "../../config/config";
-import moment from "moment";
+import { firebase } from "../../config/config";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
-import { set, formatISO, format, parseISO } from "date-fns";
+import { set, format } from "date-fns";
 
 // COMPONENTS
 import {
@@ -23,34 +22,29 @@ import {
 	TextInput,
 	ScrollView,
 	Dimensions,
-	Modal,
 	Alert,
-	KeyboardAvoidingView,
 	TouchableNativeFeedback,
 	LogBox,
 } from "react-native";
 import AppContext from "../../components/AppContext";
 import { CustomButton } from "../../components/Button";
-import { Formik, useFormikContext, Field } from "formik";
+import { Formik } from "formik";
 import ImageUploader from "../../components/ImageUploader";
 import * as yup from "yup";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { createEvent, updateEvent } from "../../data/event";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms, modal } from "../../styles/styles";
+import { globalStyles, forms } from "../../styles/styles";
 import {
 	MaterialCommunityIcons,
 	MaterialIcons,
 	Fontisto,
 	Entypo,
-	Ionicons,
 } from "@expo/vector-icons";
 import Theme from "../../styles/theme.style.js";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 /*******************************************************************************/
@@ -62,58 +56,34 @@ LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function CreateEventScreen({ route, navigation }) {
+export default function CreateEventScreen({ route, navigation }: any) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
-	const [isDisabled, setIsDisabled] = useState(false);
-	const [focusName, setFocusName] = useState(null);
+	const [submitDisabled, setSubmitDisabled] = useState(false);
+	const [focusName, setFocusName] = useState<string>();
 
-	//* FOR DROPDOWN PICKER
-	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState(null);
+	//* FOR Menu DROPDOWN PICKER
+	const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
 	const [menusList, setMenusList] = useState([]);
 	const [currentMenuID, setCurrentMenuID] = useState(
-		route.params && route.params.details ? route.params.details.menu_template_id : value
+		route?.params?.details?.menu_template_id || null
 	);
 
-	const [details, setDetails] = useState(
-		route.params && route.params.details ? route.params.details : {}
-	);
+	const [eventDetails, setEventDetails] = useState(route?.params?.details);
 
-	//console.log("details:", details);
+	console.log("details:", eventDetails);
 
 	const eventRef = useRef();
-	const [eventLocation, setEventLocation] = useState(details.location ? details.location : "");
-	const [eventID, setEventID] = useState(details ? details.id : null);
+	const [eventLocation, setEventLocation] = useState(eventDetails.location ? eventDetails.location : "");
+	const [eventID, setEventID] = useState(eventDetails?.id || null);
 
 	const getCurrentLocation = async () => {
 		console.log("Getting location");
 		let { status } = await Location.requestForegroundPermissionsAsync();
 		if (status !== "granted") {
 			console.log("Permission to access location was denied");
-			/*
-            //let { status } = await Location.requestForegroundPermissionsAsync()
-            Alert.alert(
-                "Location Permissions Requred",
-                "Small Cheval needs your location to locate the nearest restaurant. Please enable locations in the settings menu on your device.",
-                [
-                    {
-                        text: "Open Settings",
-                        onPress: () =>  {
-                            goToSettings()
-                        }
-                    },
-                    {
-                        text: "Cancel",
-                        style: "cancel",
-                    },
-                ]
-            );
-            return
-            */
 		}
 		let location = await Location.getLastKnownPositionAsync();
-		//console.log(location);
 	};
 
 	getCurrentLocation();
@@ -122,16 +92,16 @@ export default function CreateEventScreen({ route, navigation }) {
 		"Thank you for booking me with Elite Personal Chefs! If you or someone in your party has an allergy or dietary restriction, please let me know as soon as possible. As our clients often ask about gratuity; it is never mandatory or expected but always appreciated. I’m excited to give you a truly special dining experience!";
 	let postserviceMsg =
 		"Thank you again for booking with me! It was such a pleasure to cook for you and your guests. We rely on positive feedback from amazing clients like yourself. If you have a moment, please let us know how your event went!";
-	if (details) {
-		preserviceMsg = details.preservice ? details.preservice : preserviceMsg;
-		postserviceMsg = details.postservice ? details.postservice : postserviceMsg;
+	if (eventDetails) {
+		preserviceMsg = eventDetails.preservice ? eventDetails.preservice : preserviceMsg;
+		postserviceMsg = eventDetails.postservice ? eventDetails.postservice : postserviceMsg;
 	}
 
 	/***********************************************/
 	//! DATE PICKER
 	/***********************************************/
 	// ===START DATE STATES===
-	const [start, setStart] = useState(details?.start || new Date());
+	const [start, setStart] = useState(eventDetails?.start || new Date());
 
 	const [showStartDatePicker, setShowStartDatePicker] = useState(false);
 	const displayStartDate = () => setShowStartDatePicker(true);
@@ -143,7 +113,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	const hideStartTime = () => setShowStartTimePicker(false);
 	const handleStartTimeCancel = () => hideStartTime();
 
-	const handleStartDateConfirm = (date) => {
+	const handleStartDateConfirm = (date: Date) => {
 		const newDate = set(start, {
 			date: date.getDate(),
 			month: date.getMonth(),
@@ -154,7 +124,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		hideStartDate();
 	};
 
-	const handleStartTimeConfirm = (time) => {
+	const handleStartTimeConfirm = (time: Date) => {
 		console.log(`in handleStartTimeConfirm: ${time}`);
 
 		const newDate = set(end, {
@@ -166,7 +136,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	};
 
 	// ===END DATE STATES===
-	const [end, setEnd] = useState(details.end || new Date());
+	const [end, setEnd] = useState(eventDetails.end || new Date());
 
 	const [showEndDate, setShowEndDate] = useState(false);
 	const displayEndDate = () => setShowEndDate(true);
@@ -178,7 +148,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	const hideEndTime = () => setShowEndTime(false);
 	const handleEndTimeCancel = () => setShowEndTime(false);
 
-	const handleEndDateConfirm = (date) => {
+	const handleEndDateConfirm = (date: Date) => {
 		const newDate = set(end, {
 			date: date.getDate(),
 			month: date.getMonth(),
@@ -189,7 +159,7 @@ export default function CreateEventScreen({ route, navigation }) {
 		hideEndDate();
 	};
 
-	const handleEndTimeConfirm = (time) => {
+	const handleEndTimeConfirm = (time: Date) => {
 		console.log(`in handleEndTimeConfirm: ${time}`);
 
 		const newDate = set(end, {
@@ -203,8 +173,10 @@ export default function CreateEventScreen({ route, navigation }) {
 	/***********************************************/
 	//
 	/***********************************************/
-	const getMenus = async (uid) => {
-		//console.log(appsGlobalContext);
+	const getMenus = async (uid: string) => {
+		
+		console.debug("User Id for getting menus",uid);
+		
 		const menusRef = await firebase
 			.firestore()
 			.collection("chefs")
@@ -227,7 +199,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	/***********************************************/
 	//
 	/***********************************************/
-	const addExperience = async (values) => {
+	const addEvent = async (values: any) => {
 		console.log(`values`, values);
 
 		//Add in details about chef
@@ -237,14 +209,15 @@ export default function CreateEventScreen({ route, navigation }) {
 
 		//If details were passed then we are updating not creating
 		//console.log(`details`, details);
-		if (Object.keys(details).length > 0) {
+		if (Object.keys(eventDetails).length > 0) {
 			console.log("Updating experience", values);
 			await updateEvent(eventID, values);
 		} else {
 			console.log("Creating experience", values);
-			const snapshot = await createEvent(values);
-			console.log("Snapshot", snapshot);
-			setEventID(snapshot.id);
+			const newEvent = await createEvent(values);
+			console.log("Snapshot", JSON.stringify(newEvent, null, 2));
+			console.log("New Event ID", newEvent.id);
+			setEventID(newEvent.id);
 		}
 
 		//MENU ADDED NOW GO TO PHOTOS
@@ -255,19 +228,19 @@ export default function CreateEventScreen({ route, navigation }) {
 	// PHOTO MODE
 	/***********************************************/
 	const [isPhotoMode, setPhotoMode] = useState(false);
-	const [eventImg, setEventImg] = useState(null); //useState((route.params) ? route.params.photo : null)
-	const getImageUrl = async (url) => {
+	const [eventImg, setEventImg] = useState<string>(); //useState((route.params) ? route.params.photo : null)
+	const getImageUrl = async (url: string) => {
 		console.log("Got the image", url);
 		setEventImg(url);
 	};
 
-	const addPhotoToEvent = async (url) => {
+	const addPhotoToEvent = async (url: string) => {
 		const eventsRef = firebase.firestore().collection("events");
 		await eventsRef.doc(eventID).update({
 			photos: firebase.firestore.FieldValue.arrayUnion(eventImg),
 		});
 		setPhotoMode(false);
-		Alert.alert("Congratulations", `Your event has been ${details ? "updated" : "created"}.`, [
+		Alert.alert("Congratulations", `Your event has been ${eventDetails ? "updated" : "created"}.`, [
 			{ text: "View Events", onPress: () => navigation.goBack() },
 		]);
 	};
@@ -275,7 +248,7 @@ export default function CreateEventScreen({ route, navigation }) {
 	useEffect(() => {
 		Location.installWebGeolocationPolyfill();
 		getMenus(uid);
-		eventRef.current?.setAddressText(eventLocation);
+		eventRef.current?.setAddressText(eventLocation); 
 	}, [1]);
 
 	return (
@@ -301,16 +274,14 @@ export default function CreateEventScreen({ route, navigation }) {
 						<Formik
 							enableReinitialize={true}
 							initialValues={{
-								title: details ? details.title : "",
-								description: details ? details.description : "",
-								guestCapacity: details ? details.guestCapacity : "",
-								cpp: details ? details.cpp : "",
-								menuId: details ? details.menuId : "",
+								title: eventDetails ? eventDetails.title : "",
+								description: eventDetails ? eventDetails.description : "",
+								guestCapacity: eventDetails ? eventDetails.guestCapacity : "",
+								cpp: eventDetails ? eventDetails.cpp : "",
+								menuId: eventDetails ? eventDetails.menuId : "",
 							}}
-							onSubmit={(values) => {
-								console.log("values", values);
-
-								setIsDisabled(false);
+							onSubmit={(values: any) => {
+								setSubmitDisabled(false);
 								values.chefId = uid;
 								values.start = start;
 								values.end = end;
@@ -321,7 +292,7 @@ export default function CreateEventScreen({ route, navigation }) {
 								values.location = eventLocation;
 
 								console.log("Creating this event", values);
-								addExperience(values);
+								addEvent(values);
 								//	(values);
 							}}
 							validationSchema={yup.object().shape({
@@ -668,11 +639,14 @@ export default function CreateEventScreen({ route, navigation }) {
 
 									<DropDownPicker
 										zIndex={1000}
-										open={open}
-										value={currentMenuID}
+										open={menuDropdownOpen}
+										value={eventDetails.menuId}
 										items={menusList}
-										setOpen={setOpen}
-										setValue={setCurrentMenuID}
+										setOpen={setMenuDropdownOpen}
+										setValue={(value) => { 
+											console.log("Dropdown Value", value())
+											setEventDetails({...eventDetails, menuId: value()})
+										}}
 										closeAfterSelecting={true}
 										itemSeparator={true}
 										onChangeValue={(value) => {
@@ -916,7 +890,7 @@ export default function CreateEventScreen({ route, navigation }) {
 										text='Save and Continue'
 										onPress={handleSubmit}
 										size='big'
-										disabled={isDisabled}
+										disabled={submitDisabled}
 									/>
 								</>
 							)}

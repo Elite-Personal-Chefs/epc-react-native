@@ -37,7 +37,7 @@ import {
 } from "../styles/styles";
 import Theme from "../styles/theme.style.js";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents as dataGetEvents } from "../data/event";
+import { getEvents } from "../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -59,10 +59,10 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const getEvents = async (eventPageName) => {
+	const getEventsDetails = async (eventPageName) => {
 		console.log("💚💚💚 Getting events: " + eventPageName);
 		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
-		const json = await dataGetEvents(new Date, null, true);
+		const json = await getEvents({ start: new Date(), published: true });
 		// console.log("💚💚💚 Result: ", result);
 		if (!json.error) {
 			//console.log(json)
@@ -145,7 +145,7 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const onRefresh = () => {
-		getEvents(eventPageName);
+		getEventsDetails(eventPageName);
 		setRefreshing(false);
 	};
 
@@ -154,7 +154,7 @@ export default function EventsScreen({ navigation, route }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			getEvents(eventPageName);
+			getEventsDetails(eventPageName);
 			console.log("Event screen is focused:" + eventPageName);
 		}, [])
 	);

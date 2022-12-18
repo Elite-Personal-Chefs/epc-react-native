@@ -61,9 +61,7 @@ export default function EventDetailScreen({
 }: EventDetailProps) {
 	const appsGlobalContext = useContext(AppContext);
 
-	const uid = appsGlobalContext.userID;
 	const userEmail = appsGlobalContext.userData.email;
-	const activeFlow = appsGlobalContext.activeFlow;
 	const routeParams = route.params.details;
 	const placeholderImg = require("../../assets/food_pasta.png");
 
@@ -95,6 +93,8 @@ export default function EventDetailScreen({
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
+
+		console.debug("Event", event)
 
 		menuRef = firestore
 			.collection("chefs")

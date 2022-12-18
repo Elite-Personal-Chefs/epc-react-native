@@ -28,7 +28,9 @@ const eventConverter = {
 
 // CRUD Events in firestore
 const createEvent = async (eventData: Event): Promise<Event> => {
-	const eventCollection = db.collection("events");
+	const eventCollection = db
+		.collection("events")
+		.withConverter(eventConverter);
 	// eventData.menuId ??= null;
 
 	const newEventSnap = await eventCollection.add(eventData);
@@ -64,13 +66,19 @@ const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
 	return results;
 };
 
-const getEvents = async (
-	start?: Date,
-	end?: Date,
-	published?: boolean
-): Promise<Event[]> => {
-	console.debug("getEvents arguments", { start, end, published });
-	let eventCollection = firebase.firestore().collection("events");
+const getEvents = async ({
+	start,
+	end,
+	published,
+}: {
+	start?: Date;
+	end?: Date;
+	published?: boolean;
+}): Promise<Event[]> => {
+	let eventCollection = firebase
+		.firestore()
+		.collection("events")
+		.withConverter(eventConverter);
 
 	if (start)
 		eventCollection = eventCollection.where("end", ">=", start) as any;
