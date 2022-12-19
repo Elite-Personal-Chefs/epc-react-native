@@ -1,11 +1,10 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import {
-	Button,
 	Text,
 	StyleSheet,
 	View,
@@ -13,58 +12,48 @@ import {
 	Dimensions,
 	Image,
 	ActivityIndicator,
-	TextInput,
+	Alert,
+	TouchableOpacity,
 } from "react-native";
 import { format } from "date-fns";
 
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
-import { firebase, configKeys } from "../../config/config";
+import { firebase } from "../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
 import AppContext from "../../components/AppContext";
 import { CustomButton } from "../../components/Button";
-import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import Tooltip from "react-native-walkthrough-tooltip";
-import * as eventDataHelper from "../../data/event";
-import {reserveEvent, getEventById}from "../../data/event";
+import { reserveEvent, getEventById } from "../../data/event";
+import Event from "../../models/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import { globalStyles, menusStyles } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
 	FontAwesome5,
-	Ionicons,
 } from "@expo/vector-icons";
-import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function EventDetailScreen({ route, navigation }) {
+export default function EventDetailScreen({ route }: any) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
-	const activeFlow = appsGlobalContext.activeFlow;
 	const details = route.params.details;
-	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState();
+	const [eventImg, setEventImg] = useState<string>();
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
-	const [guestList, setGuestList] = useState(false);
-	const [menuItems, setMenuItems] = useState(false);
+	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
 	const [reservationQuantity, setReservationQuantity] = useState(1);
-	const [knownCPP, setKnownCPP] = useState(
-		details.cpp ? +details.cpp : false
-	);
-	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
 		console.log("Trying to get these details", eventDetails);
@@ -88,59 +77,16 @@ export default function EventDetailScreen({ route, navigation }) {
 	const reserve = async () => {
 		console.log("This is the user that is reserving ", user);
 		try {
-			await reserveEvent(
-				eventDetails.id,
-				uid,
-				reservationQuantity
-			);
+			await reserveEvent(eventDetails.id, uid, reservationQuantity);
 			setReserved(true);
-			alert("Reservation Completed");
+			Alert.alert("Reservation Completed");
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const [added, setAdded] = useState(false);
-
-	const addToMyEvents = async (eventID) => {
-		//console.log(eventID, uid);
-		try {
-			const result = await fetch(
-				getEndpoint(appsGlobalContext, "copy_event_template"),
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						event_template_id: eventID,
-						add_data: {
-							chef_id: uid,
-							is_custom: false,
-							is_published: false,
-							event_template_id: eventID,
-						},
-					}),
-				}
-			);
-			const json = await result.json();
-			setAdded(true);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const editEvent = () => {
-		console.log("Lets edit the envet");
-		navigation.navigate("Create Event", {
-			details: eventDetails || details,
-		});
-	};
-
-	const getMenus = async (details, pageName) => {
+	const getMenus = async (details: Event) => {
 		console.log("GETTING MENU ID: ", details);
-		console.log("Page Name", pageName);
 		//If this is a template page look for the menu in templates
 		//otherwise look into the chefs colelction of menus
 		const firestore = firebase.firestore();
@@ -213,82 +159,7 @@ export default function EventDetailScreen({ route, navigation }) {
 									{eventDetails.title}
 								</Text>
 							</View>
-							{pageName == "Templates" && (
-								<View style={styles.suggested_price_container}>
-									<View
-										style={
-											styles.price_label_and_icon_container
-										}
-									>
-										<Text style={styles.price_label}>
-											EPC Suggested Price
-										</Text>
-										<Tooltip
-											isVisible={toolTipVisible}
-											content={
-												<View>
-													<Text>
-														Your cost per person is
-														your event price and
-														will be shown to your
-														guests.
-													</Text>
-												</View>
-											}
-											placement="bottom"
-											onClose={() =>
-												setToolTipVisible(false)
-											}
-											useInteractionManager={true} // need this prop to wait for react navigation
-											// below is for the status bar of react navigation bar
-											// topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
-										>
-											<TouchableOpacity
-												style={[
-													{ width: "100%" },
-													styles.button,
-												]}
-												onPress={() =>
-													setToolTipVisible(true)
-												}
-											>
-												<AntDesign
-													name="infocirlceo"
-													size={17}
-													color="black"
-												/>
-											</TouchableOpacity>
-										</Tooltip>
-									</View>
-									<Text style={styles.price}>
-										${knownCPP}
-										<Text style={styles.price_label}>
-											/Person
-										</Text>
-									</Text>
-								</View>
-							)}
 						</View>
-						{pageName == "Templates" && (
-							<View style={styles.btn_cont}>
-								{added ? (
-									<CustomButton
-										text="Added to My Events"
-										size="big"
-										disabled="true"
-										checkmark="true"
-									/>
-								) : (
-									<CustomButton
-										text="Add to My Events"
-										onPress={() =>
-											addToMyEvents(details.id)
-										}
-										size="big"
-									/>
-								)}
-							</View>
-						)}
 
 						{!isReservation && (
 							<View style={styles.btn_cont}>
@@ -297,8 +168,9 @@ export default function EventDetailScreen({ route, navigation }) {
 										<CustomButton
 											text="Reserved"
 											size="big"
-											disabled="true"
-											checkmark="true"
+											disabled={true}
+											checkmark={true}
+											onPress={undefined}
 										/>
 									</View>
 								) : (
@@ -404,12 +276,12 @@ export default function EventDetailScreen({ route, navigation }) {
 									<Text style={styles.detail_label}>
 										{eventDetails.location
 											? eventDetails.location
-											: "Chicago"}
+											: "Location Not Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
-									<Ionicons
-										name="md-person"
+									<FontAwesome5
+										name="dollar-sign"
 										size={20}
 										style={[
 											styles.detail_icon,
@@ -417,9 +289,8 @@ export default function EventDetailScreen({ route, navigation }) {
 										]}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.guests
-											? eventDetails.guests + " Guests"
-											: "22 Guests"}
+										{details?.cpp && details.cpp > 0
+											? `$${details.cpp}/person` : "Free"}
 									</Text>
 								</View>
 							</View>
@@ -518,37 +389,6 @@ export default function EventDetailScreen({ route, navigation }) {
 									If you damage the venue, you may be charged
 									for the damage you cause.
 								</Text>
-							</View>
-						)}
-
-						{/* GUEST LIST */}
-						{guestList && (
-							<View
-								style={[globalStyles.card, { width: "100%" }]}
-							>
-								<View style={globalStyles.card_header}>
-									<Text style={globalStyles.h3}>
-										Guest List
-									</Text>
-								</View>
-								{guestList.map((guest, index) => {
-									return (
-										<View style={styles.guest}>
-											<Image
-												source={{ uri: guest.avatar }}
-												style={styles.profile_img}
-											/>
-											<Text
-												style={{
-													marginLeft: 10,
-													lineHeight: 20,
-												}}
-											>
-												{guest.guest_name}
-											</Text>
-										</View>
-									);
-								})}
 							</View>
 						)}
 					</View>
