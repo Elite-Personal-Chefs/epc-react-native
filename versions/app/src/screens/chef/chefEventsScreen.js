@@ -40,7 +40,6 @@ export default function ChefEventScreen({ navigation, route }) {
 					const events = await getEventTemplates();
 					events.sort(dynamicSort("title"));
 					setEvents(events);
-					console.log(`returned events ${JSON.stringify(events[0].menu_template_id)}`);
 				} catch (error) {
 					console.log(error);
 				}

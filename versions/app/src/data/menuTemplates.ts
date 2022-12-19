@@ -30,8 +30,15 @@ const getMenuTemplatesById = async (id: string): Promise<Menu> => {
 			console.log("No such document!");
 			return;
 		} else {
-			//console.log("Document data:", doc.data());
-			return { ...menuTemplate.data(), id: menuTemplate.id } as Menu;
+			// WHEN YOU USE THIS FUNCTION CALL, ADD THE FOLLOWING TO THE MENU MODEL:
+			// photos: [
+			// 	"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b",
+			// ],
+
+			return {
+				...menuTemplate.data(),
+				id: menuTemplate.id,
+			} as Menu;
 		}
 	} catch (error) {
 		console.log("Error getting document", error);
@@ -58,74 +65,4 @@ const getMenuTemplateCourses = async (menuId: string, courses: any): Promise<Cou
 	return menuItems as Course;
 };
 
-
-
-//! CHECK ON THE CODE BELOW
-
-const getMenusByChefId = async (chefId: string): Promise<Menu[]> => {
-	const menuCollection = db.collection("menus").where("chefId", "==", chefId);
-	const menus = await menuCollection.get();
-	return menus.docs.map((doc) => {
-		return { ...doc.data(), id: doc.id };
-	}) as Menu[];
-};
-
-const getMenus = async (start?: Date, end?: Date, published?: boolean): Promise<Menu[]> => {
-	console.debug("getMenus arguments", { start, end, published });
-	let menuCollection = firebase.firestore().collection("menus");
-
-	if (start) menuCollection = menuCollection.where("end", ">=", start) as any;
-
-	if (end) menuCollection = menuCollection.where("end", "<=", end) as any;
-
-	if (published) menuCollection = menuCollection.where("published", "==", published) as any;
-
-	const menus = await menuCollection.get();
-
-	const results = menus.docs.map((doc) => doc.data()) as Menu[];
-	console.debug("Menus retrieved from firestore", results);
-	return results;
-};
-
-const getPublishedMenus = async (): Promise<Menu[]> => {
-	const menuCollection = db.collection("menus");
-	const menus = await menuCollection.where("published", "==", true).get();
-	return menus.docs.map((doc) => doc.data()) as Menu[];
-};
-
-const updateMenu = async (menuID, data): Promise<void> => {
-	const menu = await firebase.firestore().collection("menus").doc(menuID).update(data);
-	return menu;
-};
-
-const publishMenu = async (menuID): Promise<void> => {
-	const menu = await firebase
-		.firestore()
-		.collection("menus")
-		.doc(menuID)
-		.update({ published: true });
-
-	return menu;
-};
-
-const unpublishMenu = async (menuID): Promise<void> => {
-	const menu = await firebase
-		.firestore()
-		.collection("menus")
-		.doc(menuID)
-		.update({ published: false });
-
-	return menu;
-};
-
-export {
-	getMenuTemplates,
-	getMenuTemplatesById,
-	getMenuTemplateCourses,
-	getMenusByChefId,
-	getMenus,
-	getPublishedMenus,
-	updateMenu,
-	publishMenu,
-	unpublishMenu,
-};
+export { getMenuTemplates, getMenuTemplatesById, getMenuTemplateCourses };

@@ -11,60 +11,51 @@ import {
 	TouchableOpacity,
 	Linking,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 // OTHER DEPENDENCIES
 import { CustomButton } from "../Button";
 
 // SERVICES
 import { addEventTemplateToChef } from "../../data/chef";
+import { getEventsByChefId } from "../../data/event";
 
 // STYLES
 import { globalStyles, eventGlobalStyles } from "../../styles/styles";
 
-export default function AddEventTemplateButton({ chefId, image, event, courses, menuItems }) {
+export default function AddEventTemplateButton({
+	chefId,
+	chefName,
+	image,
+	event,
+	courses,
+	menuItems,
+}) {
 	//SET added is already found in my events
 	const [added, setAdded] = useState(false);
 
-	const addToMyEvents = async (chefId, image, event, courses, menuItems) => {
-		console.log(`what is chefId: ${chefId}`);
-		console.log(`what is image: ${image}`);
-		console.log(`what is event: ${JSON.stringify(event)}`);
-		console.log(`what is courses: ${JSON.stringify(courses)}`);
-		console.log(`what is menu: ${JSON.stringify(menuItems)}`);
-
-		addEventTemplateToChef(chefId, image, event, courses, menuItems);
-		//Grab experience template from firestore
-		//Add template to events collection with with template model data
-		// And all the event model data set to null
-		// try {
-		// 	const result = await fetch(getEndpoint(appsGlobalContext, "copy_event_template"), {
-		// 		method: "POST",
-		// 		headers: {
-		// 			Accept: "application/json",
-		// 			"Content-Type": "application/json",
-		// 		},
-		// 		body: JSON.stringify({
-		// 			event_template_id: eventID,
-		// 			add_data: {
-		// 				chef_id: uid,
-		// 				is_custom: false,
-		// 				is_published: false,
-		// 				event_template_id: eventID,
-		// 			},
-		// 		}),
-		// 	});
-		// 	const json = await result.json();
-		// 	setAdded(true);
-		// } catch (error) {
-		// 	console.log(error);
-		// }
+	const addToMyEvents = async (chefId, chefName, image, event, courses, menuItems) => {
+		addEventTemplateToChef(chefId, chefName, image, event, courses, menuItems);
+		setAdded(true);
 	};
 
-	useEffect(
-		() => async () => {
-			//await getEventTemplateById(eventID);
-		},
-		[1]
+	useFocusEffect(
+		React.useCallback(() => {
+			// Do something when the screen is focused
+			getEventsByChefId(chefId).then((chefEvents) => {
+				const found = chefEvents.find((chefEvent) => chefEvent.eventTemplateId === event.event.id);
+				if (found) {
+					setAdded(true);
+				} else {
+					console.log("not found");
+					setAdded(false);
+				}
+			});
+			return () => {
+				// Do something when the screen is unfocused
+				// Useful for cleanup functions
+			};
+		}, [])
 	);
 
 	return (
@@ -74,7 +65,7 @@ export default function AddEventTemplateButton({ chefId, image, event, courses, 
 			) : (
 				<CustomButton
 					text='Added to My Events'
-					onPress={() => addToMyEvents(chefId, image, event, courses, menuItems)}
+					onPress={() => addToMyEvents(chefId, chefName, image, event, courses, menuItems)}
 					size='big'
 					disabled={added}
 				/>

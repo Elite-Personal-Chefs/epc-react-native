@@ -42,6 +42,7 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 	LogBox.ignoreLogs(["Non-serializable values were found in the navigation state"]);
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
+	const chefName = appsGlobalContext.userData.name;
 	const routeParams = route.params;
 	const [eventDetails, setEventDetails] = useState(routeParams);
 	const [menuTemplateDetails, setMenuTemplateDetails] = useState(null);
@@ -99,6 +100,7 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 						</View>
 						<AddEventTemplateButton
 							chefId={uid}
+							chefName={chefName}
 							image={Img}
 							event={eventDetails}
 							courses={courses}
