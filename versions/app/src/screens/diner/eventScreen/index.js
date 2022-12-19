@@ -5,7 +5,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
@@ -23,10 +23,10 @@ import {
 	Alert,
 	ScrollView,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import MenuListing from "../components/MenuListing";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
+import MenuListing from "../../../components/MenuListing";
+import { getEndpoint } from "../../../helpers/helpers";
 
 // STYLES
 import {
@@ -34,10 +34,10 @@ import {
 	TouchableHighlight,
 	footer,
 	forms,
-} from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+} from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents } from "../data/event";
+import { getEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -87,7 +87,7 @@ export default function EventsScreen({ navigation, route }) {
 	const renderEvent = ({ item }) => {
 		const image = item.photos
 			? { uri: item.photos[0] }
-			: require("../assets/event_placeholder.png");
+			: require("../../assets/event_placeholder.png");
 		// console.log(item)
 		return (
 			<TouchableWithoutFeedback
