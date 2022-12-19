@@ -18,33 +18,33 @@ import {
 } from "react-native";
 import { format } from "date-fns";
 
-import Event from "../../models/event";
+import Event from "../../../models/event";
 
 //Other Dependencies
-import { firebase } from "../../config/config";
+import { firebase } from "../../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../../components/AppContext";
-import { CustomButton } from "../../components/Button";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 import {
 	publishEvent,
 	unpublishEvent,
 	getEventById,
 	getEventReservations,
-} from "../../data/event";
+} from "../../../data/event";
 
 // STYLES
-import { globalStyles, menusStyles } from "../../styles/styles";
-import Theme from "../../styles/theme.style.js";
+import { globalStyles, menusStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
 	FontAwesome5,
 	Ionicons,
 } from "@expo/vector-icons";
-import Reservation from "../../models/reservation";
+import Reservation from "../../../models/reservation";
 
 interface EventDetailProps {
 	route: any;
@@ -63,7 +63,7 @@ export default function EventDetailScreen({
 
 	const userEmail = appsGlobalContext.userData.email;
 	const routeParams = route.params.details;
-	const placeholderImg = require("../../assets/food_pasta.png");
+	const placeholderImg = require("../../../assets/food_pasta.png");
 
 	const [reservations, setReservations] = useState<Reservation[] | null>();
 	const [menuItems, setMenuItems] = useState();

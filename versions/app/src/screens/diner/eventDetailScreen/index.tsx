@@ -20,20 +20,20 @@ import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
-import { firebase } from "../../config/config";
+import { firebase } from "../../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../../components/AppContext";
-import { CustomButton } from "../../components/Button";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import { reserveEvent, getEventById } from "../../data/event";
-import Event from "../../models/event";
+import { reserveEvent, getEventById } from "../../../data/event";
+import Event from "../../../models/event";
 
 // STYLES
-import { globalStyles, menusStyles } from "../../styles/styles";
-import Theme from "../../styles/theme.style.js";
+import { globalStyles, menusStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
@@ -137,7 +137,7 @@ export default function EventDetailScreen({ route }: any) {
 				setEventImg({ uri: details.photos[0] });
 				//useState(require('../assets/food_pasta.png'))
 			} else {
-				setEventImg(require("../../assets/event_placeholder.png"));
+				setEventImg(require("../../../assets/event_placeholder.png"));
 			}
 
 			getEventDetails();

@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 // OTHER DEPENDENCIES
 import _ from "underscore";
-import { firebase } from "../../config/config";
+import { firebase } from "../../../config/config";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -26,25 +26,25 @@ import {
 	TouchableNativeFeedback,
 	LogBox,
 } from "react-native";
-import AppContext from "../../components/AppContext";
-import { CustomButton } from "../../components/Button";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
 import { Formik } from "formik";
-import ImageUploader from "../../components/ImageUploader";
+import ImageUploader from "../../../components/ImageUploader";
 import * as yup from "yup";
-import { createEvent, updateEvent } from "../../data/event";
+import { createEvent, updateEvent } from "../../../data/event";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 // STYLES
-import { globalStyles, forms } from "../../styles/styles";
+import { globalStyles, forms } from "../../../styles/styles";
 import {
 	MaterialCommunityIcons,
 	MaterialIcons,
 	Fontisto,
 	Entypo,
 } from "@expo/vector-icons";
-import Theme from "../../styles/theme.style.js";
+import Theme from "../../../styles/theme.style.js";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 /*******************************************************************************/

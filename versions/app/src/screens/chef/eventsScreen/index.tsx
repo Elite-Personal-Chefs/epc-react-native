@@ -5,20 +5,20 @@ import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../../config/config";
+import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
-import { getEventsByChefId, getEventTemplates } from "../../data/event";
+import { getEventsByChefId, getEventTemplates } from "../../../data/event";
 
 // COMPONENTS
 import { Text, StyleSheet, View } from "react-native";
-import AppContext from "../../components/AppContext";
-import NoEventsPlaceholder from "../../components/emptyStates/NoEventsPlaceholder";
-import { CreateEventButton } from "../../components/Button";
-import EventListing from "../../components/chefComponents/EventListing";
-import { dynamicSort } from "../../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import NoEventsPlaceholder from "../../../components/emptyStates/NoEventsPlaceholder";
+import { CreateEventButton } from "../../../components/Button";
+import EventListing from "../../../components/chefComponents/EventListing";
+import { dynamicSort } from "../../../helpers/helpers";
 
 // STYLES
-import { globalStyles, eventGlobalStyles } from "../../styles/styles";
+import { globalStyles, eventGlobalStyles } from "../../../styles/styles";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
