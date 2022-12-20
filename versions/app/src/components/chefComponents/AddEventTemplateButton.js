@@ -34,12 +34,8 @@ export default function AddEventTemplateButton({
 			// Do something when the screen is focused
 			getEventsByChefId(chefId).then((chefEvents) => {
 				const found = chefEvents.find((chefEvent) => chefEvent.eventTemplateId === event.event.id);
-				if (found) {
-					setAdded(true);
-				} else {
-					console.log("not found");
-					setAdded(false);
-				}
+
+				setAdded(found);
 			});
 			return () => {
 				// Do something when the screen is unfocused
