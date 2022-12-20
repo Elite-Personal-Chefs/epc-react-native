@@ -127,7 +127,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	const handleStartTimeConfirm = (time: Date) => {
 		console.log(`in handleStartTimeConfirm: ${time}`);
 
-		const newDate = set(end, {
+		const newDate = set(start, {
 			hours: time.getHours(),
 			minutes: time.getMinutes(),
 		});
