@@ -50,7 +50,7 @@ const useSession = () => {
 		const user = (await getUserData(uid)) as any;
 
 		if (user) {
-			console.log("APP: User exists from " + user.user_type);
+			//console.log("APP: User exists from " + user.user_type);
 			appGlobals.setActiveFlow(user.user_type);
 			appGlobals.setUserData(user.userData);
 			if (Platform.OS != "web") {

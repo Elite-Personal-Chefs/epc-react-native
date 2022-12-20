@@ -72,19 +72,13 @@ export default function App() {
 	//SET STATE OF LOGIN/READINESS VARIABLES
 	const { appGlobals, loading } = useSession();
 	const [appIsAwaitingOTAUpdates, setAppIsAwaitingOTAUpdates] = useState(false);
-	// console.log("USER", appGlobals.userData);
-
-	//DIAGNOSTICS OF APP STATE
-	console.log("APP: AWAITING OTA UPDATES: " + appIsAwaitingOTAUpdates);
-	console.log("APP: USER ID: " + appGlobals.userID);
-	console.log("APP: USER LOGGED IN: " + appGlobals.userLoggedIn);
 
 	//CHECK FOR OTA UPDATES
 	const checkForUpdates = async () => {
 		if (Platform.OS != "web") {
 			setAppIsAwaitingOTAUpdates(true);
 			try {
-				console.log("APP: Checking for updates");
+				//console.log("APP: Checking for updates");
 				const update = await Updates.checkForUpdateAsync();
 				if (update.isAvailable) {
 					const updated = await Updates.fetchUpdateAsync();
@@ -92,7 +86,7 @@ export default function App() {
 					// ... notify user of update ...
 					await Updates.reloadAsync();
 				} else {
-					console.log("APP: No Updates detected");
+					//console.log("APP: No Updates detected");
 				}
 			} catch (e) {
 				//console.log(e)

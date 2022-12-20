@@ -50,6 +50,7 @@ import HomeScreen from "../screens/homeScreen";
 import EventsScreen from "../screens/eventsScreen";
 import CreateEventScreen from "../screens/chef/createEventScreen";
 import ChefEventDetailScreen from "../screens/chef/chefEventDetailScreen";
+import chefEventTemplateDetailScreen from "../screens/chef/chefEventTemplateDetailScreen";
 import MenuScreen from "../screens/menuScreen";
 import CreateMenuScreen from "../screens/createMenuScreen";
 import MenuDetailScreen from "../screens/menuDetailScreen";
@@ -107,51 +108,30 @@ const AccountScreenStack = () => {
 			<AccountScreenStackNav.Screen name='Privacy' component={PrivacyScreen} />
 			<AccountScreenStackNav.Screen name='Payments' component={PaymentsScreen} />
 
-			<AccountScreenStackNav.Screen
-				name="Waiver of Liability"
-				component={WaiverScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Background Check"
-				component={BackgroundCheckScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Professional Resume"
-				component={ResumeScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Food Handler's License"
-				component={FoodHandlerScreen}
-			/>
+			<AccountScreenStackNav.Screen name='Waiver of Liability' component={WaiverScreen} />
+			<AccountScreenStackNav.Screen name='Background Check' component={BackgroundCheckScreen} />
+			<AccountScreenStackNav.Screen name='Professional Resume' component={ResumeScreen} />
+			<AccountScreenStackNav.Screen name="Food Handler's License" component={FoodHandlerScreen} />
 
+			<AccountScreenStackNav.Screen name='Professional Licenses' component={LicenseScreen} />
 			<AccountScreenStackNav.Screen
-				name="Professional Licenses"
-				component={LicenseScreen}
-			/>
-			<AccountScreenStackNav.Screen
-				name="Sanitation Manager License"
+				name='Sanitation Manager License'
 				component={SanitationScreen}
 			/>
-			<AccountScreenStackNav.Screen
-				name="Liability Insurance"
-				component={LiabilityScreen}
-			/>
+			<AccountScreenStackNav.Screen name='Liability Insurance' component={LiabilityScreen} />
 
 			<AccountScreenStackNav.Screen
-				name="Contact"
+				name='Contact'
 				component={ContactScreen}
 				options={{ headerShown: true }}
 			/>
 			<AccountScreenStackNav.Screen
-				name="FAQ"
+				name='FAQ'
 				component={FaqScreen}
 				options={{ headerShown: true }}
 			/>
 
-			<AccountScreenStackNav.Screen
-				name="Playground"
-				component={PlaygroundScreen}
-			/>
+			<AccountScreenStackNav.Screen name='Playground' component={PlaygroundScreen} />
 		</AccountScreenStackNav.Navigator>
 	);
 };
@@ -160,7 +140,7 @@ const EventsStackForChefsTabNav = createMaterialTopTabNavigator(); //This can be
 const EventsStackForChefsTab = () => {
 	return (
 		<EventsStackForChefsTabNav.Navigator
-			headerTintColor="red"
+			headerTintColor='red'
 			tabBarOptions={{
 				showIcon: true,
 				activeTintColor: Theme.TEXT_ON_SURFACE_COLOR,
@@ -181,14 +161,8 @@ const EventsStackForChefsTab = () => {
 				},
 			}}
 		>
-			<EventsStackForChefsTabNav.Screen
-				name="Your Events"
-				component={ChefEventsScreen}
-			/>
-			<EventsStackForChefsTabNav.Screen
-				name="Templates"
-				component={ChefEventsScreen}
-			/>
+			<EventsStackForChefsTabNav.Screen name='Your Events' component={ChefEventsScreen} />
+			<EventsStackForChefsTabNav.Screen name='Templates' component={ChefEventsScreen} />
 		</EventsStackForChefsTabNav.Navigator>
 	);
 };
@@ -197,7 +171,7 @@ const MenusStackTabNav = createMaterialTopTabNavigator(); //This can be drawers,
 const MenusStackTab = () => {
 	return (
 		<MenusStackTabNav.Navigator
-			headerTintColor="red"
+			headerTintColor='red'
 			tabBarOptions={{
 				showIcon: true,
 				activeTintColor: Theme.TEXT_ON_SURFACE_COLOR,
@@ -218,8 +192,8 @@ const MenusStackTab = () => {
 				},
 			}}
 		>
-			<MenusStackTabNav.Screen name="Your Menus" component={MenuScreen} />
-			<MenusStackTabNav.Screen name="Templates" component={MenuScreen} />
+			<MenusStackTabNav.Screen name='Your Menus' component={MenuScreen} />
+			<MenusStackTabNav.Screen name='Templates' component={MenuScreen} />
 		</MenusStackTabNav.Navigator>
 	);
 };
@@ -229,7 +203,7 @@ const ChefStack = () => {
 	const appsGlobalContext = useContext(AppContext);
 	return (
 		<ChecfStackNav.Navigator
-			headerTintColor="red"
+			headerTintColor='red'
 			tabBarOptions={{
 				showIcon: true,
 				activeTintColor: Theme.TEXT_ON_SURFACE_COLOR,
@@ -250,11 +224,8 @@ const ChefStack = () => {
 				},
 			}}
 		>
-			<ChecfStackNav.Screen name="Chefs" component={ChefsScreen} />
-			<ChecfStackNav.Screen
-				name="Chef Map View"
-				component={ChefsScreen}
-			/>
+			<ChecfStackNav.Screen name='Chefs' component={ChefsScreen} />
+			<ChecfStackNav.Screen name='Chef Map View' component={ChefsScreen} />
 		</ChecfStackNav.Navigator>
 	);
 };
@@ -264,7 +235,7 @@ const EventsStack = () => {
 	const appsGlobalContext = useContext(AppContext);
 	return (
 		<EventsStackNav.Navigator
-			headerTintColor="red"
+			headerTintColor='red'
 			tabBarOptions={{
 				showIcon: true,
 				activeTintColor: Theme.TEXT_ON_SURFACE_COLOR,
@@ -285,8 +256,8 @@ const EventsStack = () => {
 				},
 			}}
 		>
-			<EventsStackNav.Screen name="Events" component={EventsScreen} />
-			<EventsStackNav.Screen name="Map View" component={EventsScreen} />
+			<EventsStackNav.Screen name='Events' component={EventsScreen} />
+			<EventsStackNav.Screen name='Map View' component={EventsScreen} />
 		</EventsStackNav.Navigator>
 	);
 };
@@ -338,10 +309,10 @@ const AuthorizedStack = () => {
 	const appsGlobalContext = useContext(AppContext);
 	return (
 		<AuthorizedStackNav.Navigator
-			initialRouteName="Home"
-			tabBarPosition="bottom"
+			initialRouteName='Home'
+			tabBarPosition='bottom'
 			//initialLayout = {{ width: windowWidth }}
-			headerTintColor="red"
+			headerTintColor='red'
 			tabBarOptions={{
 				showIcon: true,
 				activeTintColor: Theme.SECONDARY_COLOR,
@@ -364,15 +335,15 @@ const AuthorizedStack = () => {
 			}}
 		>
 			{appsGlobalContext.activeFlow == "chefs" ? (
-                // Chef Navigation Stack
+				// Chef Navigation Stack
 				<>
 					<AuthorizedStackNav.Screen
-						name="Dashboard"
+						name='Dashboard'
 						component={HomeScreen}
 						options={({ route, navigation }) => ({
 							tabBarIcon: ({ color, focused }) => (
 								<Icon
-									name="dashboard"
+									name='dashboard'
 									size={20}
 									color={focused ? color : Theme.WHITE}
 									style={styles.tabBarIcon}
@@ -381,7 +352,7 @@ const AuthorizedStack = () => {
 						})}
 					/>
 					<AuthorizedStackNav.Screen
-						name="Menu"
+						name='Menu'
 						component={MenusStackTab}
 						options={({ route, navigation }) => ({
 							//headerShown: false
@@ -395,13 +366,13 @@ const AuthorizedStack = () => {
 						})}
 					/>
 					<AuthorizedStackNav.Screen
-						name="Events"
+						name='Events'
 						component={EventsStackForChefsTab}
 						options={({ route, navigation }) => ({
 							tabBarIcon: ({ color, focused }) => (
 								//<MaterialIcons name={focused ? 'star' : 'star'} size={20} color={color}  />
 								<Icon
-									name="events"
+									name='events'
 									size={20}
 									color={focused ? color : Theme.WHITE}
 									style={styles.tabBarIcon}
@@ -411,16 +382,16 @@ const AuthorizedStack = () => {
 					/>
 				</>
 			) : (
-                // Diner
+				// Diner
 				<>
 					<AuthorizedStackNav.Screen
-						name="Chefs"
+						name='Chefs'
 						component={ChefStack}
 						options={({ route, navigation }) => ({
 							//headerShown: false
 							tabBarIcon: ({ color, focused }) => (
 								<MaterialCommunityIcons
-									name="chef-hat"
+									name='chef-hat'
 									size={20}
 									color={focused ? color : Theme.WHITE}
 									style={styles.tabBarIcon}
@@ -429,13 +400,13 @@ const AuthorizedStack = () => {
 						})}
 					/>
 					<AuthorizedStackNav.Screen
-						name="Reservations"
+						name='Reservations'
 						component={ReservationsScreen}
 						options={({ route, navigation }) => ({
 							//headerShown: false
 							tabBarIcon: ({ color, focused }) => (
 								<FontAwesome
-									name="ticket"
+									name='ticket'
 									size={20}
 									color={focused ? color : Theme.WHITE}
 									style={styles.tabBarIcon}
@@ -444,13 +415,13 @@ const AuthorizedStack = () => {
 						})}
 					/>
 					<AuthorizedStackNav.Screen
-						name="Events"
+						name='Events'
 						component={EventsStack}
 						options={({ route, navigation }) => ({
 							tabBarIcon: ({ color, focused }) => (
 								//<MaterialIcons name={focused ? 'star' : 'star'} size={20} color={color}  />
 								<Icon
-									name="events"
+									name='events'
 									size={20}
 									color={focused ? color : Theme.WHITE}
 									style={styles.tabBarIcon}
@@ -471,13 +442,13 @@ const AuthorizedStack = () => {
                 })}/>
             */}
 			<AuthorizedStackNav.Screen
-				name="Account"
+				name='Account'
 				component={AccountScreenStack}
 				options={({ route, navigation }) => ({
 					headerShown: false,
 					tabBarIcon: ({ color, focused }) => (
 						<MaterialIcons
-							name="person"
+							name='person'
 							size={20}
 							color={focused ? color : Theme.WHITE}
 							style={styles.tabBarIcon}
@@ -503,17 +474,12 @@ function Navigator({ userLoggedIn }) {
 				{userLoggedIn ? (
 					<>
 						<RootStack.Screen
-							name="Dashboard"
+							name='Dashboard'
 							component={AuthorizedStack}
 							options={({ route, navigation }) => ({
-								headerShown:
-									getFocusedRouteNameFromRoute(route) ==
-									"Account"
-										? false
-										: true,
+								headerShown: getFocusedRouteNameFromRoute(route) == "Account" ? false : true,
 								headerTintColor: Theme.TEXT_ON_SURFACE_COLOR,
-								headerTitle:
-									getFocusedRouteNameFromRoute(route),
+								headerTitle: getFocusedRouteNameFromRoute(route),
 								/*
                             headerRight: () => (
                                 //<Text style={{color:'orange'}}>{getFocusedRouteNameFromRoute(route)}</Text>
@@ -523,7 +489,7 @@ function Navigator({ userLoggedIn }) {
 							})}
 						/>
 						<RootStack.Screen
-							name="Menu Details"
+							name='Menu Details'
 							component={MenuDetailScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -537,17 +503,14 @@ function Navigator({ userLoggedIn }) {
 									<LinearGradient
 										start={{ x: 1, y: 0 }}
 										end={{ x: 1, y: 1 }}
-										colors={[
-											"rgba(0,0,0,0.8)",
-											"transparent",
-										]}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
 										style={{ flex: 1 }}
 									/>
 								),
 							})}
 						/>
 						<RootStack.Screen
-							name="Chef Event Details"
+							name='Chef Event Details'
 							component={ChefEventDetailScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -561,17 +524,35 @@ function Navigator({ userLoggedIn }) {
 									<LinearGradient
 										start={{ x: 1, y: 0 }}
 										end={{ x: 1, y: 1 }}
-										colors={[
-											"rgba(0,0,0,0.8)",
-											"transparent",
-										]}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
 										style={{ flex: 1 }}
 									/>
 								),
 							})}
 						/>
 						<RootStack.Screen
-							name="Event Details"
+							name='Chef Event Template Details'
+							component={chefEventTemplateDetailScreen}
+							options={({ route }) => ({
+								//headerShown: false,
+								headerTintColor: Theme.WHITE,
+								headerTransparent: true,
+								headerTruncatedBackTitle: true,
+								headerBackTitleVisible: false,
+								title: "",
+								headerTitle: null,
+								headerBackground: () => (
+									<LinearGradient
+										start={{ x: 1, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
+										style={{ flex: 1 }}
+									/>
+								),
+							})}
+						/>
+						<RootStack.Screen
+							name='Event Details'
 							component={EventDetailScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -585,17 +566,14 @@ function Navigator({ userLoggedIn }) {
 									<LinearGradient
 										start={{ x: 1, y: 0 }}
 										end={{ x: 1, y: 1 }}
-										colors={[
-											"rgba(0,0,0,0.8)",
-											"transparent",
-										]}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
 										style={{ flex: 1 }}
 									/>
 								),
 							})}
 						/>
 						<RootStack.Screen
-							name="Chef Details"
+							name='Chef Details'
 							component={ChefDetailScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -609,17 +587,14 @@ function Navigator({ userLoggedIn }) {
 									<LinearGradient
 										start={{ x: 1, y: 0 }}
 										end={{ x: 1, y: 1 }}
-										colors={[
-											"rgba(0,0,0,0.8)",
-											"transparent",
-										]}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
 										style={{ flex: 1 }}
 									/>
 								),
 							})}
 						/>
 						<RootStack.Screen
-							name="Create Event"
+							name='Create Event'
 							component={CreateEventScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -643,7 +618,7 @@ function Navigator({ userLoggedIn }) {
 							})}
 						/>
 						<RootStack.Screen
-							name="Create Menu"
+							name='Create Menu'
 							component={CreateMenuScreen}
 							options={({ route }) => ({
 								//headerShown: false,
@@ -670,7 +645,7 @@ function Navigator({ userLoggedIn }) {
 				) : (
 					<>
 						<RootStack.Screen
-							name="UNAUTHORIZED"
+							name='UNAUTHORIZED'
 							component={UnAuthorizedStack}
 							options={{ headerShown: false }}
 						/>

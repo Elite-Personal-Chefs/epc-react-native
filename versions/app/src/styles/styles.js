@@ -1,5 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import Theme from "../styles/theme.style.js";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const emptyGlobalStyles = StyleSheet.create({
 	empty_state: {
@@ -115,10 +117,10 @@ const globalStyles = StyleSheet.create({
 	},
 	card: {
 		paddingVertical: 15,
-		paddingHorizontal: 12,
+		paddingHorizontal: 15,
 		borderRadius: 8,
 		backgroundColor: Theme.SURFACE_COLOR,
-		margin: 5,
+		marginHorizontal: 15,
 		shadowColor: Theme.FAINT,
 		shadowOffset: {
 			width: 2,
@@ -326,6 +328,74 @@ const modal = StyleSheet.create({
 });
 
 const eventGlobalStyles = StyleSheet.create({
+	add_event_btn: {
+		width: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+		marginVertical: 13,
+	},
+	event_content_container: {
+		flex: 1,
+		padding: 15,
+		alignItems: "center",
+		width: "100%",
+	},
+	event_header_content: {
+		flexDirection: "column",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	event_header_container: {
+		marginVertical: 5,
+	},
+	suggested_price_container: {
+		//marginVertical: 10
+		//flex:1,
+	},
+	price: {
+		fontSize: 20,
+		color: Theme.PRIMARY_COLOR,
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+	price_label_and_icon_container: {
+		flexDirection: "row",
+	},
+	price_label: {
+		color: Theme.PRIMARY_COLOR,
+		fontSize: 14,
+		paddingVertical: 5,
+		marginRight: 5,
+		textAlign: "center",
+	},
+	detail_icon: {
+		paddingLeft: 0,
+		marginRight: -8,
+		color: Theme.PRIMARY_COLOR,
+	},
+	details_container: {
+		paddingVertical: 8,
+	},
+	detail: {
+		flexDirection: "row",
+		paddingVertical: 5,
+	},
+	detail_icon: {
+		width: 30,
+		padding: 0,
+		marginRight: 8,
+		color: Theme.PRIMARY_COLOR,
+	},
+	detail_label: {
+		fontSize: 13,
+		lineHeight: 20,
+		color: Theme.FAINT,
+	},
+	image: {
+		width: windowWidth,
+		height: 260,
+		backgroundColor: Theme.PRIMARY_COLOR,
+	},
 	lower_right_create_event_circle: {
 		position: "absolute",
 		right: 15,
