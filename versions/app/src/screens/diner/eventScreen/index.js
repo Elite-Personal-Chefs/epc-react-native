@@ -87,7 +87,7 @@ export default function EventsScreen({ navigation, route }) {
 	const renderEvent = ({ item }) => {
 		const image = item.photos
 			? { uri: item.photos[0] }
-			: require("../../assets/event_placeholder.png");
+			: require("../../../assets/event_placeholder.png");
 		// console.log(item)
 		return (
 			<TouchableWithoutFeedback
@@ -238,7 +238,7 @@ export default function EventsScreen({ navigation, route }) {
 								hasEvents.map((item, index) => {
 									const image = item.photos
 										? { uri: item.photos[0] }
-										: require("../assets/event_placeholder.png");
+										: require("../../../assets/event_placeholder.png");
 									return (
 										<TouchableWithoutFeedback
 											key={index}
@@ -368,7 +368,7 @@ export default function EventsScreen({ navigation, route }) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../assets/empty_calendar.png")}
+						source={require("../../../assets/empty_calendar.png")}
 					/>
 					<Text style={globalStyles.empty_text}>
 						There are no posted events yet

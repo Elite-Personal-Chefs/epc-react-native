@@ -469,6 +469,7 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		lineHeight: 20,
 		color: Theme.FAINT,
+		width: "80%"
 	},
 	rules: {
 		fontSize: 15,
