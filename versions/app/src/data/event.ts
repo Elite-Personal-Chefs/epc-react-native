@@ -38,12 +38,6 @@ const createEvent = async (eventData: Event): Promise<Event> => {
 	return newEvent.data as Event;
 };
 
-const getEventTemplates = async (): Promise<Event[]> => {
-	const eventCollection = db.collection("experience_templates");
-	const events = await eventCollection.get();
-	return events.docs.map((doc) => doc.data()) as Event[];
-};
-
 const getEventById = async (eventId: string): Promise<Event> => {
 	const eventCollection = db.collection("events");
 	const event = await eventCollection
@@ -206,7 +200,6 @@ export {
 	getEvents,
 	getEventById,
 	getEventsByChefId,
-	getEventTemplates,
 	getPublishedEvents,
 	getEventReservations,
 	updateEvent,
