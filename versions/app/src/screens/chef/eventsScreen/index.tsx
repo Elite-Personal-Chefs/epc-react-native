@@ -6,19 +6,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
 import { useFocusEffect } from "@react-navigation/native";
-import { getEventsByChefId } from "../../data/event";
-import { getEventTemplates } from "../../data/eventTemplates";
+import { getEventsByChefId } from "../../../data/event";
+import { getEventTemplates } from "../../../data/eventTemplates";
 
 // COMPONENTS
 import { View } from "react-native";
-import AppContext from "../../components/AppContext";
-import NoEventsPlaceholder from "../../components/emptyStates/NoEventsPlaceholder";
-import { CreateEventButton } from "../../components/Button";
-import EventListing from "../../components/chefComponents/EventListing";
-import { dynamicSort } from "../../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import NoEventsPlaceholder from "../../../components/emptyStates/NoEventsPlaceholder";
+import { CreateEventButton } from "../../../components/Button";
+import EventListing from "../../../components/chefComponents/EventListing";
+import { dynamicSort } from "../../../helpers/helpers";
 
 // STYLES
-import { globalStyles, eventGlobalStyles } from "../../styles/styles";
+import { globalStyles, eventGlobalStyles } from "../../../styles/styles";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -48,7 +48,9 @@ export default function ChefEventScreen({ navigation, route }) {
 
 					if (events) {
 						//&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
-						setEvents(events.transactions ? events.transactions : events);
+						setEvents(
+							events.transactions ? events.transactions : events
+						);
 					} else {
 						setEvents(null);
 						console.log("No events found for you");
@@ -91,7 +93,9 @@ export default function ChefEventScreen({ navigation, route }) {
 				)}
 				{eventPageName == "Your Events" && (
 					<CreateEventButton
-						style={eventGlobalStyles.lower_right_create_event_circle}
+						style={
+							eventGlobalStyles.lower_right_create_event_circle
+						}
 						onPress={() => navigation.navigate("Create Event")}
 					></CreateEventButton>
 				)}

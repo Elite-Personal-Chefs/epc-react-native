@@ -21,18 +21,18 @@ import _ from "underscore";
 import { LogBox } from "react-native";
 
 // COMPONENTS
-import AppContext from "../../components/AppContext";
-import EventTemplateSuggestedPricing from "../../components/chefComponents/EventTemplateSuggestedPricing";
-import AddEventTemplateButton from "../../components/chefComponents/AddEventTemplateButton";
-import EventTemplateCard from "../../components/chefComponents/EventTemplateCard";
-import MenuCard from "../../components/chefComponents/MenuCard";
+import AppContext from "../../../components/AppContext";
+import EventTemplateSuggestedPricing from "../../../components/chefComponents/EventTemplateSuggestedPricing";
+import AddEventTemplateButton from "../../../components/chefComponents/AddEventTemplateButton";
+import EventTemplateCard from "../../../components/chefComponents/EventTemplateCard";
+import MenuCard from "../../../components/chefComponents/MenuCard";
 
-import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../data/event";
-import { getMenuTemplatesById, getMenuTemplateCourses } from "../../data/menuTemplates";
+import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../../data/event";
+import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../data/menuTemplates";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../styles/styles";
-import Theme from "../../styles/theme.style.js";
+import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION

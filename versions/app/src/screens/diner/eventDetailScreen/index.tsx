@@ -1,11 +1,10 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import {
-	Button,
 	Text,
 	StyleSheet,
 	View,
@@ -13,74 +12,60 @@ import {
 	Dimensions,
 	Image,
 	ActivityIndicator,
-	TextInput,
+	Alert,
+	TouchableOpacity,
 } from "react-native";
+import { format } from "date-fns";
 
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
-import { firebase, configKeys } from "../../config/config";
+import { firebase } from "../../../config/config";
 import _ from "underscore";
 
-
 // COMPONENTS
-import AppContext from "../../components/AppContext";
-import { CustomButton } from "../../components/Button";
-import { getEndpoint } from "../../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import Tooltip from "react-native-walkthrough-tooltip";
-import * as eventDataHelper from "../../data/event";
+import { reserveEvent, getEventById } from "../../../data/event";
+import Event from "../../../models/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
-import Theme from "../../styles/theme.style.js";
+import { globalStyles, menusStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import {
 	AntDesign,
 	MaterialIcons,
 	FontAwesome5,
-	Ionicons,
 } from "@expo/vector-icons";
-import themeStyle from "../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function EventDetailScreen({ route, navigation }) {
+export default function EventDetailScreen({ route }: any) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
-	const activeFlow = appsGlobalContext.activeFlow;
 	const details = route.params.details;
-	const pageName = route.params.pageName;
-	const [eventImg, setEventImg] = useState();
+	const [eventImg, setEventImg] = useState<string>();
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
-	const [guestList, setGuestList] = useState(false);
-	const [menuItems, setMenuItems] = useState(false);
+	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
 	const [reservationQuantity, setReservationQuantity] = useState(1);
-	const [knownCPP, setKnownCPP] = useState(
-		details.cpp ? +details.cpp : false
-	);
-	const [toolTipVisible, setToolTipVisible] = useState(false);
 
 	const getEventDetails = async () => {
-		console.log("This is a reservation need more details");
-		const firestore = firebase.firestore();
-		const eventRef = firestore
-			.collection("events")
-			.doc(eventDetails.id || eventDetails.experience_id);
-		const eventDoc = await eventRef.get();
-		if (!eventDoc.exists) {
+		console.log("Trying to get these details", eventDetails);
+		const event = await getEventById(eventDetails.id);
+
+		if (!event) {
 			console.log("No event found");
-		} else {
-			let event = eventDoc.data();
-			event.id = eventDoc.id;
-			setEventDetails(event);
-			getMenus(event);
-			console.log("Found event details", event);
+			return;
 		}
+		setEventDetails(event);
+		getMenus(event);
+		console.log("Found event details", event);
 	};
 
 	//If we are coming from Reservation page then we need more details on the event
@@ -89,82 +74,31 @@ export default function EventDetailScreen({ route, navigation }) {
 		getEventDetails();
 	}
 
-	const reserveEvent = async () => {
+	const reserve = async () => {
 		console.log("This is the user that is reserving ", user);
 		try {
-			
-			await eventDataHelper.reserveEvent(
-				eventDetails.id,
-				uid,
-				reservationQuantity
-			);
+			await reserveEvent(eventDetails.id, uid, reservationQuantity);
 			setReserved(true);
-			alert("Reservation Completed");
+			Alert.alert("Reservation Completed");
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const [added, setAdded] = useState(false);
-
-	const addToMyEvents = async (eventID) => {
-		//console.log(eventID, uid);
-		try {
-			const result = await fetch(
-				getEndpoint(appsGlobalContext, "copy_event_template"),
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						event_template_id: eventID,
-						add_data: {
-							chef_id: uid,
-							is_custom: false,
-							is_published: false,
-							event_template_id: eventID,
-						},
-					}),
-				}
-			);
-			const json = await result.json();
-			setAdded(true);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const editEvent = () => {
-		console.log("Lets edit the envet");
-		navigation.navigate("Create Event", {
-			details: eventDetails || details,
-		});
-	};
-
-	const getMenus = async (details, pageName) => {
+	const getMenus = async (details: Event) => {
 		console.log("GETTING MENU ID: ", details);
-		console.log("Page Name", pageName);
 		//If this is a template page look for the menu in templates
 		//otherwise look into the chefs colelction of menus
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
 
-		if (pageName == "Templates" || details.isTemplate) {
-			console.log(`pageName \n ${pageName}`);
-			menuRef = firestore
-				.collection("menu_templates")
-				.doc(details.menu_template_id);
-		} else {
-			console.log("Getting menu from chefs collection");
-			menuRef = firestore
-				.collection("chefs")
-				.doc(eventDetails.chef_id)
-				.collection("menus")
-				.doc(`${details.menu_template_id}`);
-		}
+		console.log("Getting menu from chefs collection");
+		menuRef = firestore
+			.collection("chefs")
+			.doc(eventDetails.chefId)
+			.collection("menus")
+			.doc(`${details.menuId}`);
 
 		menuDoc = await menuRef.get();
 
@@ -203,9 +137,8 @@ export default function EventDetailScreen({ route, navigation }) {
 				setEventImg({ uri: details.photos[0] });
 				//useState(require('../assets/food_pasta.png'))
 			} else {
-				setEventImg(require("../../assets/event_placeholder.png"));
+				setEventImg(require("../../../assets/event_placeholder.png"));
 			}
-
 
 			getEventDetails();
 		}, [])
@@ -226,82 +159,7 @@ export default function EventDetailScreen({ route, navigation }) {
 									{eventDetails.title}
 								</Text>
 							</View>
-							{pageName == "Templates" && (
-								<View style={styles.suggested_price_container}>
-									<View
-										style={
-											styles.price_label_and_icon_container
-										}
-									>
-										<Text style={styles.price_label}>
-											EPC Suggested Price
-										</Text>
-										<Tooltip
-											isVisible={toolTipVisible}
-											content={
-												<View>
-													<Text>
-														Your cost per person is
-														your event price and
-														will be shown to your
-														guests.
-													</Text>
-												</View>
-											}
-											placement="bottom"
-											onClose={() =>
-												setToolTipVisible(false)
-											}
-											useInteractionManager={true} // need this prop to wait for react navigation
-											// below is for the status bar of react navigation bar
-											// topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
-										>
-											<TouchableOpacity
-												style={[
-													{ width: "100%" },
-													styles.button,
-												]}
-												onPress={() =>
-													setToolTipVisible(true)
-												}
-											>
-												<AntDesign
-													name="infocirlceo"
-													size={17}
-													color="black"
-												/>
-											</TouchableOpacity>
-										</Tooltip>
-									</View>
-									<Text style={styles.price}>
-										${knownCPP}
-										<Text style={styles.price_label}>
-											/Person
-										</Text>
-									</Text>
-								</View>
-							)}
 						</View>
-						{pageName == "Templates" && (
-							<View style={styles.btn_cont}>
-								{added ? (
-									<CustomButton
-										text="Added to My Events"
-										size="big"
-										disabled="true"
-										checkmark="true"
-									/>
-								) : (
-									<CustomButton
-										text="Add to My Events"
-										onPress={() =>
-											addToMyEvents(details.id)
-										}
-										size="big"
-									/>
-								)}
-							</View>
-						)}
 
 						{!isReservation && (
 							<View style={styles.btn_cont}>
@@ -310,8 +168,9 @@ export default function EventDetailScreen({ route, navigation }) {
 										<CustomButton
 											text="Reserved"
 											size="big"
-											disabled="true"
-											checkmark="true"
+											disabled={true}
+											checkmark={true}
+											onPress={undefined}
 										/>
 									</View>
 								) : (
@@ -324,7 +183,7 @@ export default function EventDetailScreen({ route, navigation }) {
 									>
 										<CustomButton
 											text="Reserve this Event"
-											onPress={() => reserveEvent()}
+											onPress={() => reserve()}
 											size="big"
 										/>
 
@@ -383,9 +242,12 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.event_date
-											? eventDetails.event_date
-											: "March 22, 2022"}
+										{eventDetails.start && eventDetails.end
+											? `${format(
+													eventDetails.start,
+													"PPPP"
+											  )}`
+											: "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -395,11 +257,11 @@ export default function EventDetailScreen({ route, navigation }) {
 										style={styles.detail_icon}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.start_time
-											? eventDetails.start_time +
+										{eventDetails.start && eventDetails.end
+											? format(eventDetails.start, "p") +
 											  "-" +
-											  eventDetails.end_time
-											: "5pm-8pm"}
+											  format(eventDetails.end, "p")
+											: "No Time Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -414,12 +276,12 @@ export default function EventDetailScreen({ route, navigation }) {
 									<Text style={styles.detail_label}>
 										{eventDetails.location
 											? eventDetails.location
-											: "Chicago"}
+											: "Location Not Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
-									<Ionicons
-										name="md-person"
+									<FontAwesome5
+										name="dollar-sign"
 										size={20}
 										style={[
 											styles.detail_icon,
@@ -427,9 +289,8 @@ export default function EventDetailScreen({ route, navigation }) {
 										]}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.guests
-											? eventDetails.guests + " Guests"
-											: "22 Guests"}
+										{details?.cpp && details.cpp > 0
+											? `$${details.cpp}/person` : "Free"}
 									</Text>
 								</View>
 							</View>
@@ -530,37 +391,6 @@ export default function EventDetailScreen({ route, navigation }) {
 								</Text>
 							</View>
 						)}
-
-						{/* GUEST LIST */}
-						{guestList && (
-							<View
-								style={[globalStyles.card, { width: "100%" }]}
-							>
-								<View style={globalStyles.card_header}>
-									<Text style={globalStyles.h3}>
-										Guest List
-									</Text>
-								</View>
-								{guestList.map((guest, index) => {
-									return (
-										<View style={styles.guest}>
-											<Image
-												source={{ uri: guest.avatar }}
-												style={styles.profile_img}
-											/>
-											<Text
-												style={{
-													marginLeft: 10,
-													lineHeight: 20,
-												}}
-											>
-												{guest.guest_name}
-											</Text>
-										</View>
-									);
-								})}
-							</View>
-						)}
 					</View>
 				</ScrollView>
 			) : (
@@ -639,6 +469,7 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		lineHeight: 20,
 		color: Theme.FAINT,
+		width: "80%"
 	},
 	rules: {
 		fontSize: 15,

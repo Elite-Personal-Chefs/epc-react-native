@@ -10,6 +10,6 @@ export default interface Event {
 	start?: Date;
 	end?: Date;
 	guestCapacity?: number;
-	chef?: string;
+	chefId?: string;
 	menuId?: string;
 }

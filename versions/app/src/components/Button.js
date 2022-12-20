@@ -32,7 +32,7 @@ function GoToButton({
 	);
 }
 
-function CustomButton({ text, onPress, size, disabled, checkmark }) {
+function CustomButton({ text, onPress, size = "", disabled = false, checkmark = false }) {
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}

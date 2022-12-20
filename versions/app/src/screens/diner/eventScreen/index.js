@@ -5,7 +5,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
@@ -23,10 +23,10 @@ import {
 	Alert,
 	ScrollView,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import MenuListing from "../components/MenuListing";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
+import MenuListing from "../../../components/MenuListing";
+import { getEndpoint } from "../../../helpers/helpers";
 
 // STYLES
 import {
@@ -34,10 +34,10 @@ import {
 	TouchableHighlight,
 	footer,
 	forms,
-} from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+} from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents as dataGetEvents } from "../data/event";
+import { getEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -59,10 +59,10 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const getEvents = async (eventPageName) => {
+	const getEventsDetails = async (eventPageName) => {
 		console.log("💚💚💚 Getting events: " + eventPageName);
 		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
-		const json = await dataGetEvents(new Date, null, true);
+		const json = await getEvents({ start: new Date(), published: true });
 		// console.log("💚💚💚 Result: ", result);
 		if (!json.error) {
 			//console.log(json)
@@ -87,7 +87,7 @@ export default function EventsScreen({ navigation, route }) {
 	const renderEvent = ({ item }) => {
 		const image = item.photos
 			? { uri: item.photos[0] }
-			: require("../assets/event_placeholder.png");
+			: require("../../../assets/event_placeholder.png");
 		// console.log(item)
 		return (
 			<TouchableWithoutFeedback
@@ -145,7 +145,7 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const onRefresh = () => {
-		getEvents(eventPageName);
+		getEventsDetails(eventPageName);
 		setRefreshing(false);
 	};
 
@@ -154,7 +154,7 @@ export default function EventsScreen({ navigation, route }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			getEvents(eventPageName);
+			getEventsDetails(eventPageName);
 			console.log("Event screen is focused:" + eventPageName);
 		}, [])
 	);
@@ -238,7 +238,7 @@ export default function EventsScreen({ navigation, route }) {
 								hasEvents.map((item, index) => {
 									const image = item.photos
 										? { uri: item.photos[0] }
-										: require("../assets/event_placeholder.png");
+										: require("../../../assets/event_placeholder.png");
 									return (
 										<TouchableWithoutFeedback
 											key={index}
@@ -368,7 +368,7 @@ export default function EventsScreen({ navigation, route }) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../assets/empty_calendar.png")}
+						source={require("../../../assets/empty_calendar.png")}
 					/>
 					<Text style={globalStyles.empty_text}>
 						There are no posted events yet
