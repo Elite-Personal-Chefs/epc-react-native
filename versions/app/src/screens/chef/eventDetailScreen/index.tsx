@@ -62,7 +62,7 @@ export default function EventDetailScreen({
 	const appsGlobalContext = useContext(AppContext);
 
 	const userEmail = appsGlobalContext.userData.email;
-	const routeParams = route.params.details;
+	const routeParams = route.params.event;
 	const placeholderImg = require("../../../assets/food_pasta.png");
 
 	const [reservations, setReservations] = useState<Reservation[] | null>();

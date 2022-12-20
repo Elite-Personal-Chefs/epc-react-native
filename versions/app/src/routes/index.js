@@ -56,6 +56,7 @@ import MenuDetailScreen from "../screens/menuDetailScreen";
 import ChefsScreen from "../screens/chefsScreen";
 import ChefDetailScreen from "../screens/chefDetailScreen";
 import ChefEventsScreen from "../screens/chef/eventsScreen";
+import chefEventTemplateDetailScreen from "../screens/chef/eventTemplateDetailScreen";
 import ReservationsScreen from "../screens/reservationsScreen";
 import AccountScreen from "../screens/accountScreen";
 import ProfileScreen from "../screens/profileScreen";

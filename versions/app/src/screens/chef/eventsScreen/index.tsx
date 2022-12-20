@@ -5,12 +5,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
-import { getEventsByChefId, getEventTemplates } from "../../../data/event";
+import { getEventsByChefId } from "../../../data/event";
+import { getEventTemplates } from "../../../data/eventTemplates";
 
 // COMPONENTS
-import { Text, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import AppContext from "../../../components/AppContext";
 import NoEventsPlaceholder from "../../../components/emptyStates/NoEventsPlaceholder";
 import { CreateEventButton } from "../../../components/Button";
@@ -36,12 +36,8 @@ export default function ChefEventScreen({ navigation, route }) {
 		try {
 			if (eventPageName == "Templates") {
 				try {
-					//* GET EVENT TEMPLATES
 					const events = await getEventTemplates();
-
-					//* SORT EVENT TEMPLATES BY TITLE
 					events.sort(dynamicSort("title"));
-
 					setEvents(events);
 				} catch (error) {
 					console.log(error);
@@ -52,7 +48,9 @@ export default function ChefEventScreen({ navigation, route }) {
 
 					if (events) {
 						//&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
-						setEvents(events.transactions ? events.transactions : events);
+						setEvents(
+							events.transactions ? events.transactions : events
+						);
 					} else {
 						setEvents(null);
 						console.log("No events found for you");
@@ -67,11 +65,6 @@ export default function ChefEventScreen({ navigation, route }) {
 		}
 	};
 
-	const onRefresh = () => {
-		getEvents(eventPageName);
-		setRefreshing(false);
-	};
-
 	useEffect(() => {
 		getEvents(eventPageName);
 	}, [1]);
@@ -82,7 +75,6 @@ export default function ChefEventScreen({ navigation, route }) {
 	useFocusEffect(
 		React.useCallback(() => {
 			getEvents(eventPageName);
-			console.log("Chef Event screen is focused");
 		}, [1])
 	);
 
@@ -101,7 +93,9 @@ export default function ChefEventScreen({ navigation, route }) {
 				)}
 				{eventPageName == "Your Events" && (
 					<CreateEventButton
-						style={eventGlobalStyles.lower_right_create_event_circle}
+						style={
+							eventGlobalStyles.lower_right_create_event_circle
+						}
 						onPress={() => navigation.navigate("Create Event")}
 					></CreateEventButton>
 				)}
