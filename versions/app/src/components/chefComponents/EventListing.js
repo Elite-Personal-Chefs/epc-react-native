@@ -27,10 +27,8 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function EventListing({ eventTemplates, pageName, navigation }) {
-	let navigateTo = "";
-
-	if (pageName === "Templates") navigateTo = "Chef Event Template Details";
-	if (pageName === "Your Events") navigateTo = "Chef Event Details";
+	//TODO: Should be agnostic to the page name; need to pass an event and navigation like route page to it's on Event Listings page. Navigation like route = logic that handles the navigation for you.
+	let navigateTo = pageName === "Templates" ? "Chef Event Template Details" : "Chef Event Details";
 
 	const renderItem = ({ item }) => {
 		return (

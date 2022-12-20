@@ -72,12 +72,6 @@ export default function App() {
 	//SET STATE OF LOGIN/READINESS VARIABLES
 	const { appGlobals, loading } = useSession();
 	const [appIsAwaitingOTAUpdates, setAppIsAwaitingOTAUpdates] = useState(false);
-	// console.log("USER", appGlobals.userData);
-
-	//DIAGNOSTICS OF APP STATE
-	// console.log("APP: AWAITING OTA UPDATES: " + appIsAwaitingOTAUpdates);
-	// console.log("APP: USER ID: " + appGlobals.userID);
-	// console.log("APP: USER LOGGED IN: " + appGlobals.userLoggedIn);
 
 	//CHECK FOR OTA UPDATES
 	const checkForUpdates = async () => {

@@ -7,39 +7,65 @@ const db = firestore();
 import Menu from "../models/menu";
 import Course from "../models/course";
 
+const menuConverter = {
+	toFirestore: (menu: Menu): firebase.firestore.DocumentData => {
+		// the id exists on the document, but not on the data;
+		delete menu.id;
+		return menu;
+	},
+	fromFirestore: (
+		snapshot: firebase.firestore.QueryDocumentSnapshot,
+		options: firebase.firestore.SnapshotOptions
+	): Menu => {
+		const data = snapshot.data(options);
+		return {
+			...data,
+			id: snapshot.id,
+		};
+	},
+};
+const eventConverter = {
+	toFirestore: (course: Course): firebase.firestore.DocumentData => {
+		// the id exists on the document, but not on the data;
+		delete course.id;
+		return course;
+	},
+	fromFirestore: (
+		snapshot: firebase.firestore.QueryDocumentSnapshot,
+		options: firebase.firestore.SnapshotOptions
+	): Menu => {
+		const data = snapshot.data(options);
+		return {
+			...data,
+			id: snapshot.id,
+		};
+	},
+};
+
 const getMenuTemplates = async (): Promise<Menu[]> => {
-	const menuTemplateCollection = db.collection("menu_templates");
+	const menuTemplateCollection = db.collection("menu_templates").withConverter(menuConverter);
 	const menuTemplates = await menuTemplateCollection.get();
 	return menuTemplates.docs.map((doc) => {
 		if (!doc.exists) {
 			console.log("No such document!");
 			return;
 		} else {
-			//console.log("Document data:", doc.data());
-			return { ...doc.data(), id: doc.id };
+			return doc.data();
 		}
 	}) as Menu[];
 };
 
 const getMenuTemplatesById = async (id: string): Promise<Menu> => {
-	const menuTemplateCollection = db.collection("menu_templates");
+	const menuTemplateCollection = db.collection("menu_templates").withConverter(menuConverter);
 	try {
 		const menuTemplate = await menuTemplateCollection.doc(id).get();
 
 		if (!menuTemplate.exists) {
 			console.log("No such document!");
 			return;
-		} else {
-			// WHEN YOU USE THIS FUNCTION CALL, ADD THE FOLLOWING TO THE MENU MODEL:
-			// photos: [
-			// 	"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b",
-			// ],
-
-			return {
-				...menuTemplate.data(),
-				id: menuTemplate.id,
-			} as Menu;
 		}
+
+		return menuTemplate.data() as Menu;
 	} catch (error) {
 		console.log("Error getting document", error);
 	}

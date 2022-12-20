@@ -1,12 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
 import { Text, View, ActivityIndicator } from "react-native";
 
 //OTHER DEPENDENCIES
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import { globalStyles, menusStyles } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
 
 export default function MenuCard(menuCoursesAndMeals) {

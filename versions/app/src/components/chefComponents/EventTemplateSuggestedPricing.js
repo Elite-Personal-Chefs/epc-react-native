@@ -1,12 +1,12 @@
 // IMPORTS
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 // OTHER DEPENDENCIES
 import Tooltip from "react-native-walkthrough-tooltip";
 
 // STYLES
-import { globalStyles, eventGlobalStyles } from "../../styles/styles";
+import { eventGlobalStyles } from "../../styles/styles";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function EventTemplateSuggestedPricing({ CPP }) {
@@ -27,9 +27,7 @@ export default function EventTemplateSuggestedPricing({ CPP }) {
 					}
 					placement='bottom'
 					onClose={() => setToolTipVisible(false)}
-					useInteractionManager={true} // need this prop to wait for react navigation
-					// below is for the status bar of react navigation bar
-					// topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+					useInteractionManager={true}
 				>
 					<TouchableOpacity style={[{ width: "100%" }]} onPress={() => setToolTipVisible(true)}>
 						<AntDesign name='infocirlceo' size={17} color='black' />

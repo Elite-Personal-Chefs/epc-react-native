@@ -96,8 +96,9 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 							<View style={eventGlobalStyles.event_header_container}>
 								<Text style={globalStyles.h1}>{eventDetails.event.title}</Text>
 							</View>
-							<EventTemplateSuggestedPricing CPP={CPP}></EventTemplateSuggestedPricing>
+							<EventTemplateSuggestedPricing CPP={CPP} />
 						</View>
+						{/* TODO: Make dumb button and move logic to this page. Only pass onPress and use CustomButton */}
 						<AddEventTemplateButton
 							chefId={uid}
 							chefName={chefName}
@@ -105,10 +106,10 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 							event={eventDetails}
 							courses={courses}
 							menuItems={menuItems}
-						></AddEventTemplateButton>
-						<EventTemplateCard description={eventDescription}></EventTemplateCard>
+						/>
+						<EventTemplateCard description={eventDescription} />
 					</View>
-					<MenuCard menuItems={menuItems}></MenuCard>
+					<MenuCard menuItems={menuItems} />
 				</ScrollView>
 			) : (
 				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />

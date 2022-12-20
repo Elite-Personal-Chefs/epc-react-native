@@ -1,16 +1,6 @@
 // IMPORTS
-import React, { useState, useContext, useEffect } from "react";
-import {
-	Button,
-	Text,
-	StyleSheet,
-	View,
-	ScrollView,
-	Image,
-	ActivityIndicator,
-	TouchableOpacity,
-	Linking,
-} from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 // OTHER DEPENDENCIES
@@ -21,7 +11,7 @@ import { addEventTemplateToChef } from "../../data/chef";
 import { getEventsByChefId } from "../../data/event";
 
 // STYLES
-import { globalStyles, eventGlobalStyles } from "../../styles/styles";
+import { eventGlobalStyles } from "../../styles/styles";
 
 export default function AddEventTemplateButton({
 	chefId,

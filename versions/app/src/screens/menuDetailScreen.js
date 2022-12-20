@@ -49,7 +49,9 @@ export default function MenuDetailScreen({ route, navigation }) {
 	const [knownMenuPrice, setKnownMenuPrice] = useState(
 		details.price ? Number.parseInt(details.price) : false
 	);
-	const [menuImg, setMenuImg] = useState(null);
+	const menuImg = [
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b",
+	];
 	const [added, setAdded] = useState(false);
 	const [adding, setAdding] = useState(false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
@@ -140,16 +142,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 					});
 					menuItems.push({ items, course: course });
 				}
-			}
-			//Set menu image if one exists
-			if (menu.photos) {
-				console.log("FOUND IT");
-				setMenuImg({ uri: menu.photos.pop() });
-				//useState(require('../assets/food_pasta.png'))
-			} else {
-				setMenuImg([
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b",
-				]);
 			}
 			setMenuItems(menuItems);
 		}

@@ -5,18 +5,17 @@ import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { getEventsByChefId } from "../../data/event";
 import { getEventTemplates } from "../../data/eventTemplates";
 
 // COMPONENTS
-import { Text, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import AppContext from "../../components/AppContext";
 import NoEventsPlaceholder from "../../components/emptyStates/NoEventsPlaceholder";
 import { CreateEventButton } from "../../components/Button";
 import EventListing from "../../components/chefComponents/EventListing";
-import { dynamicSort, find } from "../../helpers/helpers";
+import { dynamicSort } from "../../helpers/helpers";
 
 // STYLES
 import { globalStyles, eventGlobalStyles } from "../../styles/styles";
@@ -64,14 +63,8 @@ export default function ChefEventScreen({ navigation, route }) {
 		}
 	};
 
-	const onRefresh = () => {
-		getEvents(eventPageName);
-		setRefreshing(false);
-	};
-
 	useEffect(() => {
 		getEvents(eventPageName);
-		console.log(`chef event screen is mounted`);
 	}, [1]);
 
 	/*************************************************************/
@@ -80,7 +73,6 @@ export default function ChefEventScreen({ navigation, route }) {
 	useFocusEffect(
 		React.useCallback(() => {
 			getEvents(eventPageName);
-			console.log("Chef Event screen is focused");
 		}, [1])
 	);
 

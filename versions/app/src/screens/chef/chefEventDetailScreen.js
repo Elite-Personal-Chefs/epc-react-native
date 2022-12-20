@@ -1,7 +1,7 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -18,7 +18,7 @@ import {
 } from "react-native";
 
 //Other Dependencies
-import { firebase, configKeys } from "../../config/config";
+import { firebase } from "../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
@@ -28,23 +28,12 @@ import { getEndpoint } from "../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
-import {
-	publishEvent,
-	unpublishEvent,
-	getEventById,
-	getEventReservations,
-} from "../../data/event";
+import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../data/event";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../../styles/styles";
+import { globalStyles, menusStyles } from "../../styles/styles";
 import Theme from "../../styles/theme.style.js";
-import {
-	AntDesign,
-	MaterialIcons,
-	FontAwesome5,
-	Ionicons,
-} from "@expo/vector-icons";
-import themeStyle from "../../styles/theme.style.js";
+import { AntDesign, MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
