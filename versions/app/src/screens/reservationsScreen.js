@@ -15,7 +15,6 @@ import {CustomButton} from '../components/Button'
 import MenuListing from '../components/MenuListing'
 import {getEndpoint} from '../helpers/helpers'
 import { getEventsByGuestId } from "../data/event";
-import { getReservationsByUserId } from "../data/reservation";
 
 // STYLES
 import { globalStyles, TouchableHighlight, footer, forms } from "../styles/styles";
@@ -27,10 +26,10 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 /*******************************************************************************/
 
 export default function ReservationsScreen({ navigation }) {
-	console.log("Hello reservations screen");
+	console.log("ReservationsScreen");
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
-	console.log(`uid: ${uid}`);
+	//console.log(`uid: ${uid}`);
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
 
@@ -41,24 +40,19 @@ export default function ReservationsScreen({ navigation }) {
 		const reservation = await getEventsByGuestId(uid);
 		setHasEvents(reservation);
 		console.log("reservation", reservation);
-	};
-
-	const getGuestEvents = async (uid) => {
-		const result = await fetch(getEndpoint(appsGlobalContext, "guest/" + uid)); //apiBase
-		const json = await result.json();
-		if (!json.error) {
-			setHasEvents(json.transactions);
-		} else {
-			console.log("No guest info found");
-			setHasEvents(null);
-		}
 		setRefreshing(false);
 	};
 
 	const onRefresh = () => {
-		getGuestEvents(uid);
+		getDinerReservations(uid);
 		setRefreshing(false);
 	};
+
+	useFocusEffect(
+		React.useCallback(() => {
+			getDinerReservations(uid);
+		}, [1])
+	);
 
 	const renderEvent = ({ item }) => {
 		return (
@@ -91,13 +85,6 @@ export default function ReservationsScreen({ navigation }) {
 		);
 	};
 
-	useFocusEffect(
-		React.useCallback(() => {
-			//getGuestEvents(uid)
-			getDinerReservations(uid);
-		}, [1])
-	);
-
 	return (
 		<View style={[globalStyles.page, { padding: 0 }]}>
 			{hasEvents ? (
@@ -115,7 +102,7 @@ export default function ReservationsScreen({ navigation }) {
 						style={globalStyles.empty_image}
 						source={require("../assets/empty_calendar.png")}
 					/>
-					<Text style={globalStyles.empty_text}>You haven't reserved any events yet</Text>
+					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>
 			)}
 		</View>

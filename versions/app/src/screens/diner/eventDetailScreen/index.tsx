@@ -45,6 +45,7 @@ import {
 /*******************************************************************************/
 
 export default function EventDetailScreen({ route }: any) {
+	console.log("EventDetailScreen");
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
@@ -53,10 +54,11 @@ export default function EventDetailScreen({ route }: any) {
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
+	console.log("Event Details Start Date & Time: ", eventDetails.start);
 	const [reservationQuantity, setReservationQuantity] = useState(1);
 
 	const getEventDetails = async () => {
-		console.log("Trying to get these details", eventDetails);
+		//console.log("Trying to get these details", eventDetails);
 		const event = await getEventById(eventDetails.id);
 
 		if (!event) {
@@ -65,7 +67,7 @@ export default function EventDetailScreen({ route }: any) {
 		}
 		setEventDetails(event);
 		getMenus(event);
-		console.log("Found event details", event);
+		//console.log("Found event details", event);
 	};
 
 	//If we are coming from Reservation page then we need more details on the event
@@ -75,7 +77,7 @@ export default function EventDetailScreen({ route }: any) {
 	}
 
 	const reserve = async () => {
-		console.log("This is the user that is reserving ", user);
+		//console.log("This is the user that is reserving ", user);
 		try {
 			await reserveEvent(eventDetails.id, uid, reservationQuantity);
 			setReserved(true);
@@ -133,9 +135,9 @@ export default function EventDetailScreen({ route }: any) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			if (details.photos) {
-				setEventImg({ uri: details.photos[0] });
-				//useState(require('../assets/food_pasta.png'))
+			if (details?.photos) {
+				//Using ES-2022 Array.at() to get last item in array
+				setEventImg({ uri: details.photos.at(-1) });
 			} else {
 				setEventImg(require("../../../assets/event_placeholder.png"));
 			}
@@ -147,17 +149,12 @@ export default function EventDetailScreen({ route }: any) {
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
-				<ScrollView
-					showsVerticalScrollIndicator={false}
-					style={{ width: "100%" }}
-				>
+				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
 					{<Image source={eventImg} style={styles.image} />}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
-								<Text style={globalStyles.h1}>
-									{eventDetails.title}
-								</Text>
+								<Text style={globalStyles.h1}>{eventDetails.title}</Text>
 							</View>
 						</View>
 
@@ -166,8 +163,8 @@ export default function EventDetailScreen({ route }: any) {
 								{reserved ? (
 									<View>
 										<CustomButton
-											text="Reserved"
-											size="big"
+											text='Reserved'
+											size='big'
 											disabled={true}
 											checkmark={true}
 											onPress={undefined}
@@ -181,11 +178,7 @@ export default function EventDetailScreen({ route }: any) {
 											alignContent: "center",
 										}}
 									>
-										<CustomButton
-											text="Reserve this Event"
-											onPress={() => reserve()}
-											size="big"
-										/>
+										<CustomButton text='Reserve this Event' onPress={() => reserve()} size='big' />
 
 										<Dropdown
 											iconStyle={styles.iconStyle}
@@ -202,23 +195,16 @@ export default function EventDetailScreen({ route }: any) {
 												{ label: 9, value: 9 },
 												{ label: 10, value: 10 },
 											]}
-											labelField="label"
-											valueField="value"
-											placeholder="Select item"
-											searchPlaceholder="Search..."
+											labelField='label'
+											valueField='value'
+											placeholder='Select item'
+											searchPlaceholder='Search...'
 											value={reservationQuantity}
 											onChange={(item) => {
-												setReservationQuantity(
-													item.value
-												);
+												setReservationQuantity(item.value);
 											}}
 											renderLeftIcon={() => (
-												<AntDesign
-													style={styles.icon}
-													color="black"
-													name="team"
-													size={20}
-												/>
+												<AntDesign style={styles.icon} color='black' name='team' size={20} />
 											)}
 										/>
 									</View>
@@ -227,70 +213,44 @@ export default function EventDetailScreen({ route }: any) {
 						)}
 						<View style={[globalStyles.card, { width: "100%" }]}>
 							<View style={globalStyles.card_header}>
-								<Text style={globalStyles.card_header_text}>
-									Details
-								</Text>
+								<Text style={globalStyles.card_header_text}>Details</Text>
 							</View>
-							<Text style={globalStyles.card_content}>
-								{eventDetails.description}
-							</Text>
+							<Text style={globalStyles.card_content}>{eventDetails.description}</Text>
 							<View style={styles.details_cont}>
 								<View style={styles.detail}>
-									<FontAwesome5
-										name="calendar"
-										size={20}
-										style={styles.detail_icon}
-									/>
-									<Text style={styles.detail_label}>
-										{eventDetails.start && eventDetails.end
-											? `${format(
-													eventDetails.start,
-													"PPPP"
-											  )}`
+									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
+									{/* <Text style={styles.detail_label}>
+										{eventDetails?.start && eventDetails?.end
+											? `${format(eventDetails.start, "PPPP")}`
 											: "No Date Found"}
-									</Text>
+									</Text> */}
 								</View>
 								<View style={styles.detail}>
-									<AntDesign
-										name="clockcircle"
-										size={17}
-										style={styles.detail_icon}
-									/>
-									<Text style={styles.detail_label}>
-										{eventDetails.start && eventDetails.end
-											? format(eventDetails.start, "p") +
-											  "-" +
-											  format(eventDetails.end, "p")
+									<AntDesign name='clockcircle' size={17} style={styles.detail_icon} />
+									{/* <Text style={styles.detail_label}>
+										{eventDetails?.start && eventDetails?.end
+											? format(eventDetails.start, "p") + "-" + format(eventDetails.end, "p")
 											: "No Time Specified"}
-									</Text>
+									</Text> */}
 								</View>
 								<View style={styles.detail}>
 									<MaterialIcons
-										name="location-on"
+										name='location-on'
 										size={23}
-										style={[
-											styles.detail_icon,
-											{ marginLeft: -3, width: 33 },
-										]}
+										style={[styles.detail_icon, { marginLeft: -3, width: 33 }]}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.location
-											? eventDetails.location
-											: "Location Not Specified"}
+										{eventDetails.location ? eventDetails.location : "Location Not Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
 									<FontAwesome5
-										name="dollar-sign"
+										name='dollar-sign'
 										size={20}
-										style={[
-											styles.detail_icon,
-											{ marginLeft: -1, width: 31 },
-										]}
+										style={[styles.detail_icon, { marginLeft: -1, width: 31 }]}
 									/>
 									<Text style={styles.detail_label}>
-										{details?.cpp && details.cpp > 0
-											? `$${details.cpp}/person` : "Free"}
+										{details?.cpp && details.cpp > 0 ? `$${details.cpp}/person` : "Free"}
 									</Text>
 								</View>
 							</View>
@@ -299,43 +259,16 @@ export default function EventDetailScreen({ route }: any) {
 							{menuItems ? (
 								menuItems.map((menu, index) => {
 									return (
-										<View
-											style={menusStyles.menu_course_cont}
-											key={index}
-										>
-											<Text
-												style={menusStyles.menu_course}
-											>
-												-{menu.course}-
-											</Text>
+										<View style={menusStyles.menu_course_cont} key={index}>
+											<Text style={menusStyles.menu_course}>-{menu.course}-</Text>
 											{menu.items.map((item, index2) => {
 												return (
-													<View
-														style={
-															menusStyles.menu_item_cont
-														}
-														key={index2}
-													>
-														<Text
-															style={
-																menusStyles.menu_name
-															}
-														>
-															{item.item_name ||
-																item.title}
+													<View style={menusStyles.menu_item_cont} key={index2}>
+														<Text style={menusStyles.menu_name}>
+															{item.item_name || item.title}
 														</Text>
-														{item.description &&
-														item.description !=
-															"" ? (
-															<Text
-																style={
-																	menusStyles.menu_desc
-																}
-															>
-																{
-																	item.description
-																}
-															</Text>
+														{item.description && item.description != "" ? (
+															<Text style={menusStyles.menu_desc}>{item.description}</Text>
 														) : null}
 													</View>
 												);
@@ -344,10 +277,7 @@ export default function EventDetailScreen({ route }: any) {
 									);
 								})
 							) : (
-								<ActivityIndicator
-									size="large"
-									color={Theme.SECONDARY_COLOR}
-								/>
+								<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 							)}
 						</View>
 
@@ -355,46 +285,26 @@ export default function EventDetailScreen({ route }: any) {
 						{eventDetails.house_rules && (
 							<View style={globalStyles.card}>
 								<View style={globalStyles.card_header}>
-									<Text style={globalStyles.card_header_text}>
-										House Rules
-									</Text>
+									<Text style={globalStyles.card_header_text}>House Rules</Text>
 								</View>
 								<Text style={globalStyles.card_content}>
-									Here are some guidelines to follow in the
-									space and some other details.
+									Here are some guidelines to follow in the space and some other details.
 								</Text>
 								{eventDetails.house_rules.map((rule, index) => {
-									return (
-										<Text
-											style={[
-												globalStyles.card_content,
-												styles.rules,
-											]}
-										>
-											• {rule}
-										</Text>
-									);
+									return <Text style={[globalStyles.card_content, styles.rules]}>• {rule}</Text>;
 								})}
 								<View style={globalStyles.card_header}>
-									<Text
-										style={[
-											globalStyles.h3,
-											{ marginTop: 10 },
-										]}
-									>
-										You also acknowledge:
-									</Text>
+									<Text style={[globalStyles.h3, { marginTop: 10 }]}>You also acknowledge:</Text>
 								</View>
 								<Text style={globalStyles.card_content}>
-									If you damage the venue, you may be charged
-									for the damage you cause.
+									If you damage the venue, you may be charged for the damage you cause.
 								</Text>
 							</View>
 						)}
 					</View>
 				</ScrollView>
 			) : (
-				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
+				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 			)}
 		</SafeAreaView>
 	);
@@ -442,6 +352,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	detail_icon: {
+		//width: 30,
 		paddingLeft: 0,
 		marginRight: -8,
 		color: Theme.PRIMARY_COLOR,
@@ -459,17 +370,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		paddingVertical: 5,
 	},
-	detail_icon: {
-		width: 30,
-		padding: 0,
-		marginRight: 8,
-		color: Theme.PRIMARY_COLOR,
-	},
 	detail_label: {
 		fontSize: 13,
 		lineHeight: 20,
 		color: Theme.FAINT,
-		width: "80%"
+		width: "80%",
 	},
 	rules: {
 		fontSize: 15,
