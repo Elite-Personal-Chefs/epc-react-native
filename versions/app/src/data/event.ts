@@ -28,9 +28,7 @@ const eventConverter = {
 
 // CRUD Events in firestore
 const createEvent = async (eventData: Event): Promise<Event> => {
-	const eventCollection = db
-		.collection("events")
-		.withConverter(eventConverter);
+	const eventCollection = db.collection("events").withConverter(eventConverter);
 	// eventData.menuId ??= null;
 
 	const newEventSnap = await eventCollection.add(eventData);
@@ -40,24 +38,38 @@ const createEvent = async (eventData: Event): Promise<Event> => {
 
 const getEventById = async (eventId: string): Promise<Event> => {
 	const eventCollection = db.collection("events");
-	const event = await eventCollection
-		.withConverter(eventConverter)
-		.doc(eventId)
-		.get();
+	const event = await eventCollection.withConverter(eventConverter).doc(eventId).get();
 
 	return event.data() as Event;
 };
 
 const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
-	const eventCollection = db
-		.collection("events")
-		.where("chefId", "==", chefId);
+	const eventCollection = db.collection("events").where("chefId", "==", chefId);
 	const events = await eventCollection.get();
 
 	const results = events.docs.map((doc) => {
 		return { ...doc.data(), id: doc.id };
 	}) as Event[];
 	return results;
+};
+
+const getEventsByGuestId = async (guestId: string): Promise<Event[]> => {
+	//1. Get the guest document
+	const guestCollection = await db.collection("guests").doc(guestId).get();
+
+	//2. Get reservationSummaries
+	const { reservationSummaries } = guestCollection.data();
+	//console.log("reservationSummaries", reservationSummaries);
+
+	//3. iterate over reservationSummaries and get the event
+	const events = reservationSummaries.map(async (reservation) => {
+		const eventDoc = await reservation.event.get();
+
+		return { ...eventDoc.data(), id: eventDoc.id };
+	});
+
+	//console.log("Guest Events", events);
+	return Promise.all(events);
 };
 
 const getEvents = async ({
@@ -69,22 +81,13 @@ const getEvents = async ({
 	end?: Date;
 	published?: boolean;
 }): Promise<Event[]> => {
-	let eventCollection = firebase
-		.firestore()
-		.collection("events")
-		.withConverter(eventConverter);
+	let eventCollection = firebase.firestore().collection("events").withConverter(eventConverter);
 
-	if (start)
-		eventCollection = eventCollection.where("end", ">=", start) as any;
+	if (start) eventCollection = eventCollection.where("end", ">=", start) as any;
 
 	if (end) eventCollection = eventCollection.where("end", "<=", end) as any;
 
-	if (published)
-		eventCollection = eventCollection.where(
-			"published",
-			"==",
-			published
-		) as any;
+	if (published) eventCollection = eventCollection.where("published", "==", published) as any;
 
 	const events = await eventCollection.get();
 
@@ -100,11 +103,7 @@ const getPublishedEvents = async (): Promise<Event[]> => {
 };
 
 const updateEvent = async (eventId: string, data: Event): Promise<void> => {
-	const event = await firebase
-		.firestore()
-		.collection("events")
-		.doc(eventId)
-		.update(data);
+	const event = await firebase.firestore().collection("events").doc(eventId).update(data);
 	return event;
 };
 
@@ -128,17 +127,11 @@ const unpublishEvent = async (eventId: string): Promise<void> => {
 	return event;
 };
 
-const getEventReservations = async (
-	eventId: string
-): Promise<Reservation[]> => {
+const getEventReservations = async (eventId: string): Promise<Reservation[]> => {
 	console.log(eventId);
 	const eventRef = db.collection("events").doc(eventId);
-	const eventReservationsCollection = await eventRef
-		.collection("reservations")
-		.get();
-	return eventReservationsCollection.docs.map((doc) =>
-		doc.data()
-	) as Reservation[];
+	const eventReservationsCollection = await eventRef.collection("reservations").get();
+	return eventReservationsCollection.docs.map((doc) => doc.data()) as Reservation[];
 };
 
 const reserveEvent = async (
@@ -167,6 +160,7 @@ const reserveEvent = async (
 		const reservationData: Reservation = {
 			user: userRef.path,
 			numOfGuests,
+			createdAt: new Date(),
 			userSummary: {
 				name: userData.name,
 				profileImg: userData?.avatar?.url || "",
@@ -185,8 +179,8 @@ const reserveEvent = async (
 			eventStart: eventData.start,
 			eventEnd: eventData.end,
 			eventPhoto: eventData.photos ? eventData.photos[0] : "",
-			event: eventRef.path,
-			reservation: eventReservationsCollection.doc().path,
+			event: eventRef,
+			reservation: reservationRef,
 		});
 
 		transaction.update(userRef, {
@@ -200,6 +194,7 @@ export {
 	getEvents,
 	getEventById,
 	getEventsByChefId,
+	getEventsByGuestId,
 	getPublishedEvents,
 	getEventReservations,
 	updateEvent,
