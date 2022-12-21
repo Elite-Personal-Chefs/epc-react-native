@@ -60,10 +60,9 @@ export default function EventsScreen({ navigation, route }) {
 	});
 
 	const getEventsDetails = async (eventPageName) => {
-		console.log("💚💚💚 Getting events: " + eventPageName);
 		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
 		const json = await getEvents({ start: new Date(), published: true });
-		// console.log("💚💚💚 Result: ", result);
+
 		if (!json.error) {
 			//console.log(json)
 			setHasEvents(json);
@@ -92,41 +91,26 @@ export default function EventsScreen({ navigation, route }) {
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() =>
-					navigation.navigate("Event Details", { details: item })
-				}
+				onPress={() => navigation.navigate("Event Details", { details: item })}
 			>
 				<View style={styles.navigate_away}>
 					<Image source={image} style={styles.image} />
 					<View style={styles.navigate_away_content}>
 						{eventPageName == "Events" ? (
 							<Text style={styles.date_time}>
-								{item.event_date} | {item.start_time}-
-								{item.end_time}
+								{item.event_date} | {item.start_time}-{item.end_time}
 							</Text>
 						) : (
-							<Text style={styles.date_time}>
-								{item.readable_date}
-							</Text>
+							<Text style={styles.date_time}>{item.readable_date}</Text>
 						)}
 						<Text style={styles.title}>{item.title}</Text>
 					</View>
 					<View style={styles.chef_and_price}>
 						<View>
-							<Text style={styles.name}>
-								{item.chef_name ? item.chef_name : "Chef Name"}
-							</Text>
+							<Text style={styles.name}>{item.chef_name ? item.chef_name : "Chef Name"}</Text>
 							<View style={styles.reviews_and_rating}>
-								<FontAwesome
-									name="star"
-									size={12}
-									color={Theme.SECONDARY_COLOR}
-								/>
-								<Text style={styles.rating}>
-									{item.chef_rating
-										? item.chef_rating
-										: "4.8"}
-								</Text>
+								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
+								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
 								<Text style={styles.reviews}>(120)</Text>
 							</View>
 						</View>
@@ -155,7 +139,6 @@ export default function EventsScreen({ navigation, route }) {
 	useFocusEffect(
 		React.useCallback(() => {
 			getEventsDetails(eventPageName);
-			console.log("Event screen is focused:" + eventPageName);
 		}, [])
 	);
 

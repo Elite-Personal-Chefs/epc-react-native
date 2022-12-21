@@ -7,13 +7,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 //OTHER DEPENDENCIES
 import { firebase, configKeys } from '../config/config'
 import { useFocusEffect } from '@react-navigation/native';
+import { format, intervalToDuration } from "date-fns";
 
 // COMPONENTS
-import { Text, StyleSheet, View, Image, TouchableOpacity, FlatList, TouchableWithoutFeedback, RefreshControl } from 'react-native'
-import AppContext from '../components/AppContext';
-import {CustomButton} from '../components/Button'
-import MenuListing from '../components/MenuListing'
-import {getEndpoint} from '../helpers/helpers'
+import {
+	Text,
+	StyleSheet,
+	View,
+	Image,
+	TouchableOpacity,
+	FlatList,
+	TouchableWithoutFeedback,
+	RefreshControl,
+} from "react-native";
+import AppContext from "../components/AppContext";
+import { CustomButton } from "../components/Button";
+import MenuListing from "../components/MenuListing";
+import { getEndpoint } from "../helpers/helpers";
 import { getEventsByGuestId } from "../data/event";
 
 // STYLES
@@ -26,7 +36,6 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 /*******************************************************************************/
 
 export default function ReservationsScreen({ navigation }) {
-	console.log("ReservationsScreen");
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	//console.log(`uid: ${uid}`);
@@ -56,20 +65,34 @@ export default function ReservationsScreen({ navigation }) {
 	);
 
 	const renderEvent = ({ item }) => {
+		const startSeconds = new Date(item.start.seconds * 1000);
+		const endSeconds = new Date(item.end.seconds * 1000);
+		const formattedStartDate = format(startSeconds, "LLL Lo, yyyy h:mm a");
+		const formattedEndDate = format(endSeconds, "h:mm a");
+
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() => navigation.navigate("Event Details", { details: item, isReservation: true })}
+				onPress={() =>
+					navigation.navigate("Event Details", {
+						details: item,
+						isReservation: true,
+						startSeconds: startSeconds,
+						endSeconds: endSeconds,
+					})
+				}
 			>
 				<View style={styles.navigate_away}>
-					<Image source={require("../assets/food_pasta.png")} style={styles.image} />
+					<Image source={{ uri: item.photos.at(-1) }} style={styles.image} />
 					<View style={styles.navigate_away_content}>
-						<Text style={styles.date_time}>{item.readable_date}</Text>
+						<Text style={styles.date_time}>{`${formattedStartDate}-${formattedEndDate}`}</Text>
 						<Text style={styles.title}>{item.title}</Text>
 					</View>
 					<View style={styles.chef_and_price}>
 						<View>
-							<Text style={styles.name}>{item.chef_name ? item.chef_name : "Chef Name"}</Text>
+							<Text style={styles.name}>
+								{item.chefName ? `Chef ${item.chefName}` : "Chef Name"}
+							</Text>
 							<View style={styles.reviews_and_rating}>
 								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
 								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>

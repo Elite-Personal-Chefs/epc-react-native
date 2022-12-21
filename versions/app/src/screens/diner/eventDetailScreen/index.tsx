@@ -15,8 +15,8 @@ import {
 	Alert,
 	TouchableOpacity,
 } from "react-native";
-import { format } from "date-fns";
 
+import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
@@ -41,25 +41,32 @@ import { AntDesign, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 /*******************************************************************************/
 
 export default function EventDetailScreen({ route }: any) {
-	console.log("EventDetailScreen");
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const details = route.params.details;
-	//If we are coming from Reservation page then we need more details on the event
-	const isReservation = route.params.isReservation;
+	const startSeconds = route.params.startSeconds;
+	const endSeconds = route.params.endSeconds;
 	const [eventImg, setEventImg] = useState<string>();
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
-
-	console.log("Start: ", eventDetails.start);
-
-	//console.log("Format Start: ", format(eventDetails.start, "PPPP"));
 	const [reservationQuantity, setReservationQuantity] = useState(1);
 
+	//If we are coming from Reservation page then we need more details on the event
+	const isReservation = route.params.isReservation;
+
+	const startDate = isReservation
+		? format(startSeconds, "PPPP").toLocaleString()
+		: format(eventDetails.start, "PPPP").toLocaleString();
+
+	const endDate = isReservation
+		? format(startSeconds, "p").toLocaleString() + "-" + format(endSeconds, "p").toLocaleString()
+		: format(eventDetails.start, "p").toLocaleString() +
+		  "-" +
+		  format(eventDetails.end, "p").toLocaleString();
+
 	const getEventDetails = async () => {
-		//console.log("Trying to get these details", eventDetails);
 		const event = await getEventById(eventDetails.id);
 
 		if (!event) {
@@ -68,12 +75,9 @@ export default function EventDetailScreen({ route }: any) {
 		}
 		setEventDetails(event);
 		getMenus(event);
-		//console.log("Found event details", event);
 	};
 
 	const reserve = async () => {
-		console.log("Reserving Event");
-		//console.log("This is the user that is reserving ", user);
 		try {
 			await reserveEvent(eventDetails.id, uid, reservationQuantity);
 			setReserved(true);
@@ -84,8 +88,6 @@ export default function EventDetailScreen({ route }: any) {
 	};
 
 	const getMenus = async (details: Event) => {
-		console.log("getMenus");
-		//console.log("GETTING MENU ID: ", details);
 		//If this is a template page look for the menu in templates
 		//otherwise look into the chefs colelction of menus
 		const firestore = firebase.firestore();
@@ -131,7 +133,6 @@ export default function EventDetailScreen({ route }: any) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			console.log("EventDetailScreen useFocusEffect");
 			if (details?.photos) {
 				//Using ES-2022 Array.at() to get last item in array
 				setEventImg({ uri: details.photos.at(-1) });
@@ -217,17 +218,19 @@ export default function EventDetailScreen({ route }: any) {
 								<View style={styles.detail}>
 									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{/* {eventDetails?.start && eventDetails?.end
+										{/* {eventDetails.start && eventDetails.end
 											? `${format(eventDetails.start, "PPPP")}`
 											: "No Date Found"} */}
+										{startDate ? startDate : "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
 									<AntDesign name='clockcircle' size={17} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{/* {eventDetails?.start && eventDetails?.end
+										{/* {eventDetails.start && eventDetails.end
 											? format(eventDetails.start, "p") + "-" + format(eventDetails.end, "p")
 											: "No Time Specified"} */}
+										{startDate && endDate ? endDate : "No Time Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
@@ -349,9 +352,9 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	detail_icon: {
-		//width: 30,
+		width: 30,
 		paddingLeft: 0,
-		marginRight: -8,
+		marginRight: 8,
 		color: Theme.PRIMARY_COLOR,
 	},
 	btn_cont: {

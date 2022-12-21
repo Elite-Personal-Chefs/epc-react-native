@@ -464,7 +464,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 												>
 													{start ? format(start, "p") : "Start Time"}
 												</Text>
-												{console.log("Start time", start)}
+
 												<DateTimePickerModal
 													isVisible={showStartTimePicker}
 													mode='time'
