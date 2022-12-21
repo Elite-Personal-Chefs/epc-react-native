@@ -32,13 +32,9 @@ import { reserveEvent, getEventById } from "../../../data/event";
 import Event from "../../../models/event";
 
 // STYLES
-import { globalStyles, menusStyles } from "../../../styles/styles";
+import { globalStyles, eventGlobalStyles, menusStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
-import {
-	AntDesign,
-	MaterialIcons,
-	FontAwesome5,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -50,11 +46,16 @@ export default function EventDetailScreen({ route }: any) {
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const details = route.params.details;
+	//If we are coming from Reservation page then we need more details on the event
+	const isReservation = route.params.isReservation;
 	const [eventImg, setEventImg] = useState<string>();
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
-	console.log("Event Details Start Date & Time: ", eventDetails.start);
+
+	console.log("Start: ", eventDetails.start);
+
+	//console.log("Format Start: ", format(eventDetails.start, "PPPP"));
 	const [reservationQuantity, setReservationQuantity] = useState(1);
 
 	const getEventDetails = async () => {
@@ -70,13 +71,8 @@ export default function EventDetailScreen({ route }: any) {
 		//console.log("Found event details", event);
 	};
 
-	//If we are coming from Reservation page then we need more details on the event
-	const isReservation = route.params.isReservation;
-	if (isReservation) {
-		getEventDetails();
-	}
-
 	const reserve = async () => {
+		console.log("Reserving Event");
 		//console.log("This is the user that is reserving ", user);
 		try {
 			await reserveEvent(eventDetails.id, uid, reservationQuantity);
@@ -88,14 +84,14 @@ export default function EventDetailScreen({ route }: any) {
 	};
 
 	const getMenus = async (details: Event) => {
-		console.log("GETTING MENU ID: ", details);
+		console.log("getMenus");
+		//console.log("GETTING MENU ID: ", details);
 		//If this is a template page look for the menu in templates
 		//otherwise look into the chefs colelction of menus
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
 
-		console.log("Getting menu from chefs collection");
 		menuRef = firestore
 			.collection("chefs")
 			.doc(eventDetails.chefId)
@@ -107,7 +103,7 @@ export default function EventDetailScreen({ route }: any) {
 		if (!menuDoc.exists) {
 			console.log("No menu found");
 		} else {
-			console.log(`menuDoc: \n${JSON.stringify(menuDoc)}`);
+			//console.log(`menuDoc: \n${JSON.stringify(menuDoc)}`);
 			let menu = menuDoc.data();
 			let courses = menu.courses;
 			let menuItems = [];
@@ -135,6 +131,7 @@ export default function EventDetailScreen({ route }: any) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
+			console.log("EventDetailScreen useFocusEffect");
 			if (details?.photos) {
 				//Using ES-2022 Array.at() to get last item in array
 				setEventImg({ uri: details.photos.at(-1) });
@@ -150,7 +147,7 @@ export default function EventDetailScreen({ route }: any) {
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					{<Image source={eventImg} style={styles.image} />}
+					{<Image source={eventImg} style={eventGlobalStyles.image} resizeMode={"cover"} />}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
@@ -219,19 +216,19 @@ export default function EventDetailScreen({ route }: any) {
 							<View style={styles.details_cont}>
 								<View style={styles.detail}>
 									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
-									{/* <Text style={styles.detail_label}>
-										{eventDetails?.start && eventDetails?.end
+									<Text style={styles.detail_label}>
+										{/* {eventDetails?.start && eventDetails?.end
 											? `${format(eventDetails.start, "PPPP")}`
-											: "No Date Found"}
-									</Text> */}
+											: "No Date Found"} */}
+									</Text>
 								</View>
 								<View style={styles.detail}>
 									<AntDesign name='clockcircle' size={17} style={styles.detail_icon} />
-									{/* <Text style={styles.detail_label}>
-										{eventDetails?.start && eventDetails?.end
+									<Text style={styles.detail_label}>
+										{/* {eventDetails?.start && eventDetails?.end
 											? format(eventDetails.start, "p") + "-" + format(eventDetails.end, "p")
-											: "No Time Specified"}
-									</Text> */}
+											: "No Time Specified"} */}
+									</Text>
 								</View>
 								<View style={styles.detail}>
 									<MaterialIcons

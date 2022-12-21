@@ -92,7 +92,7 @@ const getEvents = async ({
 	const events = await eventCollection.get();
 
 	const results = events.docs.map((doc) => doc.data()) as Event[];
-	console.debug("Events retrieved from firestore", results);
+
 	return results;
 };
 

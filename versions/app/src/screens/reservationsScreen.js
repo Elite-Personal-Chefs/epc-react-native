@@ -39,11 +39,12 @@ export default function ReservationsScreen({ navigation }) {
 	const getDinerReservations = async (uid) => {
 		const reservation = await getEventsByGuestId(uid);
 		setHasEvents(reservation);
-		console.log("reservation", reservation);
+
 		setRefreshing(false);
 	};
 
 	const onRefresh = () => {
+		setRefreshing(true);
 		getDinerReservations(uid);
 		setRefreshing(false);
 	};
