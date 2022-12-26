@@ -57,7 +57,8 @@ import ChefsScreen from "../screens/chefsScreen";
 import ChefDetailScreen from "../screens/chefDetailScreen";
 import ChefEventsScreen from "../screens/chef/eventsScreen";
 import chefEventTemplateDetailScreen from "../screens/chef/eventTemplateDetailScreen";
-import ReservationsScreen from "../screens/reservationsScreen";
+import ReservationsScreen from "../screens/diner/reservations/reservationsScreen";
+import ReservationDetailScreen from "../screens/diner/reservations//reservationsDetailScreen";
 import AccountScreen from "../screens/accountScreen";
 import ProfileScreen from "../screens/profileScreen";
 import MessageScreen from "../screens/messageScreen";
@@ -554,6 +555,27 @@ function Navigator({ userLoggedIn }) {
 						<RootStack.Screen
 							name='Event Details'
 							component={EventDetailScreen}
+							options={({ route }) => ({
+								//headerShown: false,
+								headerTintColor: Theme.WHITE,
+								headerTransparent: true,
+								headerTruncatedBackTitle: true,
+								headerBackTitleVisible: false,
+								title: "",
+								headerTitle: null,
+								headerBackground: () => (
+									<LinearGradient
+										start={{ x: 1, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
+										style={{ flex: 1 }}
+									/>
+								),
+							})}
+						/>
+						<RootStack.Screen
+							name='Reservation Details'
+							component={ReservationDetailScreen}
 							options={({ route }) => ({
 								//headerShown: false,
 								headerTintColor: Theme.WHITE,

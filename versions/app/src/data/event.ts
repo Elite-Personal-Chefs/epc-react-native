@@ -53,7 +53,7 @@ const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
 	return results;
 };
 
-const getEventsByGuestId = async (guestId: string): Promise<Event[]> => {
+const getEventsReservedByGuestId = async (guestId: string): Promise<Event[]> => {
 	//1. Get the guest document
 	const guestCollection = await db.collection("guests").doc(guestId).get();
 
@@ -70,6 +70,26 @@ const getEventsByGuestId = async (guestId: string): Promise<Event[]> => {
 
 	//console.log("Guest Events", events);
 	return Promise.all(events);
+};
+
+const getEventsReservationByGuestId = async (
+	guestId: string,
+	eventId: string
+): Promise<Reservation[]> => {
+	const guestCollection = await db.collection("guests").doc(guestId).get();
+
+	const { reservationSummaries } = guestCollection.data();
+
+	const reservations = reservationSummaries.map(async (reservation) => {
+		const reservationDoc = await reservation.reservation.get();
+		if (reservation.event.id === eventId) {
+			console.log(`reservation.event.id: ${reservation.event.id} eventId: ${eventId}`);
+			console.log("reservationDoc.data()", reservationDoc.data());
+			return { ...reservationDoc.data(), id: reservationDoc.id };
+		}
+	});
+
+	return Promise.all(reservations);
 };
 
 const getEvents = async ({
@@ -128,7 +148,6 @@ const unpublishEvent = async (eventId: string): Promise<void> => {
 };
 
 const getEventReservations = async (eventId: string): Promise<Reservation[]> => {
-	console.log(eventId);
 	const eventRef = db.collection("events").doc(eventId);
 	const eventReservationsCollection = await eventRef.collection("reservations").get();
 	return eventReservationsCollection.docs.map((doc) => doc.data()) as Reservation[];
@@ -194,7 +213,8 @@ export {
 	getEvents,
 	getEventById,
 	getEventsByChefId,
-	getEventsByGuestId,
+	getEventsReservedByGuestId,
+	getEventsReservationByGuestId,
 	getPublishedEvents,
 	getEventReservations,
 	updateEvent,

@@ -182,12 +182,7 @@ export default function EventsScreen({ navigation, route }) {
 								data={hasEvents}
 								renderItem={renderEvent}
 								keyExtractor={(event) => event.id}
-								refreshControl={
-									<RefreshControl
-										refreshing={refreshing}
-										onRefresh={onRefresh}
-									/>
-								}
+								refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 							/>
 						</View>
 						{/*
@@ -208,11 +203,7 @@ export default function EventsScreen({ navigation, route }) {
 							{coordinates &&
 								hasEvents.map((marker, index) => {
 									return (
-										<Marker
-											key={index}
-											coordinate={coordinates[index]}
-											title={marker.title}
-										/>
+										<Marker key={index} coordinate={coordinates[index]} title={marker.title} />
 									);
 								})}
 						</MapView>
@@ -225,118 +216,35 @@ export default function EventsScreen({ navigation, route }) {
 									return (
 										<TouchableWithoutFeedback
 											key={index}
-											onPress={() =>
-												goToMarker(coordinates[index])
-											}
-											onLongPress={() =>
-												navigation.navigate(
-													"Event Details",
-													{ details: item }
-												)
-											}
+											onPress={() => goToMarker(coordinates[index])}
+											onLongPress={() => navigation.navigate("Event Details", { details: item })}
 										>
 											<View style={styles.scroller}>
-												<Image
-													source={image}
-													style={styles.scroller_img}
-												/>
-												<View
-													style={
-														styles.scroller_content
-													}
-												>
-													<View
-														style={
-															styles.upper_content
-														}
-													>
+												<Image source={image} style={styles.scroller_img} />
+												<View style={styles.scroller_content}>
+													<View style={styles.upper_content}>
 														<View>
-															<Text
-																style={
-																	styles.scroller_title
-																}
-															>
-																{item.title}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_date_time
-																}
-															>
-																{
-																	item.event_date
-																}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_date_time
-																}
-															>
-																{
-																	item.start_time
-																}
-																-{item.end_time}
+															<Text style={styles.scroller_title}>{item.title}</Text>
+															<Text style={styles.scroller_date_time}>{item.event_date}</Text>
+															<Text style={styles.scroller_date_time}>
+																{item.start_time}-{item.end_time}
 															</Text>
 														</View>
 														<View>
-															<Text
-																style={
-																	styles.scroller_price
-																}
-															>
-																${item.cpp}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_price_label
-																}
-															>
-																Per Person
-															</Text>
+															<Text style={styles.scroller_price}>${item.cpp}</Text>
+															<Text style={styles.scroller_price_label}>Per Person</Text>
 														</View>
 													</View>
-													<View
-														style={
-															styles.lower_content
-														}
-													>
-														<Text
-															style={
-																styles.scroller_name
-															}
-														>
-															{item.chef_name
-																? item.chef_name
-																: "Chef Name"}
+													<View style={styles.lower_content}>
+														<Text style={styles.scroller_name}>
+															{item.chef_name ? item.chef_name : "Chef Name"}
 														</Text>
-														<View
-															style={
-																styles.reviews_and_rating
-															}
-														>
-															<FontAwesome
-																name="star"
-																size={12}
-																color={
-																	Theme.SECONDARY_COLOR
-																}
-															/>
-															<Text
-																style={
-																	styles.rating
-																}
-															>
-																{item.chef_rating
-																	? item.chef_rating
-																	: "4.8"}
+														<View style={styles.reviews_and_rating}>
+															<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
+															<Text style={styles.rating}>
+																{item.chef_rating ? item.chef_rating : "4.8"}
 															</Text>
-															<Text
-																style={
-																	styles.reviews
-																}
-															>
-																(120)
-															</Text>
+															<Text style={styles.reviews}>(120)</Text>
 														</View>
 													</View>
 												</View>
@@ -353,9 +261,7 @@ export default function EventsScreen({ navigation, route }) {
 						style={globalStyles.empty_image}
 						source={require("../../../assets/empty_calendar.png")}
 					/>
-					<Text style={globalStyles.empty_text}>
-						There are no posted events yet
-					</Text>
+					<Text style={globalStyles.empty_text}>There are no posted events yet</Text>
 				</View>
 			)}
 		</View>

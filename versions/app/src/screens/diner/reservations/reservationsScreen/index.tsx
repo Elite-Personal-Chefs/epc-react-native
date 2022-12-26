@@ -1,12 +1,12 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useContext, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from '../config/config'
-import { useFocusEffect } from '@react-navigation/native';
+//import { firebase, configKeys } from "../../../firebase/config";
+import { useFocusEffect } from "@react-navigation/native";
 import { format, intervalToDuration } from "date-fns";
 
 // COMPONENTS
@@ -20,47 +20,47 @@ import {
 	TouchableWithoutFeedback,
 	RefreshControl,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import MenuListing from "../components/MenuListing";
-import { getEndpoint } from "../helpers/helpers";
-import { getEventsByGuestId } from "../data/event";
+import AppContext from "../../../../components/AppContext";
+// import { CustomButton } from "../components/Button";
+// import MenuListing from "../components/MenuListing";
+// import { getEndpoint } from "../helpers/helpers";
+import { getEventsReservedByGuestId } from "../../../../data/event";
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, TouchableHighlight, footer, forms } from "../../../../styles/styles";
+import Theme from "../../../../styles/theme.style.js";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function ReservationsScreen({ navigation }) {
+export default function ReservationsScreen({ navigation }: any) {
+	console.log(`ReservationsScreen`);
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
-	//console.log(`uid: ${uid}`);
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
 
-	const getDinerReservations = async (uid) => {
-		const reservation = await getEventsByGuestId(uid);
-		setHasEvents(reservation);
-
+	const getDinerEvents = async (uid) => {
+		const events = await getEventsReservedByGuestId(uid);
+		setHasEvents(events);
+		//console.log(`events: ${JSON.stringify(events)}`);
 		setRefreshing(false);
 	};
 
 	const onRefresh = () => {
 		setRefreshing(true);
-		getDinerReservations(uid);
+		getDinerEvents(uid);
 		setRefreshing(false);
 	};
 
 	useFocusEffect(
 		React.useCallback(() => {
-			getDinerReservations(uid);
+			getDinerEvents(uid);
 		}, [1])
 	);
 
@@ -74,7 +74,7 @@ export default function ReservationsScreen({ navigation }) {
 			<TouchableWithoutFeedback
 				key={item.index}
 				onPress={() =>
-					navigation.navigate("Event Details", {
+					navigation.navigate("Reservation Details", {
 						details: item,
 						isReservation: true,
 						startSeconds: startSeconds,
@@ -124,7 +124,7 @@ export default function ReservationsScreen({ navigation }) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../assets/empty_calendar.png")}
+						source={require("../../../../assets/empty_calendar.png")}
 					/>
 					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>
@@ -134,90 +134,88 @@ export default function ReservationsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    no_event:{
-        flex:1,
-        width:'100%',
-        justifyContent: 'center', 
-        alignItems: 'center'
-    },
-    empty_image: {
-        width:'70%',
-        height:'40%',
-        margin: 0,
-        padding: 0
-    },
+	no_event: {
+		flex: 1,
+		width: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	empty_image: {
+		width: "70%",
+		height: "40%",
+		margin: 0,
+		padding: 0,
+	},
 
-
-      
-    navigate_away: {
-        width: '100%',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        padding: 15,
-        paddingHorizontal: 15,
-        borderWidth:1,
-        borderColor: Theme.BORDER_COLOR,
-        marginBottom:10
-    },
-    navigate_away_content:{
-        flex:1,
-        paddingTop:8
-    },
-    image:{
-        width:'100%',
-        height:200
-    },
-    title:{
-        fontWeight: 'bold',
-        color: Theme.PRIMARY_COLOR,
-        fontSize: 17,
-    },
-    name:{
-        fontWeight: 'bold',
-        color: Theme.TEXT_ON_SURFACE_COLOR,
-        fontSize: 13,
-        paddingBottom:4
-    },
-    date_time:{
-        color: Theme.FAINT,
-        fontSize: 12,
-    },
-    chef_and_price: {
-        flex:1,
-        width:'100%',
-        paddingTop: 30,
-        textAlign: 'left',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    price_cont: {
-        //alignContent: 'flex-end'
-    },
-    price: {
-        fontSize: 20,
-        color: Theme.PRIMARY_COLOR,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    price_label: {
-        fontSize: 14,
-        color: Theme.PRIMARY_COLOR,
-        textAlign: 'center'
-    },
-    reviews_and_rating:{
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingBottom:2
-    },
-    rating:{
-        paddingHorizontal: 4,
-        fontWeight: 'bold',
-        color: Theme.TEXT_ON_SURFACE_COLOR_LIGHT,
-        fontSize: 12,
-    },
-    reviews:{
-        fontWeight: 'normal',
-        color: Theme.FAINT,
-        fontSize: 12,
-    },
-})
+	navigate_away: {
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "flex-start",
+		padding: 15,
+		paddingHorizontal: 15,
+		borderWidth: 1,
+		borderColor: Theme.BORDER_COLOR,
+		marginBottom: 10,
+	},
+	navigate_away_content: {
+		flex: 1,
+		paddingTop: 8,
+	},
+	image: {
+		width: "100%",
+		height: 200,
+	},
+	title: {
+		fontWeight: "bold",
+		color: Theme.PRIMARY_COLOR,
+		fontSize: 17,
+	},
+	name: {
+		fontWeight: "bold",
+		color: Theme.TEXT_ON_SURFACE_COLOR,
+		fontSize: 13,
+		paddingBottom: 4,
+	},
+	date_time: {
+		color: Theme.FAINT,
+		fontSize: 12,
+	},
+	chef_and_price: {
+		flex: 1,
+		width: "100%",
+		paddingTop: 30,
+		textAlign: "left",
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	price_cont: {
+		//alignContent: 'flex-end'
+	},
+	price: {
+		fontSize: 20,
+		color: Theme.PRIMARY_COLOR,
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+	price_label: {
+		fontSize: 14,
+		color: Theme.PRIMARY_COLOR,
+		textAlign: "center",
+	},
+	reviews_and_rating: {
+		flexDirection: "row",
+		alignItems: "center",
+		paddingBottom: 2,
+	},
+	rating: {
+		paddingHorizontal: 4,
+		fontWeight: "bold",
+		color: Theme.TEXT_ON_SURFACE_COLOR_LIGHT,
+		fontSize: 12,
+	},
+	reviews: {
+		fontWeight: "normal",
+		color: Theme.FAINT,
+		fontSize: 12,
+	},
+});

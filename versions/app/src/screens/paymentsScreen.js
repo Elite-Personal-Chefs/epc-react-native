@@ -8,8 +8,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { firebase, configKeys } from '../config/config'
 import _ from 'underscore'
 
-
-
 // COMPONENTS
 import { Image, StyleSheet, Text, TextInput, ScrollView, View, ActivityIndicator, Platform, Modal, Alert, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
 import { TextInputMask, TextMask } from 'react-native-masked-text'
