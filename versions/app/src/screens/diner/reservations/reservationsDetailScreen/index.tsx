@@ -41,9 +41,6 @@ import { AntDesign, MaterialIcons, FontAwesome5, Entypo } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ResrvationsDetailScreen({ route }: any) {
-	console.log(`Resrvations Detail Screen`);
-	//console.log(`route ${JSON.stringify(route)}`);
-
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
@@ -82,7 +79,6 @@ export default function ResrvationsDetailScreen({ route }: any) {
 	};
 
 	const getEventReservations = async (uid, eventId) => {
-		console.log(`guestId ${uid}`);
 		const unfilteredReservations = await getEventsReservationByGuestId(uid, eventId);
 		const reservations = unfilteredReservations.filter(function (el) {
 			return el != null;

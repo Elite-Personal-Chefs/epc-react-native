@@ -36,7 +36,6 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 /*******************************************************************************/
 
 export default function ReservationsScreen({ navigation }: any) {
-	console.log(`ReservationsScreen`);
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;

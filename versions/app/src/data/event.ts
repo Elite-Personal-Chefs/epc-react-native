@@ -83,8 +83,6 @@ const getEventsReservationByGuestId = async (
 	const reservations = reservationSummaries.map(async (reservation) => {
 		const reservationDoc = await reservation.reservation.get();
 		if (reservation.event.id === eventId) {
-			console.log(`reservation.event.id: ${reservation.event.id} eventId: ${eventId}`);
-			console.log("reservationDoc.data()", reservationDoc.data());
 			return { ...reservationDoc.data(), id: reservationDoc.id };
 		}
 	});
