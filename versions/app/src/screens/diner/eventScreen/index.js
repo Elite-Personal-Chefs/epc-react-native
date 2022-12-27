@@ -37,7 +37,7 @@ import {
 } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents } from "../../../data/event";
+import { getEvents, getNonreservedEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -61,7 +61,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	const getEventsDetails = async (eventPageName) => {
 		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
-		const json = await getEvents({ start: new Date(), published: true });
+		const json = await getEvents({ start: new Date(), published: true, uid: uid });
 
 		if (!json.error) {
 			//console.log(json)
