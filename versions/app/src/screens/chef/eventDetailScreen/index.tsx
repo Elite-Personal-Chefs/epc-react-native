@@ -143,20 +143,23 @@ export default function EventDetailScreen({
 		}
 	};
 
-	const sendEmail = () => {
+	const sendAllGuestEmail = () => {
 		if (!reservations || reservations.length < 1) {
 			Alert.alert("There are no reservations on this event.");
 			return;
 		}
 
 		let emailSubject = `${eventDetails?.title} Update`;
-		let emailList = reservations
-			.map((guest) => guest?.userSummary?.email)
-			.join(";");
+		let emailList = reservations.map((guest) => guest?.userSummary?.email).join(",");
 
-		Linking.openURL(
-			`mailto:${userEmail}?subject=${emailSubject}&bcc=${emailList}`
-		);
+		Linking.openURL(`mailto:${" "}?subject=${emailSubject}&bcc=${emailList}`);
+	};
+
+	const emailGuest = (guest) => {
+		let emailSubject = `${eventDetails?.title} Update`;
+		let emailList = guest?.userSummary?.email;
+
+		Linking.openURL(`mailto:${emailList}?subject=${emailSubject}`);
 	};
 
 	const changePublishStatus = async () => {
@@ -180,23 +183,18 @@ export default function EventDetailScreen({
 			getEventDetails();
 		}, [])
 	);
-	const eventPhoto = eventDetails?.photos
-		? eventDetails.photos[0]
-		: placeholderImg;
+
+	const eventPhoto = eventDetails?.photos ? eventDetails.photos[0] : placeholderImg;
+
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
-				<ScrollView
-					showsVerticalScrollIndicator={false}
-					style={{ width: "100%" }}
-				>
+				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
 					<Image source={eventPhoto} style={styles.image} />
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
-								<Text style={globalStyles.h1}>
-									{eventDetails.title}
-								</Text>
+								<Text style={globalStyles.h1}>{eventDetails.title}</Text>
 							</View>
 							{!eventDetails.published && (
 								<View
@@ -223,83 +221,55 @@ export default function EventDetailScreen({
 								</View>
 							)}
 						</View>
-
 						<View style={styles.btn_cont}>
 							<CustomButton
-								text="Edit Event"
+								text='Edit Event'
 								onPress={() => editEvent()}
-								size="big"
+								size='big'
 								disabled={undefined}
 								checkmark={undefined}
 							/>
 						</View>
 						<View style={[globalStyles.card, { width: "100%" }]}>
 							<View style={globalStyles.card_header}>
-								<Text style={globalStyles.card_header_text}>
-									Details
-								</Text>
+								<Text style={globalStyles.card_header_text}>Details</Text>
 							</View>
-							<Text style={globalStyles.card_content}>
-								{eventDetails.description}
-							</Text>
+							<Text style={globalStyles.card_content}>{eventDetails.description}</Text>
 							<View style={styles.details_cont}>
 								<View style={styles.detail}>
-									<FontAwesome5
-										name="calendar"
-										size={20}
-										style={styles.detail_icon}
-									/>
+									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
 										{eventDetails.start && eventDetails.end
-											? `${format(
-													eventDetails.start,
-													"PPPP"
-											  )}`
+											? `${format(eventDetails.start, "PPPP")}`
 											: "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
-									<AntDesign
-										name="clockcircle"
-										size={17}
-										style={styles.detail_icon}
-									/>
+									<AntDesign name='clockcircle' size={17} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
 										{eventDetails.start && eventDetails.end
-											? format(eventDetails.start, "p") +
-											  "-" +
-											  format(eventDetails.end, "p")
+											? format(eventDetails.start, "p") + "-" + format(eventDetails.end, "p")
 											: "No Time Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
 									<MaterialIcons
-										name="location-on"
+										name='location-on'
 										size={23}
-										style={[
-											styles.detail_icon,
-											{ marginLeft: -3, width: 33 },
-										]}
+										style={[styles.detail_icon, { marginLeft: -3, width: 33 }]}
 									/>
 									<Text style={styles.detail_label}>
-										{eventDetails.location
-											? eventDetails.location
-											: "No Location Specified"}
+										{eventDetails.location ? eventDetails.location : "No Location Specified"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
 									<Ionicons
-										name="md-person"
+										name='md-person'
 										size={20}
-										style={[
-											styles.detail_icon,
-											{ marginLeft: -1, width: 31 },
-										]}
+										style={[styles.detail_icon, { marginLeft: -1, width: 31 }]}
 									/>
 									<Text style={styles.detail_label}>
-										{reservations
-											? `${reservations.length} Guest(s) Reserved`
-											: "No guest yet"}
+										{reservations ? `${reservations.length} Guest(s) Reserved` : "No guest yet"}
 									</Text>
 								</View>
 							</View>
@@ -308,43 +278,16 @@ export default function EventDetailScreen({
 							{menuItems ? (
 								menuItems.map((menu, index) => {
 									return (
-										<View
-											style={menusStyles.menu_course_cont}
-											key={index}
-										>
-											<Text
-												style={menusStyles.menu_course}
-											>
-												-{menu.course}-
-											</Text>
+										<View style={menusStyles.menu_course_cont} key={index}>
+											<Text style={menusStyles.menu_course}>-{menu.course}-</Text>
 											{menu.items.map((item, index2) => {
 												return (
-													<View
-														style={
-															menusStyles.menu_item_cont
-														}
-														key={index2}
-													>
-														<Text
-															style={
-																menusStyles.menu_name
-															}
-														>
-															{item.item_name ||
-																item.title}
+													<View style={menusStyles.menu_item_cont} key={index2}>
+														<Text style={menusStyles.menu_name}>
+															{item.item_name || item.title}
 														</Text>
-														{item.description &&
-														item.description !=
-															"" ? (
-															<Text
-																style={
-																	menusStyles.menu_desc
-																}
-															>
-																{
-																	item.description
-																}
-															</Text>
+														{item.description && item.description != "" ? (
+															<Text style={menusStyles.menu_desc}>{item.description}</Text>
 														) : null}
 													</View>
 												);
@@ -353,71 +296,35 @@ export default function EventDetailScreen({
 									);
 								})
 							) : (
-								<ActivityIndicator
-									size="large"
-									color={Theme.SECONDARY_COLOR}
-								/>
+								<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 							)}
 						</View>
-
 						{/* HOUSE RULES */}
 						{eventDetails.house_rules && (
 							<View style={globalStyles.card}>
 								<View style={globalStyles.card_header}>
-									<Text style={globalStyles.card_header_text}>
-										House Rules
-									</Text>
+									<Text style={globalStyles.card_header_text}>House Rules</Text>
 								</View>
 								<Text style={globalStyles.card_content}>
-									Here are some guidelines to follow in the
-									space and some other details.
+									Here are some guidelines to follow in the space and some other details.
 								</Text>
 								{eventDetails.house_rules.map((rule, index) => {
-									return (
-										<Text
-											style={[
-												globalStyles.card_content,
-												styles.rules,
-											]}
-										>
-											• {rule}
-										</Text>
-									);
+									return <Text style={[globalStyles.card_content, styles.rules]}>• {rule}</Text>;
 								})}
 								<View style={globalStyles.card_header}>
-									<Text
-										style={[
-											globalStyles.h3,
-											{ marginTop: 10 },
-										]}
-									>
-										You also acknowledge:
-									</Text>
+									<Text style={[globalStyles.h3, { marginTop: 10 }]}>You also acknowledge:</Text>
 								</View>
 								<Text style={globalStyles.card_content}>
-									If you damage the venue, you may be charged
-									for the damage you cause.
+									If you damage the venue, you may be charged for the damage you cause.
 								</Text>
 							</View>
 						)}
-
 						{/* GUEST LIST */}
 						{reservations && (
 							<>
-								<View
-									style={[
-										globalStyles.card,
-										{ width: "100%" },
-									]}
-								>
+								<View style={[globalStyles.card, { width: "100%" }]}>
 									<View style={globalStyles.card_header}>
-										<Text
-											style={
-												globalStyles.card_header_text
-											}
-										>
-											Guest List
-										</Text>
+										<Text style={globalStyles.card_header_text}>Guest List</Text>
 									</View>
 									{reservations.map((guest) => {
 										return (
@@ -434,19 +341,22 @@ export default function EventDetailScreen({
 														lineHeight: 20,
 													}}
 												>
-													{`${
-														guest?.userSummary?.name
-													} (total guests: ${
-														guest.numOfGuests || 1
-													})`}
+													{`${guest?.userSummary?.name} (total guests: ${guest.numOfGuests || 1})`}
 												</Text>
+												<CustomButton
+													text='Email Guest'
+													onPress={() => {
+														emailGuest(guest);
+													}}
+													size='small'
+												></CustomButton>
 											</View>
 										);
 									})}
 									<View>
 										<CustomButton
-											text="Email All Guests"
-											onPress={sendEmail}
+											text='Email All Guests'
+											onPress={sendAllGuestEmail}
 											size={undefined}
 										></CustomButton>
 									</View>
@@ -455,21 +365,15 @@ export default function EventDetailScreen({
 						)}
 					</View>
 					<Button
-						color={
-							eventDetails.published
-								? Theme.SECONDARY_COLOR
-								: "#357aff"
-						}
-						title={`${
-							eventDetails.published ? "Unpublish" : "Publish"
-						} Event`}
+						color={eventDetails.published ? Theme.SECONDARY_COLOR : "#357aff"}
+						title={`${eventDetails.published ? "Unpublish" : "Publish"} Event`}
 						onPress={changePublishStatus}
 					>
 						A Button
 					</Button>
 				</ScrollView>
 			) : (
-				<ActivityIndicator size="large" color={Theme.SECONDARY_COLOR} />
+				<ActivityIndicator size='large' color={Theme.SECONDARY_COLOR} />
 			)}
 		</SafeAreaView>
 	);

@@ -27,7 +27,7 @@ import AppContext from "../../../../components/AppContext";
 import { getEventsReservedByGuestId } from "../../../../data/event";
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms } from "../../../../styles/styles";
+import { globalStyles, eventGlobalStyles, footer, forms } from "../../../../styles/styles";
 import Theme from "../../../../styles/theme.style.js";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
@@ -47,7 +47,6 @@ export default function ReservationsScreen({ navigation }: any) {
 	const getDinerEvents = async (uid) => {
 		const events = await getEventsReservedByGuestId(uid);
 		setHasEvents(events);
-		//console.log(`events: ${JSON.stringify(events)}`);
 		setRefreshing(false);
 	};
 
@@ -82,7 +81,10 @@ export default function ReservationsScreen({ navigation }: any) {
 				}
 			>
 				<View style={styles.navigate_away}>
-					<Image source={{ uri: item.photos.at(-1) }} style={styles.image} />
+					<Image
+						source={{ uri: "../../../../assets/event-placeholder.png" }}
+						style={styles.image}
+					/>
 					<View style={styles.navigate_away_content}>
 						<Text style={styles.date_time}>{`${formattedStartDate}-${formattedEndDate}`}</Text>
 						<Text style={styles.title}>{item.title}</Text>
