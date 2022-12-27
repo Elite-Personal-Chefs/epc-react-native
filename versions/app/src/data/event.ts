@@ -43,29 +43,6 @@ const getEventById = async (eventId: string): Promise<Event> => {
 	return event.data() as Event;
 };
 
-const getNonreservedEvents = async (guestId: string) => {
-	// 1. get the guest document and peek at their reservation summaries
-	// 2. grab all published events with their event id
-	// 3. if the event id does not match the event id in the reservation summary, then return the event
-	// 4. if the event id does match the event id in the reservation summary, then return null
-
-	const guestCollection = await db.collection("guests").doc(guestId).get();
-	const { reservationSummaries } = guestCollection.data();
-
-	const events = await getPublishedEvents();
-
-	const results = events.map((event) => {
-		const reservation = reservationSummaries.find(
-			(reservation) => reservation.event.id === event.id
-		);
-		if (!reservation) {
-			return event;
-		}
-	});
-
-	return results;
-};
-
 const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
 	const eventCollection = db.collection("events").where("chefId", "==", chefId);
 	const events = await eventCollection.get();
@@ -117,12 +94,10 @@ const getEvents = async ({
 	start,
 	end,
 	published,
-	uid,
 }: {
 	start?: Date;
 	end?: Date;
 	published?: boolean;
-	uid?: string;
 }): Promise<Event[]> => {
 	let eventCollection = firebase.firestore().collection("events").withConverter(eventConverter);
 
@@ -134,24 +109,22 @@ const getEvents = async ({
 
 	const events = await eventCollection.get();
 
-	console.log(`guest id: ${uid}`);
-
-	const guestCollection = await db.collection("guests").doc(uid).get();
-	const { reservationSummaries } = guestCollection.data();
-
-	const results = events.docs.map((doc) => {
-		const reservation = reservationSummaries.find((reservation: { event: { id: any } }) => {
-			console.log(`reservation event id: ${reservation.event.id} === event id: ${doc.id}`);
-			//return reservation.event.id === doc.id;
-		});
-
-		if (!reservation) {
-			console.log(`hello? ${reservation}`);
-			return { ...doc.data(), id: doc.id };
-		}
-	});
+	const results = events.docs.map((doc) => doc.data()) as Event[];
 
 	return results;
+};
+
+const getAllUnreservedEvents = async (uid: string): Promise<Event[]> => {
+	const allEvents = await getEvents({ start: new Date(), published: true });
+
+	const guestDoc = await db.collection("guests").doc(uid).get();
+
+	const { reservationSummaries } = guestDoc.data();
+	const unreservedEvents = allEvents.filter(
+		(event) => !reservationSummaries.some((reservation) => reservation.event.id === event.id)
+	);
+
+	return unreservedEvents;
 };
 
 const getPublishedEvents = async (): Promise<Event[]> => {
@@ -254,7 +227,7 @@ export {
 	getEventReservations,
 	getEventsReservedByGuestId,
 	getEventsReservationByGuestId,
-	getNonreservedEvents,
+	getAllUnreservedEvents,
 	getPublishedEvents,
 	updateEvent,
 	publishEvent,

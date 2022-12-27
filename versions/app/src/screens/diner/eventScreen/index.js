@@ -1,11 +1,9 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext, useRef } from "react";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
@@ -24,20 +22,12 @@ import {
 	ScrollView,
 } from "react-native";
 import AppContext from "../../../components/AppContext";
-import { CustomButton } from "../../../components/Button";
-import MenuListing from "../../../components/MenuListing";
-import { getEndpoint } from "../../../helpers/helpers";
 
 // STYLES
-import {
-	globalStyles,
-	TouchableHighlight,
-	footer,
-	forms,
-} from "../../../styles/styles";
+import { globalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents, getNonreservedEvents } from "../../../data/event";
+import { FontAwesome } from "@expo/vector-icons";
+import { getAllUnreservedEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -59,14 +49,12 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const getEventsDetails = async (eventPageName) => {
-		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
-		const json = await getEvents({ start: new Date(), published: true, uid: uid });
+	const getEventsDetails = async () => {
+		const json = await getAllUnreservedEvents(uid);
 
 		if (!json.error) {
-			//console.log(json)
 			setHasEvents(json);
-			//Generate fake event coordinates
+
 			let coors = [];
 			json.map((marker, index) => {
 				let coordinate = {
@@ -129,7 +117,7 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const onRefresh = () => {
-		getEventsDetails(eventPageName);
+		getEventsDetails();
 		setRefreshing(false);
 	};
 
@@ -138,7 +126,7 @@ export default function EventsScreen({ navigation, route }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			getEventsDetails(eventPageName);
+			getEventsDetails();
 		}, [])
 	);
 
