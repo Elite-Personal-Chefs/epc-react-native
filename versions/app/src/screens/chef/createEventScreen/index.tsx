@@ -74,7 +74,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	console.log("details:", eventDetails);
 
 	const eventRef = useRef();
-	const [eventLocation, setEventLocation] = useState(eventDetails.location ? eventDetails.location : "");
+	const [eventLocation, setEventLocation] = useState(eventDetails?.location || "");
 	const [eventID, setEventID] = useState(eventDetails?.id || null);
 
 	const getCurrentLocation = async () => {
@@ -136,7 +136,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	};
 
 	// ===END DATE STATES===
-	const [end, setEnd] = useState(eventDetails.end || new Date());
+	const [end, setEnd] = useState(eventDetails?.end || new Date());
 
 	const [showEndDate, setShowEndDate] = useState(false);
 	const displayEndDate = () => setShowEndDate(true);
@@ -174,9 +174,8 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	//
 	/***********************************************/
 	const getMenus = async (uid: string) => {
-		
-		console.debug("User Id for getting menus",uid);
-		
+		console.debug("User Id for getting menus", uid);
+
 		const menusRef = await firebase
 			.firestore()
 			.collection("chefs")
@@ -209,7 +208,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 
 		//If details were passed then we are updating not creating
 		//console.log(`details`, details);
-		if (Object.keys(eventDetails).length > 0) {
+		if (eventDetails.id) {
 			console.log("Updating experience", values);
 			await updateEvent(eventID, values);
 		} else {
@@ -248,7 +247,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	useEffect(() => {
 		Location.installWebGeolocationPolyfill();
 		getMenus(uid);
-		eventRef.current?.setAddressText(eventLocation); 
+		eventRef.current?.setAddressText(eventLocation);
 	}, [1]);
 
 	return (
@@ -274,11 +273,11 @@ export default function CreateEventScreen({ route, navigation }: any) {
 						<Formik
 							enableReinitialize={true}
 							initialValues={{
-								title: eventDetails ? eventDetails.title : "",
-								description: eventDetails ? eventDetails.description : "",
-								guestCapacity: eventDetails ? eventDetails.guestCapacity : "",
-								cpp: eventDetails ? eventDetails.cpp : "",
-								menuId: eventDetails ? eventDetails.menuId : "",
+								title: eventDetails?.title || "",
+								description: eventDetails?.description || "",
+								guestCapacity: eventDetails?.guestCapacity || "",
+								cpp: eventDetails?.cpp || "",
+								menuId: eventDetails?.menuId || "",
 							}}
 							onSubmit={(values: any) => {
 								setSubmitDisabled(false);
@@ -464,7 +463,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 												>
 													{start ? format(start, "p") : "Start Time"}
 												</Text>
-												{console.log("Start time", start)}
+
 												<DateTimePickerModal
 													isVisible={showStartTimePicker}
 													mode='time'
@@ -640,12 +639,12 @@ export default function CreateEventScreen({ route, navigation }: any) {
 									<DropDownPicker
 										zIndex={1000}
 										open={menuDropdownOpen}
-										value={eventDetails.menuId}
+										value={eventDetails?.menuId}
 										items={menusList}
 										setOpen={setMenuDropdownOpen}
-										setValue={(value) => { 
-											console.log("Dropdown Value", value())
-											setEventDetails({...eventDetails, menuId: value()})
+										setValue={(value) => {
+											console.log("Dropdown Value", value());
+											setEventDetails({ ...eventDetails, menuId: value() });
 										}}
 										closeAfterSelecting={true}
 										itemSeparator={true}

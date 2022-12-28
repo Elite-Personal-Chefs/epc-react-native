@@ -9,6 +9,7 @@ import { firebase, configKeys } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
+import { getChefs } from "../data/chef";
 
 // COMPONENTS
 import {
@@ -29,12 +30,7 @@ import MenuListing from "../components/MenuListing";
 import { getEndpoint } from "../helpers/helpers";
 
 // STYLES
-import {
-	globalStyles,
-	TouchableHighlight,
-	footer,
-	forms,
-} from "../styles/styles";
+import { globalStyles, TouchableHighlight, footer, forms } from "../styles/styles";
 import Theme from "../styles/theme.style.js";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 
@@ -58,9 +54,8 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const getChefs = async (uid) => {
-		const result = await fetch(getEndpoint(appsGlobalContext, "chefs")); //apiBase
-		const json = await result.json();
+	const fetchChefs = async (uid) => {
+		const json = await getChefs();
 		if (!json.error) {
 			setHasChefs(json);
 			//Generate fake event coordinates
@@ -127,12 +122,12 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const onRefresh = () => {
-		getChefs(chefPageName);
+		fetchChefs(chefPageName);
 		setRefreshing(false);
 	};
 
 	useEffect(() => {
-		getChefs(chefPageName);
+		fetchChefs(chefPageName);
 	}, [1]);
 
 	/*************************************************************/
@@ -140,7 +135,7 @@ export default function EventsScreen({ navigation, route }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			getChefs(chefPageName);
+			fetchChefs(chefPageName);
 			console.log("Chef screen is focused:" + chefPageName);
 		}, [1])
 	);
@@ -185,12 +180,7 @@ export default function EventsScreen({ navigation, route }) {
 								data={hasChefs}
 								renderItem={renderChef}
 								keyExtractor={(event) => event.id}
-								refreshControl={
-									<RefreshControl
-										refreshing={refreshing}
-										onRefresh={onRefresh}
-									/>
-								}
+								refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 							/>
 						</View>
 						{/*
@@ -210,11 +200,7 @@ export default function EventsScreen({ navigation, route }) {
 						>
 							{coordinates &&
 								hasChefs.map((marker, index) => (
-									<Marker
-										key={index}
-										coordinate={coordinates[index]}
-										title={marker.title}
-									/>
+									<Marker key={index} coordinate={coordinates[index]} title={marker.title} />
 								))}
 						</MapView>
 						<ScrollView style={styles.places} horizontal={true}>
@@ -223,15 +209,8 @@ export default function EventsScreen({ navigation, route }) {
 									return (
 										<TouchableWithoutFeedback
 											key={item.id}
-											onPress={() =>
-												goToMarker(coordinates[index])
-											}
-											onLongPress={() =>
-												navigation.navigate(
-													"Chef Details",
-													{ details: item }
-												)
-											}
+											onPress={() => goToMarker(coordinates[index])}
+											onLongPress={() => navigation.navigate("Chef Details", { details: item })}
 										>
 											<View style={styles.scroller}>
 												<Image
@@ -240,48 +219,17 @@ export default function EventsScreen({ navigation, route }) {
 													}}
 													style={styles.scroller_img}
 												/>
-												<View
-													style={
-														styles.scroller_content
-													}
-												>
-													<View
-														style={
-															styles.upper_content
-														}
-													>
+												<View style={styles.scroller_content}>
+													<View style={styles.upper_content}>
 														<View>
-															<Text
-																style={
-																	styles.scroller_title
-																}
-															>
-																{item.name}
-															</Text>
+															<Text style={styles.scroller_title}>{item.name}</Text>
 														</View>
 													</View>
-													<View
-														style={
-															styles.lower_content
-														}
-													>
-														<Text
-															style={
-																styles.cuisines
-															}
-															numberOfLines={1}
-														>
-															{item.cuisines
-																? Object.values(
-																		item.cuisines
-																  ).join(",")
-																: ""}
+													<View style={styles.lower_content}>
+														<Text style={styles.cuisines} numberOfLines={1}>
+															{item.cuisines ? Object.values(item.cuisines).join(",") : ""}
 														</Text>
-														<View
-															style={
-																styles.reviews_and_rating
-															}
-														>
+														<View style={styles.reviews_and_rating}>
 															{/*
                                                 <FontAwesome name="star" size={12} color={Theme.SECONDARY_COLOR} />
                                                 <Text style={styles.rating}>{(item.chef_rating) ? item.chef_rating : '4.8'}</Text>
@@ -303,9 +251,7 @@ export default function EventsScreen({ navigation, route }) {
 						style={globalStyles.empty_image}
 						source={require("../assets/empty_calendar.png")}
 					/>
-					<Text style={globalStyles.empty_text}>
-						There are no chefs found
-					</Text>
+					<Text style={globalStyles.empty_text}>There are no chefs found</Text>
 				</View>
 			)}
 		</View>

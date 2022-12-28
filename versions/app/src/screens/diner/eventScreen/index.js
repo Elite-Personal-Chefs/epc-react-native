@@ -1,11 +1,9 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext, useRef } from "react";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
@@ -24,20 +22,12 @@ import {
 	ScrollView,
 } from "react-native";
 import AppContext from "../../../components/AppContext";
-import { CustomButton } from "../../../components/Button";
-import MenuListing from "../../../components/MenuListing";
-import { getEndpoint } from "../../../helpers/helpers";
 
 // STYLES
-import {
-	globalStyles,
-	TouchableHighlight,
-	footer,
-	forms,
-} from "../../../styles/styles";
+import { globalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { getEvents } from "../../../data/event";
+import { FontAwesome } from "@expo/vector-icons";
+import { getAllUnreservedEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -59,15 +49,12 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const getEventsDetails = async (eventPageName) => {
-		console.log("💚💚💚 Getting events: " + eventPageName);
-		// const result = await fetch(getEndpoint(appsGlobalContext, "events")); //apiBase
-		const json = await getEvents({ start: new Date(), published: true });
-		// console.log("💚💚💚 Result: ", result);
+	const getEventsDetails = async () => {
+		const json = await getAllUnreservedEvents(uid);
+
 		if (!json.error) {
-			//console.log(json)
 			setHasEvents(json);
-			//Generate fake event coordinates
+
 			let coors = [];
 			json.map((marker, index) => {
 				let coordinate = {
@@ -92,41 +79,26 @@ export default function EventsScreen({ navigation, route }) {
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() =>
-					navigation.navigate("Event Details", { details: item })
-				}
+				onPress={() => navigation.navigate("Event Details", { details: item })}
 			>
 				<View style={styles.navigate_away}>
 					<Image source={image} style={styles.image} />
 					<View style={styles.navigate_away_content}>
 						{eventPageName == "Events" ? (
 							<Text style={styles.date_time}>
-								{item.event_date} | {item.start_time}-
-								{item.end_time}
+								{item.event_date} | {item.start_time}-{item.end_time}
 							</Text>
 						) : (
-							<Text style={styles.date_time}>
-								{item.readable_date}
-							</Text>
+							<Text style={styles.date_time}>{item.readable_date}</Text>
 						)}
 						<Text style={styles.title}>{item.title}</Text>
 					</View>
 					<View style={styles.chef_and_price}>
 						<View>
-							<Text style={styles.name}>
-								{item.chef_name ? item.chef_name : "Chef Name"}
-							</Text>
+							<Text style={styles.name}>{item.chef_name ? item.chef_name : "Chef Name"}</Text>
 							<View style={styles.reviews_and_rating}>
-								<FontAwesome
-									name="star"
-									size={12}
-									color={Theme.SECONDARY_COLOR}
-								/>
-								<Text style={styles.rating}>
-									{item.chef_rating
-										? item.chef_rating
-										: "4.8"}
-								</Text>
+								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
+								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
 								<Text style={styles.reviews}>(120)</Text>
 							</View>
 						</View>
@@ -145,7 +117,7 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const onRefresh = () => {
-		getEventsDetails(eventPageName);
+		getEventsDetails();
 		setRefreshing(false);
 	};
 
@@ -154,8 +126,7 @@ export default function EventsScreen({ navigation, route }) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			getEventsDetails(eventPageName);
-			console.log("Event screen is focused:" + eventPageName);
+			getEventsDetails();
 		}, [])
 	);
 
@@ -191,7 +162,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	return (
 		<View style={[globalStyles.page, { padding: 0 }]}>
-			{hasEvents ? (
+			{hasEvents?.length > 0 ? (
 				eventPageName == "Events" ? (
 					<>
 						<View style={{ flex: 1, width: "100%" }}>
@@ -199,12 +170,7 @@ export default function EventsScreen({ navigation, route }) {
 								data={hasEvents}
 								renderItem={renderEvent}
 								keyExtractor={(event) => event.id}
-								refreshControl={
-									<RefreshControl
-										refreshing={refreshing}
-										onRefresh={onRefresh}
-									/>
-								}
+								refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 							/>
 						</View>
 						{/*
@@ -225,11 +191,7 @@ export default function EventsScreen({ navigation, route }) {
 							{coordinates &&
 								hasEvents.map((marker, index) => {
 									return (
-										<Marker
-											key={index}
-											coordinate={coordinates[index]}
-											title={marker.title}
-										/>
+										<Marker key={index} coordinate={coordinates[index]} title={marker.title} />
 									);
 								})}
 						</MapView>
@@ -242,118 +204,35 @@ export default function EventsScreen({ navigation, route }) {
 									return (
 										<TouchableWithoutFeedback
 											key={index}
-											onPress={() =>
-												goToMarker(coordinates[index])
-											}
-											onLongPress={() =>
-												navigation.navigate(
-													"Event Details",
-													{ details: item }
-												)
-											}
+											onPress={() => goToMarker(coordinates[index])}
+											onLongPress={() => navigation.navigate("Event Details", { details: item })}
 										>
 											<View style={styles.scroller}>
-												<Image
-													source={image}
-													style={styles.scroller_img}
-												/>
-												<View
-													style={
-														styles.scroller_content
-													}
-												>
-													<View
-														style={
-															styles.upper_content
-														}
-													>
+												<Image source={image} style={styles.scroller_img} />
+												<View style={styles.scroller_content}>
+													<View style={styles.upper_content}>
 														<View>
-															<Text
-																style={
-																	styles.scroller_title
-																}
-															>
-																{item.title}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_date_time
-																}
-															>
-																{
-																	item.event_date
-																}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_date_time
-																}
-															>
-																{
-																	item.start_time
-																}
-																-{item.end_time}
+															<Text style={styles.scroller_title}>{item.title}</Text>
+															<Text style={styles.scroller_date_time}>{item.event_date}</Text>
+															<Text style={styles.scroller_date_time}>
+																{item.start_time}-{item.end_time}
 															</Text>
 														</View>
 														<View>
-															<Text
-																style={
-																	styles.scroller_price
-																}
-															>
-																${item.cpp}
-															</Text>
-															<Text
-																style={
-																	styles.scroller_price_label
-																}
-															>
-																Per Person
-															</Text>
+															<Text style={styles.scroller_price}>${item.cpp}</Text>
+															<Text style={styles.scroller_price_label}>Per Person</Text>
 														</View>
 													</View>
-													<View
-														style={
-															styles.lower_content
-														}
-													>
-														<Text
-															style={
-																styles.scroller_name
-															}
-														>
-															{item.chef_name
-																? item.chef_name
-																: "Chef Name"}
+													<View style={styles.lower_content}>
+														<Text style={styles.scroller_name}>
+															{item.chef_name ? item.chef_name : "Chef Name"}
 														</Text>
-														<View
-															style={
-																styles.reviews_and_rating
-															}
-														>
-															<FontAwesome
-																name="star"
-																size={12}
-																color={
-																	Theme.SECONDARY_COLOR
-																}
-															/>
-															<Text
-																style={
-																	styles.rating
-																}
-															>
-																{item.chef_rating
-																	? item.chef_rating
-																	: "4.8"}
+														<View style={styles.reviews_and_rating}>
+															<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
+															<Text style={styles.rating}>
+																{item.chef_rating ? item.chef_rating : "4.8"}
 															</Text>
-															<Text
-																style={
-																	styles.reviews
-																}
-															>
-																(120)
-															</Text>
+															<Text style={styles.reviews}>(120)</Text>
 														</View>
 													</View>
 												</View>
@@ -370,9 +249,7 @@ export default function EventsScreen({ navigation, route }) {
 						style={globalStyles.empty_image}
 						source={require("../../../assets/empty_calendar.png")}
 					/>
-					<Text style={globalStyles.empty_text}>
-						There are no posted events yet
-					</Text>
+					<Text style={globalStyles.empty_text}>There are no posted events yet</Text>
 				</View>
 			)}
 		</View>

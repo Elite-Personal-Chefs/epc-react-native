@@ -20,27 +20,27 @@ import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
-import { firebase } from "../../../config/config";
+import { firebase } from "../../../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../../../components/AppContext";
-import { CustomButton } from "../../../components/Button";
+import AppContext from "../../../../components/AppContext";
+import { CustomButton } from "../../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import { reserveEvent, getEventById } from "../../../data/event";
-import Event from "../../../models/event";
+import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../../data/event";
+import Event from "../../../../models/event";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles } from "../../../styles/styles";
-import Theme from "../../../styles/theme.style.js";
+import { globalStyles, eventGlobalStyles, menusStyles } from "../../../../styles/styles";
+import Theme from "../../../../styles/theme.style.js";
 import { AntDesign, MaterialIcons, FontAwesome5, Entypo } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function EventDetailScreen({ route }: any) {
+export default function ResrvationsDetailScreen({ route }: any) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
@@ -52,7 +52,7 @@ export default function EventDetailScreen({ route }: any) {
 	const [reserved, setReserved] = useState(details.reserved ? true : false);
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
-	const [reservationQuantity, setReservationQuantity] = useState(1);
+	const [reservationQuantity, setReservationQuantity] = useState(0);
 
 	//If we are coming from Reservation page then we need more details on the event
 	const isReservation = route.params.isReservation;
@@ -76,6 +76,15 @@ export default function EventDetailScreen({ route }: any) {
 		}
 		setEventDetails(event);
 		getMenus(event);
+	};
+
+	const getEventReservations = async (uid, eventId) => {
+		const unfilteredReservations = await getEventsReservationByGuestId(uid, eventId);
+		const reservations = unfilteredReservations.filter(function (el) {
+			return el != null;
+		});
+
+		setReservationQuantity(reservations[0].numOfGuests);
 	};
 
 	const reserve = async () => {
@@ -138,10 +147,11 @@ export default function EventDetailScreen({ route }: any) {
 				//Using ES-2022 Array.at() to get last item in array
 				setEventImg({ uri: details.photos.at(-1) });
 			} else {
-				setEventImg(require("../../../assets/event_placeholder.png"));
+				setEventImg(require("../../../../assets/event_placeholder.png"));
 			}
 
 			getEventDetails();
+			getEventReservations(uid, eventId);
 		}, [])
 	);
 
@@ -261,9 +271,9 @@ export default function EventDetailScreen({ route }: any) {
 										style={[styles.detail_icon, { marginLeft: -3 }]}
 									/>
 									<Text style={styles.detail_label}>
-										{route.params.details.guestCapacity
-											? route.params.details.guestCapacity + " Tickets"
-											: "No Tickets Left"}
+										{reservationQuantity
+											? reservationQuantity + " Guest(s) Reserved"
+											: "No Guests Reserved"}
 									</Text>
 								</View>
 							</View>
