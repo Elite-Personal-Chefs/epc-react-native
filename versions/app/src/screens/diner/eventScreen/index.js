@@ -162,7 +162,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	return (
 		<View style={[globalStyles.page, { padding: 0 }]}>
-			{hasEvents ? (
+			{hasEvents?.length > 0 ? (
 				eventPageName == "Events" ? (
 					<>
 						<View style={{ flex: 1, width: "100%" }}>

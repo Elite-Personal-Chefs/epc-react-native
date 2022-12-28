@@ -54,21 +54,18 @@ const getEventsByChefId = async (chefId: string): Promise<Event[]> => {
 };
 
 const getEventsReservedByGuestId = async (guestId: string): Promise<Event[]> => {
-	//1. Get the guest document
 	const guestCollection = await db.collection("guests").doc(guestId).get();
 
-	//2. Get reservationSummaries
 	const { reservationSummaries } = guestCollection.data();
-	//console.log("reservationSummaries", reservationSummaries);
 
-	//3. iterate over reservationSummaries and get the event
+	if (!reservationSummaries) return null;
+
 	const events = reservationSummaries.map(async (reservation) => {
 		const eventDoc = await reservation.event.get();
 
 		return { ...eventDoc.data(), id: eventDoc.id };
 	});
 
-	//console.log("Guest Events", events);
 	return Promise.all(events);
 };
 
@@ -120,6 +117,9 @@ const getAllUnreservedEvents = async (uid: string): Promise<Event[]> => {
 	const guestDoc = await db.collection("guests").doc(uid).get();
 
 	const { reservationSummaries } = guestDoc.data();
+
+	if (!reservationSummaries) return allEvents;
+
 	const unreservedEvents = allEvents.filter(
 		(event) => !reservationSummaries.some((reservation) => reservation.event.id === event.id)
 	);

@@ -5,8 +5,27 @@ const db = firestore();
 import { getEventTemplateById } from "./eventTemplates";
 
 export default interface Chef {
+	id?: string;
 	userRef?: string;
 }
+
+const chefConverter = {
+	toFirestore: (chef: Chef): firebase.firestore.DocumentData => {
+		// the id exists on the document, but not on the data;
+		delete chef.id;
+		return chef;
+	},
+	fromFirestore: (
+		snapshot: firebase.firestore.QueryDocumentSnapshot,
+		options: firebase.firestore.SnapshotOptions
+	): Event => {
+		const data = snapshot.data(options);
+		return {
+			...data,
+			id: snapshot.id,
+		};
+	},
+};
 
 // CRUD Chefs in firestore
 const createChef = async (chef, data): Promise<void> => {
@@ -21,7 +40,7 @@ const getChef = async (chefID): Promise<any> => {
 };
 
 const getChefs = async (): Promise<Chef[]> => {
-	const chefCollection = db.collection("chefs");
+	const chefCollection = db.collection("chefs").withConverter(chefConverter);
 	const chefs = await chefCollection.get();
 	return chefs.docs.map((doc) => doc.data()) as Chef[];
 };
