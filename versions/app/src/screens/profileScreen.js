@@ -24,8 +24,6 @@ import { MaterialCommunityIcons, FontAwesome, MaterialIcons, Ionicons } from "@e
 /*******************************************************************************/
 
 export default function ProfileScreen({ navigation }) {
-	console.log(`ProfileScreen.js`);
-
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const userData = appsGlobalContext.userData;
@@ -36,7 +34,7 @@ export default function ProfileScreen({ navigation }) {
 		const usersRef = firebase.firestore().collection("chefs");
 		await usersRef.doc(uid).update({ ...values });
 		await getUserData(uid);
-		navigation.navigate("Account");
+		navigation.navigate("Dashboard");
 		setModalVisible(false);
 	};
 

@@ -40,8 +40,6 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ProfileSlider({ handleFormUpdates, userData }) {
-	console.log(`ProfileSlider.js`);
-
 	const DATA = [
 		{ label: "African", value: "African" },
 		{ label: "Algerian", value: "Algerian" },

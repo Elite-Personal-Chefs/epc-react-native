@@ -184,7 +184,7 @@ export default function HomeScreen({ navigation }) {
 									</View>
 									<TouchableOpacity
 										style={styles.navigate_away}
-										onPress={() => navigation.navigate("Account", { screen: "Profile" })}
+										onPress={() => navigation.navigate("Profile")}
 									>
 										<Text style={styles.navigate_away_content}>
 											Hey Chef, let's finish up your profile so you{"\n"}can start booking!
