@@ -91,6 +91,7 @@ import PrivacyScreen from "../screens/privacyScreen";
 /*******************************************************************************/
 
 const AccountScreenStackNav = createStackNavigator();
+
 const AccountScreenStack = () => {
 	return (
 		<AccountScreenStackNav.Navigator
@@ -661,6 +662,48 @@ function Navigator({ userLoggedIn }) {
                                 />
                             ),
                             */
+							})}
+						/>
+						<RootStack.Screen
+							name='Account'
+							component={AccountScreen}
+							options={({ route }) => ({
+								//headerShown: false,
+								headerTintColor: Theme.WHITE,
+								headerTransparent: true,
+								headerTruncatedBackTitle: true,
+								headerBackTitleVisible: false,
+								title: "",
+								headerTitle: null,
+								headerBackground: () => (
+									<LinearGradient
+										start={{ x: 1, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
+										style={{ flex: 1 }}
+									/>
+								),
+							})}
+						/>
+						<RootStack.Screen
+							name='Profile'
+							component={ProfileScreen}
+							options={({ route }) => ({
+								//headerShown: false,
+								headerTintColor: Theme.WHITE,
+								headerTransparent: true,
+								headerTruncatedBackTitle: true,
+								headerBackTitleVisible: false,
+								title: "",
+								headerTitle: null,
+								headerBackground: () => (
+									<LinearGradient
+										start={{ x: 1, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										colors={["rgba(0,0,0,0.8)", "transparent"]}
+										style={{ flex: 1 }}
+									/>
+								),
 							})}
 						/>
 					</>

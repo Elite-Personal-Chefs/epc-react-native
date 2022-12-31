@@ -156,7 +156,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	//! SAVE PROFILE IMAGE
 	/***********************************************/
 	//! This is not updating properly
-	const [profileImg, setProfileImg] = useState(null);
+	const [profileImg, setProfileImg] = useState(userData?.chefProfile?.profile_img);
 
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);

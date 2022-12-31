@@ -36,7 +36,7 @@ export default function ProfileScreen({ navigation }) {
 		const usersRef = firebase.firestore().collection("chefs");
 		await usersRef.doc(uid).update({ ...values });
 		await getUserData(uid);
-		navigation.navigate("Dashboard");
+		navigation.navigate("Account");
 		setModalVisible(false);
 	};
 
