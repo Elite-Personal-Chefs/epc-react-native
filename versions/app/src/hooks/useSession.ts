@@ -41,12 +41,12 @@ const useSession = () => {
 		return () => unsubscribe();
 	}, []);
 
-	const getAccessToken = async (firebaseUser) => {
+	const getAccessToken = async (firebaseUser: firebase.User) => {
 		const token = await firebaseUser.getIdToken();
 		setAccessToken(token);
 	};
 
-	const loadUserData = async (uid) => {
+	const loadUserData = async (uid: string) => {
 		const user = (await getUserData(uid)) as any;
 
 		if (user) {
@@ -60,21 +60,21 @@ const useSession = () => {
 		}
 	};
 
-	const signInWithEmailAndPassword = async (email, password) =>
+	const signInWithEmailAndPassword = async (email: string, password: string) =>
 		firebase.auth().signInWithEmailAndPassword(email, password);
 
-	const signUpWithEmailAndPassword = async (email, password) =>
+	const signUpWithEmailAndPassword = async (email: string, password: string) =>
 		firebase.auth().createUserWithEmailAndPassword(email, password);
 
 	const signOut = async () => firebase.auth().signOut();
 
-	const sendPasswordResetEmail = async (email) => firebase.auth().sendPasswordResetEmail(email);
+	const sendPasswordResetEmail = async (email: string) => firebase.auth().sendPasswordResetEmail(email);
 
-	const updateEmail = async (newEmail, password) => {
+	const updateEmail = async (newEmail: string, password: string) => {
 		console.debug("Updating email in useSession");
 		try {
 			await firebase.auth().currentUser?.updateEmail(newEmail);
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Error updating email", error.code);
 			// sometimes users can't update their email because they haven't signed in recently
 			if (error.code === ERRORS.REQUIRES_RECENT_LOGIN) {
@@ -94,9 +94,9 @@ const useSession = () => {
 		}
 	};
 
-	const updatePassword = async (password) => firebase.auth().currentUser?.updatePassword(password);
+	const updatePassword = async (password: string) => firebase.auth().currentUser?.updatePassword(password);
 
-	const reload = async (password) => firebase.auth().currentUser?.reload();
+	const reload = async (password: string) => firebase.auth().currentUser?.reload();
 
 	const appGlobals = {
 		userID: userID,
