@@ -174,7 +174,7 @@ export default function AccountScreen({ navigation }) {
 							<View style={styles.profile_header}>
 								<TouchableWithoutFeedback onPress={checkForCount}>
 									{profileImg ? (
-										<Image source={{ uri: user.profile_img }} style={styles.profile_img} />
+										<Image source={{ uri: profileImg }} style={styles.profile_img} />
 									) : (
 										<MaterialIcons
 											name='person'

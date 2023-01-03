@@ -40,8 +40,6 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ProfileSlider({ handleFormUpdates, userData }) {
-	console.log(`ProfileSlider.js`);
-
 	const DATA = [
 		{ label: "African", value: "African" },
 		{ label: "Algerian", value: "Algerian" },
@@ -156,7 +154,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	//! SAVE PROFILE IMAGE
 	/***********************************************/
 	//! This is not updating properly
-	const [profileImg, setProfileImg] = useState(null);
+	const [profileImg, setProfileImg] = useState(userData?.chefProfile?.profile_img);
 
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);

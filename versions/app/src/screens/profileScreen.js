@@ -24,8 +24,6 @@ import { MaterialCommunityIcons, FontAwesome, MaterialIcons, Ionicons } from "@e
 /*******************************************************************************/
 
 export default function ProfileScreen({ navigation }) {
-	console.log(`ProfileScreen.js`);
-
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const userData = appsGlobalContext.userData;
