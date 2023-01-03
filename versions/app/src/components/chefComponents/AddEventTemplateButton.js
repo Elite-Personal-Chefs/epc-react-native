@@ -7,8 +7,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { CustomButton } from "../Button";
 
 // SERVICES
-import { addEventTemplateToChef } from "../../data/chef";
-import { getEventsByChefId } from "../../data/event";
+import { addEventTemplateToChef } from "../../api/chef";
+import { getEventsByChefId } from "../../api/event";
 
 // STYLES
 import { eventGlobalStyles } from "../../styles/styles";

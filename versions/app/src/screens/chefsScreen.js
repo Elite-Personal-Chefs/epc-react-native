@@ -9,7 +9,7 @@ import { firebase, configKeys } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
-import { getChefs } from "../data/chef";
+import { getChefs } from "../api/chef";
 
 // COMPONENTS
 import {

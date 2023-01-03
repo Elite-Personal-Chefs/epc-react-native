@@ -18,6 +18,7 @@ import {getEndpoint} from '../helpers/helpers'
 import {globalStyles, footer, forms} from '../styles/styles';
 import Theme from '../styles/theme.style.js';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
+import useSession from '../hooks/useSession';
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -41,11 +42,9 @@ export default function LoginScreen({route,navigation}) {
     const loginWithEmail = async () => {
         if(email && password){
             try {
-                await firebase.auth().signInWithEmailAndPassword(email, password).then((response)=>{
-                    console.log("Signed in with firebase auth",response)
-                })
+                await appsGlobalContext.signInWithEmailAndPassword(email, password);
             } catch (error) {
-                alert(error)
+                Alert.alert(error)
             }
         }
         else{

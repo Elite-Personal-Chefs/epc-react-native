@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react";
 import { Platform } from "react-native";
+import PocketBase from "pocketbase";
+
 import { firebase, configKeys } from "../config/config";
-import { getUserData } from "../data/user";
+import { getUserData } from "../api/user";
 
 const ERRORS = {
 	REQUIRES_RECENT_LOGIN: "auth/requires-recent-login",
 };
 
+const pb = new PocketBase("http://127.0.0.1:8080"); // TODO: Change to read from config
+
 const useSession = () => {
 	// TODO: Consolidate. The biggest barrier is the onboarding flow. Do this when you refactor
 	const [loading, setLoading] = useState(true);
 	const [activeFlow, setActiveFlow] = useState(null); //chefs or guests
+	const [user, setUser] = useState();
 	const [userID, setUserID] = useState("");
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [userData, setUserData] = useState(null);
@@ -21,23 +26,27 @@ const useSession = () => {
 		console.log("Starting Session (useSession)");
 
 		//SETUP FUNCTION TO MANAGE GOOGLE AUTH STATE CHANGES
-		const unsubscribe = firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-			if (firebaseUser) {
-				console.log("User is logged in");
-				const uid = firebaseUser.uid;
-				loadUserData(uid);
-				setUserID(uid);
-				setAccessToken((await firebaseUser.getIdToken()) as string);
-				getAccessToken(firebaseUser);
-				setUserLoggedIn(true);
-			} else {
-				console.log("********************************* NO CURRENT USER. USER LOGGEDIN FALSE");
-				appGlobals.setUserID("");
-				appGlobals.setUserData(null);
-				setUserLoggedIn(false);
-			}
-			setLoading(false);
-		});
+		const unsubscribe = firebase
+			.auth()
+			.onAuthStateChanged(async (firebaseUser) => {
+				if (firebaseUser) {
+					console.log("User is logged in");
+					const uid = firebaseUser.uid;
+					loadUserData(uid);
+					setUserID(uid);
+					setAccessToken((await firebaseUser.getIdToken()) as string);
+					getAccessToken(firebaseUser);
+					setUserLoggedIn(true);
+				} else {
+					console.log(
+						"********************************* NO CURRENT USER. USER LOGGEDIN FALSE"
+					);
+					appGlobals.setUserID("");
+					appGlobals.setUserData(null);
+					setUserLoggedIn(false);
+				}
+				setLoading(false);
+			});
 		return () => unsubscribe();
 	}, []);
 
@@ -60,15 +69,40 @@ const useSession = () => {
 		}
 	};
 
-	const signInWithEmailAndPassword = async (email: string, password: string) =>
-		firebase.auth().signInWithEmailAndPassword(email, password);
+	const signInWithEmailAndPassword = async (
+		email: string,
+		password: string
+	) => {
+		const authData = await pb
+			.collection("users")
+			.authWithPassword(email, password);
+		console.log("authData", authData);
+		console.log("authstore", JSON.stringify(pb.authStore, null, 4));
+		setUser(authData);
 
-	const signUpWithEmailAndPassword = async (email: string, password: string) =>
-		firebase.auth().createUserWithEmailAndPassword(email, password);
+		// firebase.auth().signInWithEmailAndPassword(email, password);
+	};
 
-	const signOut = async () => firebase.auth().signOut();
+	const signUpWithEmailAndPassword = async (
+		email: string,
+		password: string
+	) => {
+		// example create data
+		const data = {
+			email,
+			emailVisibility: true,
+			password,
+			passwordConfirm: password,
+		};
 
-	const sendPasswordResetEmail = async (email: string) => firebase.auth().sendPasswordResetEmail(email);
+		const newUser = await pb.collection("users").create(data);
+		console.log("New User", newUser);
+	};
+
+	const signOut = async () => pb.authStore.clear();
+
+	const sendPasswordResetEmail = async (email: string) =>
+		firebase.auth().sendPasswordResetEmail(email);
 
 	const updateEmail = async (newEmail: string, password: string) => {
 		console.debug("Updating email in useSession");
@@ -83,24 +117,32 @@ const useSession = () => {
 					firebase.auth().currentUser?.email as string,
 					password
 				);
-				await firebase.auth().currentUser?.reauthenticateWithCredential(credential);
+				await firebase
+					.auth()
+					.currentUser?.reauthenticateWithCredential(credential);
 				//update email
 				await firebase.auth().currentUser?.updateEmail(newEmail);
 				console.log("Email updated to " + newEmail);
 			} else {
-				console.debug("Error, Something else", JSON.stringify(error, null, 4));
+				console.debug(
+					"Error, Something else",
+					JSON.stringify(error, null, 4)
+				);
 				throw error;
 			}
 		}
 	};
 
-	const updatePassword = async (password: string) => firebase.auth().currentUser?.updatePassword(password);
+	const updatePassword = async (password: string) =>
+		firebase.auth().currentUser?.updatePassword(password);
 
-	const reload = async (password: string) => firebase.auth().currentUser?.reload();
+	const reload = async (password: string) =>
+		firebase.auth().currentUser?.reload();
 
 	const appGlobals = {
 		userID: userID,
 		userData: userData,
+		user,
 		configKeys: configKeys,
 		activeFlow: activeFlow,
 		userLoggedIn,

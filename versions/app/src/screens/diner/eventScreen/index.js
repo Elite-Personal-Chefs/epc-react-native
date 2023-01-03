@@ -27,7 +27,7 @@ import AppContext from "../../../components/AppContext";
 import { globalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
 import { FontAwesome } from "@expo/vector-icons";
-import { getAllUnreservedEvents } from "../../../data/event";
+import { getAllUnreservedEvents } from "../../../api/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION

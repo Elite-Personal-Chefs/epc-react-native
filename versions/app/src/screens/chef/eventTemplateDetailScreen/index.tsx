@@ -27,8 +27,8 @@ import AddEventTemplateButton from "../../../components/chefComponents/AddEventT
 import EventTemplateCard from "../../../components/chefComponents/EventTemplateCard";
 import MenuCard from "../../../components/chefComponents/MenuCard";
 
-import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../../data/event";
-import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../data/menuTemplates";
+import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../../api/event";
+import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../api/menuTemplates";
 
 // STYLES
 import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../../styles/styles";
