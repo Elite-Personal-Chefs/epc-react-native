@@ -1,6 +1,6 @@
 import { firebase } from "../config/config";
 
-const getUserData = async (uid) => {
+const getUserData = async (uid: string) => {
 	console.log("Getting user data", uid);
 
 	const genericUserCollection = firebase.firestore().collection("users");

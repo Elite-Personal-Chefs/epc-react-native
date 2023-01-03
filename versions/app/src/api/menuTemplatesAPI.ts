@@ -1,5 +1,4 @@
 // IMPORTS
-import { Alert } from "react-native";
 import { firebase } from "../config/config";
 const { firestore } = firebase;
 const db = firestore();
@@ -43,7 +42,9 @@ const eventConverter = {
 };
 
 const getMenuTemplates = async (): Promise<Menu[]> => {
-	const menuTemplateCollection = db.collection("menu_templates").withConverter(menuConverter);
+	const menuTemplateCollection = db
+		.collection("menu_templates")
+		.withConverter(menuConverter);
 	const menuTemplates = await menuTemplateCollection.get();
 	return menuTemplates.docs.map((doc) => {
 		if (!doc.exists) {
@@ -56,36 +57,50 @@ const getMenuTemplates = async (): Promise<Menu[]> => {
 };
 
 const getMenuTemplatesById = async (id: string): Promise<Menu> => {
-	const menuTemplateCollection = db.collection("menu_templates").withConverter(menuConverter);
+	const menuTemplateCollection = db
+		.collection("menu_templates")
+		.withConverter(menuConverter);
 	try {
 		const menuTemplate = await menuTemplateCollection.doc(id).get();
 
 		if (!menuTemplate.exists) {
 			console.log("No such document!");
-			return;
+			throw new Error("No such document!");
 		}
 
 		return menuTemplate.data() as Menu;
 	} catch (error) {
 		console.log("Error getting document", error);
+		throw error;
 	}
 };
 
-const getMenuTemplateCourses = async (menuId: string, courses: any): Promise<Course> => {
+const getMenuTemplateCourses = async (
+	menuId: string,
+	courses: any
+): Promise<Course> => {
 	let menuItems = [];
 
 	for (const course of courses) {
-		let courseSnapshot = await db.collection("menu_templates").doc(menuId).collection(course).get();
+		let courseSnapshot = await db
+			.collection("menu_templates")
+			.doc(menuId)
+			.collection(course)
+			.get();
 
 		//console.log(`what is courseSnapshot? ${JSON.stringify(courseSnapshot)}`);
 
 		if (!courseSnapshot.empty) {
-			let meals = [];
+			let meals: any[] = []; // TODO: change to proper type
 
 			courseSnapshot.forEach((doc) => {
 				meals.push({ ...doc.data(), id: doc.id });
 			});
-			menuItems.push({ course: course, menuTemplateId: menuId, meals: meals });
+			menuItems.push({
+				course: course,
+				menuTemplateId: menuId,
+				meals: meals,
+			});
 		}
 	}
 	return menuItems as Course;

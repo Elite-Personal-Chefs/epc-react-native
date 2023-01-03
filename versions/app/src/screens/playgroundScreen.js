@@ -36,9 +36,9 @@ export default function PlaygroundScreen({navigation}) {
     
     const logout = async () => {
         try {
-            const signout = await firebase.auth().signOut();
+            appsGlobalContext.signOut();
         } catch (error) {
-            alert("Signout error "+error);
+            Alert.alert("Signout error "+error);
         }
     }
 

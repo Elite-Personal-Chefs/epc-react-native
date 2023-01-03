@@ -31,7 +31,7 @@ import { CustomButton } from "../../../components/Button";
 import { Formik } from "formik";
 import ImageUploader from "../../../components/ImageUploader";
 import * as yup from "yup";
-import { createEvent, updateEvent } from "../../../api/event";
+import { createEvent, updateEvent } from "../../../api/eventAPI";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;

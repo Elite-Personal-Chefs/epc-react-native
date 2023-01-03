@@ -33,7 +33,7 @@ import {
 	unpublishEvent,
 	getEventById,
 	getEventReservations,
-} from "../../../api/event";
+} from "../../../api/eventAPI";
 
 // STYLES
 import { globalStyles, menusStyles } from "../../../styles/styles";

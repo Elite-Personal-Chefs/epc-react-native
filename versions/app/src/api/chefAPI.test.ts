@@ -1,5 +1,5 @@
 import React from "react";
-import { getChef, getChefs } from "./chef";
+import { getChef, getChefs } from "./chefAPI";
 import Event from "../models/event";
 // import Event from "./event";
 

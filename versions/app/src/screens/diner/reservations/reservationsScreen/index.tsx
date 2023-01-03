@@ -24,7 +24,7 @@ import AppContext from "../../../../components/AppContext";
 // import { CustomButton } from "../components/Button";
 // import MenuListing from "../components/MenuListing";
 // import { getEndpoint } from "../helpers/helpers";
-import { getEventsReservedByGuestId } from "../../../../api/event";
+import { getEventsReservedByGuestId } from "../../../../api/eventAPI";
 
 // STYLES
 import { globalStyles, eventGlobalStyles, footer, forms } from "../../../../styles/styles";

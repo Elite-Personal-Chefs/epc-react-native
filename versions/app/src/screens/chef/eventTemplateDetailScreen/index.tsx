@@ -1,19 +1,15 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import {
-	Button,
 	Text,
-	StyleSheet,
 	View,
 	ScrollView,
 	Image,
 	ActivityIndicator,
-	TouchableOpacity,
-	Linking,
 } from "react-native";
 
 //Other Dependencies
@@ -27,11 +23,10 @@ import AddEventTemplateButton from "../../../components/chefComponents/AddEventT
 import EventTemplateCard from "../../../components/chefComponents/EventTemplateCard";
 import MenuCard from "../../../components/chefComponents/MenuCard";
 
-import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../../api/event";
-import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../api/menuTemplates";
+import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../api/menuTemplatesAPI";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../../styles/styles";
+import { globalStyles, eventGlobalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
 
 /*******************************************************************************/
@@ -58,12 +53,12 @@ export default function EventTemplateDetailScreen({ route, navigation }) {
 	const [courses, setCourses] = useState();
 	const [menuItems, setMenuItems] = useState([]);
 
-	const getMenuCoursesAndMeals = async (menuId, courses) => {
+	const getMenuCoursesAndMeals = async (menuId: string, courses) => {
 		const menuItems = await getMenuTemplateCourses(menuId, courses);
 		setMenuItems(menuItems);
 	};
 
-	const getMenuTemplateData = async (menuId) => {
+	const getMenuTemplateData = async (menuId: string) => {
 		const menuTemplateDoc = await getMenuTemplatesById(menuId);
 		setMenuTemplateDetails(menuTemplateDoc);
 

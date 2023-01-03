@@ -76,7 +76,7 @@ export default function HomeScreen({ navigation }) {
 			setCertifications(userCertifications);
 		} else {
 			console.log("No user found", uid);
-			const signout = await firebase.auth().signOut();
+			await appsGlobalContext.signOut();
 		}
 	};
 

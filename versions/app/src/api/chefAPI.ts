@@ -2,7 +2,7 @@ import { firebase } from "../config/config";
 const { firestore } = firebase;
 const db = firestore();
 
-import { getEventTemplateById } from "./eventTemplates";
+import { getEventTemplateById } from "./eventTemplatesAPI";
 
 export default interface Chef {
 	id?: string;

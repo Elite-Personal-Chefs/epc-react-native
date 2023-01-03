@@ -28,7 +28,7 @@ import AppContext from "../../../../components/AppContext";
 import { CustomButton } from "../../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../../api/event";
+import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../../api/eventAPI";
 import Event from "../../../../models/event";
 
 // STYLES

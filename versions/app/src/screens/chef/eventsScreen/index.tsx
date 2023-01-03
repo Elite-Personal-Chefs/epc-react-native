@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
 import { useFocusEffect } from "@react-navigation/native";
-import { getEventsByChefId } from "../../../api/event";
-import { getEventTemplates } from "../../../api/eventTemplates";
+import { getEventsByChefId } from "../../../api/eventAPI";
+import { getEventTemplates } from "../../../api/eventTemplatesAPI";
 
 // COMPONENTS
 import { View } from "react-native";
