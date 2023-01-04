@@ -1,20 +1,10 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-	Button,
-	Text,
-	StyleSheet,
-	View,
-	ScrollView,
-	Image,
-	ActivityIndicator,
-	TouchableOpacity,
-	Linking,
-} from "react-native";
+import { Text, View, ScrollView, Image, ActivityIndicator } from "react-native";
 
 //Other Dependencies
 import _ from "underscore";
@@ -27,11 +17,10 @@ import AddEventTemplateButton from "../../../components/chefComponents/AddEventT
 import EventTemplateCard from "../../../components/chefComponents/EventTemplateCard";
 import MenuCard from "../../../components/chefComponents/MenuCard";
 
-import { publishEvent, unpublishEvent, getEventById, getEventReservations } from "../../../data/event";
 import { getMenuTemplatesById, getMenuTemplateCourses } from "../../../data/menuTemplates";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles, footer, forms } from "../../../styles/styles";
+import { globalStyles, eventGlobalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
 
 /*******************************************************************************/

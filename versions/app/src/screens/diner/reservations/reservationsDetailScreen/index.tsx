@@ -115,7 +115,6 @@ export default function ResrvationsDetailScreen({ route }: any) {
 		if (!menuDoc.exists) {
 			console.log("No menu found");
 		} else {
-			//console.log(`menuDoc: \n${JSON.stringify(menuDoc)}`);
 			let menu = menuDoc.data();
 			let courses = menu.courses;
 			let menuItems = [];
@@ -132,8 +131,6 @@ export default function ResrvationsDetailScreen({ route }: any) {
 					menuItems.push({ items, course: course });
 				}
 			}
-
-			//console.log(menuItems);
 			setMenuItems(menuItems);
 		}
 	};

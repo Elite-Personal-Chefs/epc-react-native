@@ -46,15 +46,15 @@ const UnAuthorizedStackNav = createStackNavigator(); //This can be drawers, stac
 //LIST OF SCREENS
 /*******************************************************************************/
 /*** AUTHORIZED ****/
-import HomeScreen from "../screens/homeScreen";
+import DashboardScreen from "../screens/chef/dashboardScreen/dashboardScreen";
 import EventsScreen from "../screens/diner/eventScreen";
 import CreateEventScreen from "../screens/chef/createEventScreen";
 import ChefEventDetailScreen from "../screens/chef/eventDetailScreen";
 import MenuScreen from "../screens/menuScreen";
 import CreateMenuScreen from "../screens/createMenuScreen";
-import MenuDetailScreen from "../screens/menuDetailScreen";
+import MenuDetailScreen from "../screens/chef/menuDetailScreen/menuDetailScreen";
 import ChefsScreen from "../screens/chefsScreen";
-import ChefDetailScreen from "../screens/chefDetailScreen";
+import ChefDetailScreen from "../screens/diner/chefDetailScreen/chefDetailScreen";
 import ChefEventsScreen from "../screens/chef/eventsScreen";
 import chefEventTemplateDetailScreen from "../screens/chef/eventTemplateDetailScreen";
 import ReservationsScreen from "../screens/diner/reservations/reservationsScreen";
@@ -341,7 +341,7 @@ const AuthorizedStack = () => {
 				<>
 					<AuthorizedStackNav.Screen
 						name='Dashboard'
-						component={HomeScreen}
+						component={DashboardScreen}
 						options={({ route, navigation }) => ({
 							tabBarIcon: ({ color, focused }) => (
 								<Icon

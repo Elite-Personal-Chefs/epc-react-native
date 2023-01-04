@@ -76,7 +76,6 @@ export default function EventDetailScreen({
 			getMenus(routeParams);
 			return;
 		}
-		console.debug("Event", event);
 		setEventDetails(event);
 		getMenus(event);
 	};

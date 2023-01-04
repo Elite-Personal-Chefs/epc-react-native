@@ -121,6 +121,7 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 8,
 		backgroundColor: Theme.SURFACE_COLOR,
 		marginHorizontal: 15,
+		marginBottom: 15,
 		shadowColor: Theme.FAINT,
 		shadowOffset: {
 			width: 2,
@@ -128,7 +129,7 @@ const globalStyles = StyleSheet.create({
 		},
 		shadowOpacity: 0.4,
 		shadowRadius: 3,
-		elevation: 3,
+		elevation: 5,
 	},
 	card_header: {
 		flexDirection: "row",
@@ -136,7 +137,7 @@ const globalStyles = StyleSheet.create({
 		marginBottom: 7,
 	},
 	card_header_text: {
-		fontWeight: "bold",
+		fontWeight: "500",
 		fontSize: 16,
 	},
 	divider: {

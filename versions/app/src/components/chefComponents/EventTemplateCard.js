@@ -1,9 +1,9 @@
 // IMPORTS
-import React, { useState, useContext, useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { Text, View } from "react-native";
 
 // STYLES
-import { globalStyles, eventGlobalStyles } from "../../styles/styles";
+import { globalStyles } from "../../styles/styles";
 
 export default function EventTemplateCard(event) {
 	return (
