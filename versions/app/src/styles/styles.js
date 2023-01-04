@@ -138,7 +138,7 @@ const globalStyles = StyleSheet.create({
 	},
 	card_header_text: {
 		fontWeight: "500",
-		fontSize: 16,
+		fontSize: Theme.FONT_SIZE_MEDIUM_PLUS,
 	},
 	divider: {
 		borderBottomColor: Theme.FAINT,
