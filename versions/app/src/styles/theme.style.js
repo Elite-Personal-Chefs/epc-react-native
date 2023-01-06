@@ -23,6 +23,7 @@ export default {
 	/* FONTS */
 	FONT_LIGHT: "Roboto_300Light",
 	FONT_STANDARD: "Roboto_400Regular",
+	FONT_STANDARD_ITALIC: "Roboto_400Regular_Italic",
 	FONT_MEDIUM: "Roboto_500Medium",
 	FONT_BOLD: "Roboto_700Bold",
 	FONT_HEADER: "NotoSerif_400Regular",
