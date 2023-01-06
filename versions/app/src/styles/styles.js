@@ -258,8 +258,9 @@ const menusStyles = StyleSheet.create({
 		marginBottom: 2,
 	},
 	menu_desc: {
-		fontFamily: Theme.FONT_STANDARD,
+		fontStyle: "italic",
 		fontSize: Theme.FONT_SIZE_SMALL,
+		//fontFamily: Theme.FONT_STANDARD,
 		color: Theme.TEXT_ON_SURFACE_COLOR,
 		fontSize: 14,
 		lineHeight: 20,
