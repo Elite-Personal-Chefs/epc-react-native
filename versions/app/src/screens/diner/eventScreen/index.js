@@ -94,7 +94,15 @@ export default function EventsScreen({ navigation, route }) {
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
-				onPress={() => navigation.navigate("Event Details", { details: item })}
+				onPress={() =>
+					navigation.navigate("Event Details", {
+						details: item,
+						startDate: startDateShort,
+						endDate: endDateShort,
+						startTime: startTime,
+						endTime: endTime,
+					})
+				}
 			>
 				<View style={styles.navigate_away}>
 					<Image source={image} style={styles.image} />

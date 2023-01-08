@@ -78,8 +78,10 @@ export default function ReservationsScreen({ navigation }: any) {
 					navigation.navigate("Reservation Details", {
 						details: item,
 						isReservation: true,
-						startSeconds: new Date(item.start.seconds),
-						endSeconds: new Date(item.end.seconds),
+						startDate: startDate,
+						startTime: startTime,
+						endDate: endDate,
+						endTime: endTime,
 					})
 				}
 			>

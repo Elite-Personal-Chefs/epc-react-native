@@ -46,6 +46,10 @@ export default function ResrvationsDetailScreen({ route }: any) {
 	const user = appsGlobalContext.userData;
 	const details = route.params.details;
 	const eventId = route.params.details.id;
+	const startDate = route.params.startDate;
+	const endDate = route.params.endDate;
+	const startTime = route.params.startTime;
+	const endTime = route.params.endTime;
 	const startSeconds = route.params.startSeconds;
 	const endSeconds = route.params.endSeconds;
 	const [eventImg, setEventImg] = useState<string>();
@@ -56,16 +60,6 @@ export default function ResrvationsDetailScreen({ route }: any) {
 
 	//If we are coming from Reservation page then we need more details on the event
 	const isReservation = route.params.isReservation;
-
-	const startDate = isReservation
-		? format(startSeconds, "PPPP").toLocaleString()
-		: format(eventDetails.start, "PPPP").toLocaleString();
-
-	const endDate = isReservation
-		? format(startSeconds, "p").toLocaleString() + "-" + format(endSeconds, "p").toLocaleString()
-		: format(eventDetails.start, "p").toLocaleString() +
-		  "-" +
-		  format(eventDetails.end, "p").toLocaleString();
 
 	const getEventDetails = async () => {
 		const event = await getEventById(eventDetails.id);
@@ -226,19 +220,13 @@ export default function ResrvationsDetailScreen({ route }: any) {
 								<View style={styles.detail}>
 									<FontAwesome5 name='calendar' size={20} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{/* {eventDetails.start && eventDetails.end
-											? `${format(eventDetails.start, "PPPP")}`
-											: "No Date Found"} */}
-										{startDate ? startDate : "No Date Found"}
+										{`${startDate} - ${endDate}` || "No Date Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
 									<AntDesign name='clockcircle' size={17} style={styles.detail_icon} />
 									<Text style={styles.detail_label}>
-										{/* {eventDetails.start && eventDetails.end
-											? format(eventDetails.start, "p") + "-" + format(eventDetails.end, "p")
-											: "No Time Specified"} */}
-										{startDate && endDate ? endDate : "No Time Specified"}
+										{`${startTime} - ${endTime}` || "No Time Found"}
 									</Text>
 								</View>
 								<View style={styles.detail}>
