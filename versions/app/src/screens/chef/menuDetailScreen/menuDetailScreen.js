@@ -180,6 +180,7 @@ export default function MenuDetailScreen({ route, navigation }) {
 									<Text style={styles.price_label}>EPC Suggested Price</Text>
 									<Tooltip
 										isVisible={toolTipVisible}
+										showChildInTooltip={false}
 										content={
 											<View>
 												<Text>

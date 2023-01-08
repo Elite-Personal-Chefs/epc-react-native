@@ -18,6 +18,7 @@ export default function EventTemplateSuggestedPricing({ CPP }) {
 				<Text style={eventGlobalStyles.price_label}>EPC Suggested Price</Text>
 				<Tooltip
 					isVisible={toolTipVisible}
+					showChildInTooltip={false}
 					content={
 						<View>
 							<Text>
