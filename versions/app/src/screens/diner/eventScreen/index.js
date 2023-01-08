@@ -2,11 +2,13 @@
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
 import React, { useState, useContext, useRef } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import MapView, { Marker } from "react-native-maps";
 
 //OTHER DEPENDENCIES
-import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
-import MapView, { Marker } from "react-native-maps";
+import { format } from "date-fns";
+import { getAllUnreservedEvents } from "../../../data/event";
 
 // COMPONENTS
 import {
@@ -27,7 +29,6 @@ import AppContext from "../../../components/AppContext";
 import { globalStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
 import { FontAwesome } from "@expo/vector-icons";
-import { getAllUnreservedEvents } from "../../../data/event";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -40,14 +41,40 @@ export default function EventsScreen({ navigation, route }) {
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
-	const [coordinates, setCoordinates] = useState(null);
 
+	const [startDateShort, setStartDateShort] = useState(new Date());
+	const [startTime, setStartTime] = useState(new Date());
+
+	const [endDateShort, setEndDateShort] = useState(new Date());
+	const [endTime, setEndTime] = useState(new Date());
+
+	const [location, setLocation] = useState(null);
+
+	const [coordinates, setCoordinates] = useState(null);
 	const [initialRegion, setInitialRegion] = useState({
 		latitude: 41.8781,
 		longitude: -87.6298,
 		latitudeDelta: 0.2022,
 		longitudeDelta: 0.0721,
 	});
+
+	const formatStartDateTime = (date) => {
+		setStartDateShort(format(date, "MMM do"));
+		setStartTime(format(date, "h:mm a"));
+	};
+
+	const formatEndDateTime = (date) => {
+		setEndDateShort(format(date, "MMM do"));
+		setEndTime(format(date, "h:mm a"));
+	};
+
+	const formatLocation = (location) => {
+		let splitLocationArr = location.split(",");
+		let displayedLocation =
+			splitLocationArr[0] + "," + splitLocationArr[1] + "," + splitLocationArr[2];
+
+		setLocation(displayedLocation);
+	};
 
 	const getEventsDetails = async () => {
 		const json = await getAllUnreservedEvents(uid);
@@ -75,7 +102,11 @@ export default function EventsScreen({ navigation, route }) {
 		const image = item.photos
 			? { uri: item.photos[0] }
 			: require("../../../assets/event_placeholder.png");
-		// console.log(item)
+
+		formatStartDateTime(item.start);
+		formatEndDateTime(item.end);
+		formatLocation(item.location);
+
 		return (
 			<TouchableWithoutFeedback
 				key={item.index}
@@ -84,18 +115,16 @@ export default function EventsScreen({ navigation, route }) {
 				<View style={styles.navigate_away}>
 					<Image source={image} style={styles.image} />
 					<View style={styles.navigate_away_content}>
-						{eventPageName == "Events" ? (
-							<Text style={styles.date_time}>
-								{item.event_date} | {item.start_time}-{item.end_time}
-							</Text>
-						) : (
-							<Text style={styles.date_time}>{item.readable_date}</Text>
-						)}
 						<Text style={styles.title}>{item.title}</Text>
+						<Text
+							style={styles.date_time}
+						>{`${startDateShort} at ${startTime} - ${endDateShort} at ${endTime}`}</Text>
+
+						<Text style={styles.location}>{location}</Text>
 					</View>
 					<View style={styles.chef_and_price}>
 						<View>
-							<Text style={styles.name}>{item.chef_name ? item.chef_name : "Chef Name"}</Text>
+							<Text style={styles.name}>{item.chefName ? item.chefName : "Chef Name"}</Text>
 							<View style={styles.reviews_and_rating}>
 								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
 								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
@@ -400,6 +429,11 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 	},
 	reviews: {
+		fontWeight: "normal",
+		color: Theme.FAINT,
+		fontSize: 12,
+	},
+	location: {
 		fontWeight: "normal",
 		color: Theme.FAINT,
 		fontSize: 12,

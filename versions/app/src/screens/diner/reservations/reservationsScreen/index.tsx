@@ -1,13 +1,12 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext } from "react";
 
 //OTHER DEPENDENCIES
 //import { firebase, configKeys } from "../../../firebase/config";
 import { useFocusEffect } from "@react-navigation/native";
-import { format, intervalToDuration } from "date-fns";
+import { format } from "date-fns";
 
 // COMPONENTS
 import {
@@ -15,7 +14,6 @@ import {
 	StyleSheet,
 	View,
 	Image,
-	TouchableOpacity,
 	FlatList,
 	TouchableWithoutFeedback,
 	RefreshControl,
@@ -27,9 +25,9 @@ import AppContext from "../../../../components/AppContext";
 import { getEventsReservedByGuestId } from "../../../../data/event";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, footer, forms } from "../../../../styles/styles";
+import { globalStyles } from "../../../../styles/styles";
 import Theme from "../../../../styles/theme.style.js";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
