@@ -3,6 +3,7 @@ const { firestore } = firebase;
 const db = firestore();
 
 import { getEventTemplateById } from "./eventTemplates";
+import Menu from "../models/menu";
 
 export default interface Chef {
 	id?: string;
@@ -19,6 +20,24 @@ const chefConverter = {
 		snapshot: firebase.firestore.QueryDocumentSnapshot,
 		options: firebase.firestore.SnapshotOptions
 	): Event => {
+		const data = snapshot.data(options);
+		return {
+			...data,
+			id: snapshot.id,
+		};
+	},
+};
+
+const menuConverter = {
+	toFirestore: (menu: Menu): firebase.firestore.DocumentData => {
+		// the id exists on the document, but not on the data;
+		delete menu.id;
+		return menu;
+	},
+	fromFirestore: (
+		snapshot: firebase.firestore.QueryDocumentSnapshot,
+		options: firebase.firestore.SnapshotOptions
+	): Menu => {
 		const data = snapshot.data(options);
 		return {
 			...data,
@@ -48,6 +67,20 @@ const getChefs = async (): Promise<Chef[]> => {
 const updateChef = async (chefID, data): Promise<void> => {
 	const chef = await db.collection("chefs").doc(chefID).update(data);
 	return chef;
+};
+
+const getChefMenus = async (chefID: string): Promise<any> => {
+	const chefCollection = db.collection("chefs");
+	const chef = await chefCollection.doc(chefID).get();
+	const chefData = chef.data() as any;
+
+	const menus = await chefCollection
+		.doc(chefID)
+		.collection("menus")
+		.withConverter(menuConverter)
+		.get();
+	const menusData = menus.docs.map((doc) => doc.data()) as Menu[];
+	return { chef: chefData, menus: menusData };
 };
 
 const addEventTemplateToChef = async (
@@ -108,7 +141,7 @@ const addEventTemplateToChef = async (
 	});
 };
 
-export { createChef, getChef, getChefs, updateChef, addEventTemplateToChef };
+export { createChef, getChef, getChefs, updateChef, getChefMenus, addEventTemplateToChef };
 
 
 
