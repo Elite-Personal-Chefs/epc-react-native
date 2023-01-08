@@ -42,14 +42,6 @@ export default function EventsScreen({ navigation, route }) {
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
 
-	const [startDateShort, setStartDateShort] = useState(new Date());
-	const [startTime, setStartTime] = useState(new Date());
-
-	const [endDateShort, setEndDateShort] = useState(new Date());
-	const [endTime, setEndTime] = useState(new Date());
-
-	const [location, setLocation] = useState(null);
-
 	const [coordinates, setCoordinates] = useState(null);
 	const [initialRegion, setInitialRegion] = useState({
 		latitude: 41.8781,
@@ -58,22 +50,12 @@ export default function EventsScreen({ navigation, route }) {
 		longitudeDelta: 0.0721,
 	});
 
-	const formatStartDateTime = (date) => {
-		setStartDateShort(format(date, "MMM do"));
-		setStartTime(format(date, "h:mm a"));
-	};
-
-	const formatEndDateTime = (date) => {
-		setEndDateShort(format(date, "MMM do"));
-		setEndTime(format(date, "h:mm a"));
-	};
-
 	const formatLocation = (location) => {
 		let splitLocationArr = location.split(",");
 		let displayedLocation =
 			splitLocationArr[0] + "," + splitLocationArr[1] + "," + splitLocationArr[2];
 
-		setLocation(displayedLocation);
+		return displayedLocation;
 	};
 
 	const getEventsDetails = async () => {
@@ -103,9 +85,11 @@ export default function EventsScreen({ navigation, route }) {
 			? { uri: item.photos[0] }
 			: require("../../../assets/event_placeholder.png");
 
-		formatStartDateTime(item.start);
-		formatEndDateTime(item.end);
-		formatLocation(item.location);
+		let startDateShort = format(item.start, "MMM do");
+		let startTime = format(item.start, "h:mm a");
+		let endDateShort = format(item.end, "MMM do");
+		let endTime = format(item.end, "h:mm a");
+		let location = formatLocation(item.location);
 
 		return (
 			<TouchableWithoutFeedback
