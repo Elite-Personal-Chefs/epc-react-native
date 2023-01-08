@@ -86,12 +86,15 @@ export default function MenuDetailScreen({ route, navigation }) {
 
 	const editMenu = () => {
 		let editableMenuFormat = [];
+
 		menuItems.map((menu, index) => {
 			let addCourse = {
 				type: "course",
 				title: menu.course,
 			};
+
 			editableMenuFormat.push(addCourse);
+
 			menu.items.map((item) => {
 				let addItem = {
 					type: "item",
@@ -99,10 +102,11 @@ export default function MenuDetailScreen({ route, navigation }) {
 					description: item.description ? item.description : "",
 					course: item.course,
 				};
+
 				editableMenuFormat.push(addItem);
 			});
 		});
-		console.log(details);
+
 		navigation.navigate("Create Menu", {
 			description: details.description,
 			menu: editableMenuFormat,
@@ -148,8 +152,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 	};
 
 	useEffect(() => {
-		console.log("getting details formenu screen");
-		console.log("ACTIVE FLOW", appsGlobalContext.activeFlow);
 		getMenus(details);
 	}, []);
 
