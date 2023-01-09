@@ -121,6 +121,7 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 8,
 		backgroundColor: Theme.SURFACE_COLOR,
 		marginHorizontal: 15,
+		marginBottom: 15,
 		shadowColor: Theme.FAINT,
 		shadowOffset: {
 			width: 2,
@@ -128,7 +129,7 @@ const globalStyles = StyleSheet.create({
 		},
 		shadowOpacity: 0.4,
 		shadowRadius: 3,
-		elevation: 3,
+		elevation: 5,
 	},
 	card_header: {
 		flexDirection: "row",
@@ -136,8 +137,8 @@ const globalStyles = StyleSheet.create({
 		marginBottom: 7,
 	},
 	card_header_text: {
-		fontWeight: "bold",
-		fontSize: 16,
+		fontWeight: "500",
+		fontSize: Theme.FONT_SIZE_MEDIUM_PLUS,
 	},
 	divider: {
 		borderBottomColor: Theme.FAINT,
@@ -257,8 +258,8 @@ const menusStyles = StyleSheet.create({
 		marginBottom: 2,
 	},
 	menu_desc: {
-		fontFamily: Theme.FONT_STANDARD,
 		fontSize: Theme.FONT_SIZE_SMALL,
+		fontFamily: Theme.FONT_STANDARD_ITALIC,
 		color: Theme.TEXT_ON_SURFACE_COLOR,
 		fontSize: 14,
 		lineHeight: 20,

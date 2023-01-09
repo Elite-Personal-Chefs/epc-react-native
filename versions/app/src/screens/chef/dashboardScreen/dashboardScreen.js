@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // OTHER DEPENDENCIES
 import _ from "underscore";
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 
 // COMPONENTS
@@ -20,14 +20,14 @@ import {
 	RefreshControl,
 	TouchableOpacity,
 } from "react-native";
-import { GoToButton, CustomButton } from "../components/Button";
-import ChefStatus from "../components/ChefStatus";
-import AppContext from "../components/AppContext";
-import { getEndpoint } from "../helpers/helpers";
+import { GoToButton, CustomButton } from "../../../components/Button";
+import ChefStatus from "../../../components/ChefStatus";
+import AppContext from "../../../components/AppContext";
+import { getEndpoint } from "../../../helpers/helpers";
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, TouchableHighlight, footer, forms } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import {
 	FontAwesome,
 	FontAwesome5,
@@ -41,7 +41,7 @@ import { TextInput } from "react-native-gesture-handler";
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
-export default function HomeScreen({ navigation }) {
+export default function DashboardScreen({ navigation }) {
 	//Get global vars from app context
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
@@ -119,41 +119,10 @@ export default function HomeScreen({ navigation }) {
 							<Text style={styles.featured_content}>$0</Text>
 						</View>
 
-						{emailIsNotVerified && (
-							<View style={globalStyles.card}>
-								<View style={[globalStyles.card_header, styles.divider]}>
-									<Text style={[globalStyles.h3]}>Email Not Verified</Text>
-								</View>
-								<TouchableOpacity
-									style={styles.navigate_away}
-									onPress={() => checkForVerifiedEmail()}
-								>
-									<Text style={[styles.navigate_away_content]}>
-										Click here if you have already verified your email.
-									</Text>
-									<AntDesign
-										name='right'
-										size={20}
-										color={Theme.FAINT}
-										style={{ paddingLeft: 5 }}
-									/>
-								</TouchableOpacity>
-							</View>
-						)}
-
 						{_.has(user.certifications, "Complete Profile") &&
 						user.certifications["Complete Profile"].is_submitted === true &&
 						user.certifications["Complete Profile"].is_approved === true ? (
 							<>
-								{/*
-                            <View style={globalStyles.card}>
-                                <View style={globalStyles.card_header}>
-                                    <Text style={[globalStyles.h3,{fontSize:17}]}>Stand Out from the Crowd!</Text>
-                                </View>
-                                <Text style={globalStyles.card_content}>We recommend doing these things to make your profile stand out. Earn fun badges along the way.</Text>
-                                <ChefStatus certifications={user.certifications} navigation={navigation}/>
-                            </View>
-                            */}
 								<View style={globalStyles.card}>
 									<View style={{ flexDirection: "row", paddingVertical: 5 }}>
 										<Text style={{ fontSize: 14, color: Theme.PRIMARY_COLOR, fontWeight: "bold" }}>
@@ -161,20 +130,10 @@ export default function HomeScreen({ navigation }) {
 										</Text>
 										<Image
 											style={globalStyles.badge_small}
-											source={require("../assets/badges/status_elite_chef.png")}
+											source={require("../../../assets/badges/status_elite_chef.png")}
 										/>
 									</View>
 								</View>
-
-								{/* <View style={globalStyles.card}>
-                                <View style={[globalStyles.card_header,styles.divider]}>
-                                    <Text style={globalStyles.h3}>Refer A Chef</Text>
-                                </View>
-                                <TouchableOpacity style={styles.navigate_away} onPress={() => navigation.navigate("Account", { screen: "Refer" })}>
-                                    <Text style={[styles.navigate_away_content,{color:Theme.FAINT, fontWeight: 'normal'}]}>Earn $50 for every chef you refer</Text>
-                                    <AntDesign name="right" size={20} color={Theme.FAINT} style={{paddingLeft:5}}/>
-                                </TouchableOpacity>
-                            </View> */}
 							</>
 						) : (
 							<>

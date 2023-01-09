@@ -1,13 +1,11 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 //OTHER DEPENDENCIES
-//import { firebase, configKeys } from "../../../firebase/config";
-import { useFocusEffect } from "@react-navigation/native";
-import { format, intervalToDuration } from "date-fns";
+import { format } from "date-fns";
 
 // COMPONENTS
 import {
@@ -15,21 +13,17 @@ import {
 	StyleSheet,
 	View,
 	Image,
-	TouchableOpacity,
 	FlatList,
 	TouchableWithoutFeedback,
 	RefreshControl,
 } from "react-native";
 import AppContext from "../../../../components/AppContext";
-// import { CustomButton } from "../components/Button";
-// import MenuListing from "../components/MenuListing";
-// import { getEndpoint } from "../helpers/helpers";
 import { getEventsReservedByGuestId } from "../../../../data/event";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, footer, forms } from "../../../../styles/styles";
+import { globalStyles } from "../../../../styles/styles";
 import Theme from "../../../../styles/theme.style.js";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -50,6 +44,14 @@ export default function ReservationsScreen({ navigation }: any) {
 		setRefreshing(false);
 	};
 
+	const formatLocation = (location: string) => {
+		let splitLocationArr = location.split(",");
+		let displayedLocation =
+			splitLocationArr[0] + "," + splitLocationArr[1] + "," + splitLocationArr[2];
+
+		return displayedLocation;
+	};
+
 	const onRefresh = () => {
 		setRefreshing(true);
 		getDinerEvents(uid);
@@ -63,10 +65,11 @@ export default function ReservationsScreen({ navigation }: any) {
 	);
 
 	const renderEvent = ({ item }) => {
-		const startSeconds = new Date(item.start.seconds * 1000);
-		const endSeconds = new Date(item.end.seconds * 1000);
-		const formattedStartDate = format(startSeconds, "LLL Lo, yyyy h:mm a");
-		const formattedEndDate = format(endSeconds, "h:mm a");
+		let startDate = format(new Date(item.start.seconds * 1000), "MMM do");
+		let startTime = format(new Date(item.start.seconds * 1000), "h:mm a");
+		let endDate = format(new Date(item.end.seconds * 1000), "MMM do");
+		let endTime = format(new Date(item.end.seconds * 1000), "h:mm a");
+		let location = formatLocation(item.location);
 
 		return (
 			<TouchableWithoutFeedback
@@ -75,8 +78,10 @@ export default function ReservationsScreen({ navigation }: any) {
 					navigation.navigate("Reservation Details", {
 						details: item,
 						isReservation: true,
-						startSeconds: startSeconds,
-						endSeconds: endSeconds,
+						startDate: startDate,
+						startTime: startTime,
+						endDate: endDate,
+						endTime: endTime,
 					})
 				}
 			>
@@ -86,8 +91,11 @@ export default function ReservationsScreen({ navigation }: any) {
 						style={styles.image}
 					/>
 					<View style={styles.navigate_away_content}>
-						<Text style={styles.date_time}>{`${formattedStartDate}-${formattedEndDate}`}</Text>
 						<Text style={styles.title}>{item.title}</Text>
+						<Text
+							style={styles.date_time}
+						>{`${startDate} at ${startTime} - ${endDate} at ${endTime}`}</Text>
+						<Text style={styles.location}>{location}</Text>
 					</View>
 					<View style={styles.chef_and_price}>
 						<View>
@@ -135,6 +143,11 @@ export default function ReservationsScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
+	location: {
+		fontWeight: "normal",
+		color: Theme.FAINT,
+		fontSize: 12,
+	},
 	no_event: {
 		flex: 1,
 		width: "100%",

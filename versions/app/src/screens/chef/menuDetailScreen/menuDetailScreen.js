@@ -12,25 +12,25 @@ import {
 	Image,
 	ActivityIndicator,
 	TextInput,
-  TouchableOpacity
+	TouchableOpacity,
 } from "react-native";
 
 //Other Dependencies
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
+import { getEndpoint } from "../../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import Tooltip from 'react-native-walkthrough-tooltip';
+import Tooltip from "react-native-walkthrough-tooltip";
 
 // STYLES
-import { globalStyles, menusStyles, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
-import {AntDesign, MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-icons'
+import { globalStyles, menusStyles, footer, forms } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
+import { AntDesign, MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -86,12 +86,15 @@ export default function MenuDetailScreen({ route, navigation }) {
 
 	const editMenu = () => {
 		let editableMenuFormat = [];
+
 		menuItems.map((menu, index) => {
 			let addCourse = {
 				type: "course",
 				title: menu.course,
 			};
+
 			editableMenuFormat.push(addCourse);
+
 			menu.items.map((item) => {
 				let addItem = {
 					type: "item",
@@ -99,10 +102,11 @@ export default function MenuDetailScreen({ route, navigation }) {
 					description: item.description ? item.description : "",
 					course: item.course,
 				};
+
 				editableMenuFormat.push(addItem);
 			});
 		});
-		console.log(details);
+
 		navigation.navigate("Create Menu", {
 			description: details.description,
 			menu: editableMenuFormat,
@@ -148,8 +152,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 	};
 
 	useEffect(() => {
-		console.log("getting details formenu screen");
-		console.log("ACTIVE FLOW", appsGlobalContext.activeFlow);
 		getMenus(details);
 	}, []);
 
@@ -180,6 +182,7 @@ export default function MenuDetailScreen({ route, navigation }) {
 									<Text style={styles.price_label}>EPC Suggested Price</Text>
 									<Tooltip
 										isVisible={toolTipVisible}
+										showChildInTooltip={false}
 										content={
 											<View>
 												<Text>

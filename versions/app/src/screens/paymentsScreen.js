@@ -203,76 +203,94 @@ export default function PaymentScreen({route,navigation}) {
     }
 
     return (
-        <SafeAreaView style={globalStyles.safe_light}>
-            <View style={[globalStyles.page,{}]}>
-                <Text>In-app payents will be chrged with a credit card on file. Please add one here.</Text>
-                    <View style={styles.member_detail}>
-                        {hasCardOnFile &&
-                            <View style={{padding:10,justifyContent:'center',margin:20}}>
-                                <Text>Active Card</Text>
-                                <TouchableWithoutFeedback>
-                                    <FontAwesome name={ccIcon} size={30} style={styles.detail_icons} />
-                                </TouchableWithoutFeedback>
-                                <View>
-                                    <Text style={[styles.member_info_text,{marginBottom:8,textAlignVertical:'center'}]}>{formatCardNumbers(ccIcon)}{user.stripe_info.last4}</Text>
-                                    <Text style={styles.member_info_text}>{user.stripe_info.expiration}</Text>
-                                </View>
-                            </View>
-                        }
-                        <View style={{width:'100%', alignItems:'center',textAlign:'center'}}>
-                            <View style={forms.input_container}>
-                                <MaterialIcons name="credit-card" size={27}   style={forms.input_icon}  />
-                                <TextInputMask
-                                    type={'credit-card'}
-                                    style={forms.custom_input}
-                                    placeholder='Credit Card Number'
-                                    placeholderTextColor='rgba(203, 165, 44, 0.4)'
-                                    keyboardType='number-pad'
-                                    onChangeText={(text) => setCardNumber(text)}
-                                    value={number}
-                                    underlineColorAndroid="transparent"
-                                    autoCapitalize="none"
-                                />    
-                            </View>  
-                            <View style={styles.cc_detail_container}>
-                                <View style={[forms.input_container, styles.small_field]}>
-                                    <MaterialIcons name="date-range" size={27}   style={forms.input_icon} />
-                                    <TextInputMask
-                                        type={'datetime'}
-                                        options={{
-                                            format: 'MM/YY'
-                                        }}
-                                        style={forms.custom_input}
-                                        placeholderTextColor='rgba(203, 165, 44, 0.4)'
-                                        placeholder='MM/YY'
-                                        keyboardType='number-pad'
-                                        onChangeText={(text) => setExpiration(text)}
-                                        value={expiration}
-                                        underlineColorAndroid="transparent"
-                                        autoCapitalize="none"
-
-                                        maxLength={5}
-                                    />   
-                                </View>  
-                                <View style={[forms.input_container, styles.small_field, {marginRight:0,marginLeft:5}]}>
-                                    <MaterialCommunityIcons name="credit-card-refund-outline" size={27}    style={forms.input_icon} />
-                                    <TextInput
-                                        style={forms.custom_input}
-                                        placeholder='CVC'
-                                        placeholderTextColor='rgba(203, 165, 44, 0.4)'
-                                        keyboardType='number-pad'
-                                        onChangeText={(text) => setCvc(text)}
-                                        value={cvc}
-                                        underlineColorAndroid="transparent"
-                                        autoCapitalize="none"
-                                    
-                                        maxLength={4}
-                                    />    
-                                </View>  
-                            </View> 
-                        </View>
-                    </View>
-                    {/*
+			<SafeAreaView style={globalStyles.safe_light}>
+				<View style={[globalStyles.page, {}]}>
+					<Text>
+						In-app payents will be chrged with a credit card on file. Please add one here.
+					</Text>
+					<View style={styles.member_detail}>
+						{hasCardOnFile && (
+							<View style={{ padding: 10, justifyContent: "center", margin: 20 }}>
+								<Text>Active Card</Text>
+								<TouchableWithoutFeedback>
+									<FontAwesome name={ccIcon} size={30} style={styles.detail_icons} />
+								</TouchableWithoutFeedback>
+								<View>
+									<Text
+										style={[
+											styles.member_info_text,
+											{ marginBottom: 8, textAlignVertical: "center" },
+										]}
+									>
+										{formatCardNumbers(ccIcon)}
+										{user.stripe_info.last4}
+									</Text>
+									<Text style={styles.member_info_text}>{user.stripe_info.expiration}</Text>
+								</View>
+							</View>
+						)}
+						<View style={{ width: "100%", alignItems: "center", textAlign: "center" }}>
+							<View style={forms.input_container}>
+								<MaterialIcons name='credit-card' size={27} style={forms.input_icon} />
+								<TextInputMask
+									type={"credit-card"}
+									style={forms.custom_input}
+									placeholder='Credit Card Number'
+									placeholderTextColor='rgba(203, 165, 44, 0.4)'
+									keyboardType='number-pad'
+									onChangeText={(text) => setCardNumber(text)}
+									value={number}
+									underlineColorAndroid='transparent'
+									autoCapitalize='none'
+								/>
+							</View>
+							<View style={styles.cc_detail_container}>
+								<View style={[forms.input_container, styles.small_field]}>
+									<MaterialIcons name='date-range' size={27} style={forms.input_icon} />
+									<TextInputMask
+										type={"datetime"}
+										options={{
+											format: "MM/YY",
+										}}
+										style={forms.custom_input}
+										placeholderTextColor='rgba(203, 165, 44, 0.4)'
+										placeholder='MM/YY'
+										keyboardType='number-pad'
+										onChangeText={(text) => setExpiration(text)}
+										value={expiration}
+										underlineColorAndroid='transparent'
+										autoCapitalize='none'
+										maxLength={5}
+									/>
+								</View>
+								<View
+									style={[
+										forms.input_container,
+										styles.small_field,
+										{ marginRight: 0, marginLeft: 5 },
+									]}
+								>
+									<MaterialCommunityIcons
+										name='credit-card-refund-outline'
+										size={27}
+										style={forms.input_icon}
+									/>
+									<TextInput
+										style={forms.custom_input}
+										placeholder='CVC'
+										placeholderTextColor='rgba(203, 165, 44, 0.4)'
+										keyboardType='number-pad'
+										onChangeText={(text) => setCvc(text)}
+										value={cvc}
+										underlineColorAndroid='transparent'
+										autoCapitalize='none'
+										maxLength={4}
+									/>
+								</View>
+							</View>
+						</View>
+					</View>
+					{/*
                     <View style={[styles.member_detail,{justifyContent:'flex-end'}]}>
                         {editCredit
                         ?   <>
@@ -284,14 +302,14 @@ export default function PaymentScreen({route,navigation}) {
                         }
                     </View>
                     */}
-                <CustomButton text={hasCardOnFile ? 'Update Card' : 'Add Card'} onPress={() => addCreditCard()} size="big"></CustomButton>
-                    <View>
-                        <Text onPress={() => gotoWebLink('https://www.google.com')} style={styles.textLinkText}>Terms &amp; Conditions</Text>
-                    </View>
-
-            </View>
-        </SafeAreaView>
-    )
+					<CustomButton
+						text={hasCardOnFile ? "Update Card" : "Add Card"}
+						onPress={() => addCreditCard()}
+						size='big'
+					></CustomButton>
+				</View>
+			</SafeAreaView>
+		);
 }
 
 const styles = StyleSheet.create({

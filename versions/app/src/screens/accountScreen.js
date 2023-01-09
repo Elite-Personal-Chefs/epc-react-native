@@ -215,14 +215,6 @@ export default function AccountScreen({ navigation }) {
                                 */}
 								</>
 							)}
-							{activeFlow == "guests" && (
-								<GoToButton
-									navigation={navigation}
-									navigator='Payments'
-									copy='Payments'
-									params={user}
-								/>
-							)}
 							<GoToButton navigation={navigation} navigator='Terms' copy='Terms &amp; Conditions' />
 							<GoToButton navigation={navigation} navigator='Contact' copy='Contact Us' />
 							<GoToButton
