@@ -31,27 +31,30 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 /*******************************************************************************/
 
 export default function ImageUploader({ currentImg, getImageUrl, shape = "rectangle" }) {
-	console.log("HAs current image", currentImg);
+
 	const [image, setImage] = currentImg ? useState(currentImg) : useState(false);
 	const [loadingImage, setLoadingImage] = useState(false);
 
 	const pickImage = async () => {
 		setLoadingImage(true);
-		console.log("Loading image");
+
 		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
 			aspect: [4, 3],
 			quality: 1,
 		});
+
 		if (!result.cancelled) {
 			const uploadUrl = await uploadImageAsync(result.uri);
-			console.log("DownloadedURL", uploadUrl);
+
+			// Set the image on the ProfileSlider render
 			getImageUrl(uploadUrl);
-			setImage(uploadUrl); //result.uri
+
+			// Set the image on the ImageUploader render
+			setImage(uploadUrl);
 		}
 		setLoadingImage(false);
-		console.log("image loaded");
 	};
 
 	async function uploadImageAsync(uri) {

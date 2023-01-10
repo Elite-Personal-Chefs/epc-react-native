@@ -25,14 +25,14 @@ import {
 	Alert,
 	KeyboardAvoidingView,
 } from "react-native";
-import ImageUploader from "../components/ImageUploader";
-import { CustomButton } from "../components/Button";
+import ImageUploader from "../ImageUploader";
+import { CustomButton } from "../Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 // STYLES
-import { globalStyles, modal, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, modal, footer, forms } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -40,6 +40,8 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ProfileSlider({ handleFormUpdates, userData }) {
+	console.log(`Profile Slider: ${JSON.stringify(userData)}`);
+
 	const DATA = [
 		{ label: "African", value: "African" },
 		{ label: "Algerian", value: "Algerian" },
@@ -140,6 +142,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	const [bio, setBio] = useState("");
 	const [fact1, setFact1] = useState("");
 	const [fact2, setFact2] = useState("");
+	const [profileImg, setProfileImg] = useState(userData?.chefProfile?.profile_img);
 
 	const renderDataItem = (item) => {
 		return (
@@ -153,8 +156,6 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	/***********************************************/
 	//! SAVE PROFILE IMAGE
 	/***********************************************/
-	//! This is not updating properly
-	const [profileImg, setProfileImg] = useState(userData?.chefProfile?.profile_img);
 
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);
@@ -243,7 +244,7 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 			setFact1(userData.chefProfile.facts[0]);
 			setFact2(userData.chefProfile.facts[1]);
 			setProfileImg(userData.chefProfile.profile_img);
-			console.log(`We have a profile image: ${userData.chefProfile.profile_img}`);
+			// console.log(`We have a profile image: ${userData.chefProfile.profile_img}`);
 		}
 	}, []);
 
@@ -261,11 +262,12 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 					//If an image was added make sure we add it
 					console.log("Is there profile image?", profileImg);
 					if (profileImg) values.chefProfile.profile_img = profileImg;
+					console.log(`chef's profile`, values.chefProfile.profile_img);
 
 					if (cuisines && profileImg && bio) {
 						console.log(`conditions are truthy`);
-						values.certifications["Complete Profile"].is_approved = true;
-						values.certifications["Complete Profile"].is_submitted = true;
+						values.certifications["Complete Profile"].is_approved = false;
+						values.certifications["Complete Profile"].is_submitted = false;
 					}
 
 					//UPDATE CHEF OBJECT IN FIREBASE

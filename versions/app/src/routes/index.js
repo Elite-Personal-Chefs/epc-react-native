@@ -60,7 +60,7 @@ import chefEventTemplateDetailScreen from "../screens/chef/eventTemplateDetailSc
 import ReservationsScreen from "../screens/diner/reservations/reservationsScreen";
 import ReservationDetailScreen from "../screens/diner/reservations//reservationsDetailScreen";
 import AccountScreen from "../screens/accountScreen";
-import ProfileScreen from "../screens/profileScreen";
+import ProfileScreen from "../screens/chef/profileScreen/profileScreen";
 import MessageScreen from "../screens/messageScreen";
 import ReferScreen from "../screens/referScreen";
 import PaymentsScreen from "../screens/paymentsScreen";
