@@ -40,8 +40,6 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons } from "@expo/vector-ico
 /*******************************************************************************/
 
 export default function ProfileSlider({ handleFormUpdates, userData }) {
-	console.log(`Profile Slider: ${JSON.stringify(userData)}`);
-
 	const DATA = [
 		{ label: "African", value: "African" },
 		{ label: "Algerian", value: "Algerian" },
@@ -158,7 +156,6 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 	/***********************************************/
 
 	const getImageUrl = async (url) => {
-		console.log("Got the image", url);
 		setProfileImg(url);
 	};
 
@@ -244,7 +241,6 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 			setFact1(userData.chefProfile.facts[0]);
 			setFact2(userData.chefProfile.facts[1]);
 			setProfileImg(userData.chefProfile.profile_img);
-			// console.log(`We have a profile image: ${userData.chefProfile.profile_img}`);
 		}
 	}, []);
 
@@ -259,13 +255,10 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 						bio: bio,
 						facts: [fact1, fact2],
 					};
-					//If an image was added make sure we add it
-					console.log("Is there profile image?", profileImg);
+
 					if (profileImg) values.chefProfile.profile_img = profileImg;
-					console.log(`chef's profile`, values.chefProfile.profile_img);
 
 					if (cuisines && profileImg && bio) {
-						console.log(`conditions are truthy`);
 						values.certifications["Complete Profile"].is_approved = false;
 						values.certifications["Complete Profile"].is_submitted = false;
 					}

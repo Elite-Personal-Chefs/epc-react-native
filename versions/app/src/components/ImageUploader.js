@@ -2,19 +2,11 @@
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
 import React, { useState, useEffect } from "react";
-import {
-	Button,
-	Image,
-	View,
-	Platform,
-	StyleSheet,
-	Dimensions,
-	ActivityIndicator,
-} from "react-native";
+import { Image, View, Platform, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 // OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase } from "../config/config";
 import uuid from "uuid";
 
 // COMPONENTS
@@ -24,7 +16,7 @@ const windowHeight = Dimensions.get("window").height;
 
 //Styles
 import Theme from "../styles/theme.style.js";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
