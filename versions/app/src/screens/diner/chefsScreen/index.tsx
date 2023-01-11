@@ -202,6 +202,9 @@ export default function EventsScreen({ navigation, route }) {
 						<ScrollView style={styles.places} horizontal={true}>
 							{coordinates &&
 								hasChefs.map((item, index) => {
+									let chefProfileImage =
+										item?.chefProfile?.profile_img ||
+										"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
 									return (
 										<TouchableWithoutFeedback
 											key={item.id}
@@ -211,9 +214,10 @@ export default function EventsScreen({ navigation, route }) {
 											<View style={styles.scroller}>
 												<Image
 													source={{
-														uri: item.profile_img,
+														uri: chefProfileImage,
 													}}
 													style={styles.scroller_img}
+													resizeMode='cover'
 												/>
 												<View style={styles.scroller_content}>
 													<View style={styles.upper_content}>
