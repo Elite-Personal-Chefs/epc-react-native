@@ -41,48 +41,11 @@ import { MaterialCommunityIcons, FontAwesome, MaterialIcons, AntDesign } from "@
 /*******************************************************************************/
 export default function AccountScreen({ navigation }) {
 	const appsGlobalContext = useContext(AppContext);
-
-	const uid = appsGlobalContext.userID;
-
+	const { userData: user } = appsGlobalContext;
 	const activeFlow = appsGlobalContext.activeFlow;
-
-	const [profileImg, setProfileImg] = useState(false);
-
-	// const [user,setUserData] = useState(false)
-	const [startDate, setStartDate] = useState("");
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [sectionName, setSectionName] = useState(false);
-
-	/*************************************************************/
-	// EDIT INFO
-	/*************************************************************/
-	const updateProfile = () => {
-		if (sectionName == "phone") {
-			updatePhone();
-		}
-		if (sectionName == "email") {
-			updateEmail();
-		}
-		if (sectionName == "birthday") {
-			updateBirthday();
-		}
-	};
-
-	/*************************************************************/
-	// UPDATE BIRTHDAY
-	/*************************************************************/
-	const [birthday, setNewBirthday] = useState("");
-	const updateBirthday = async () => {
-		const userData = {
-			birthday: birthday,
-		};
-		const usersRef = firebase.firestore().collection(activeFlow);
-		await usersRef.doc(uid).update(userData);
-		//Clean up and refresh profile editing
-		setSectionName(false);
-		setEditProfileSection(false);
-		setDataLoaded(false);
-	};
+	const profileImg =
+		appsGlobalContext?.userData?.chefProfile?.profile_img ||
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
 
 	/*************************************************************/
 	// LOGOUT
@@ -102,9 +65,8 @@ export default function AccountScreen({ navigation }) {
 						console.log("Logging out user");
 						await appsGlobalContext.signOut();
 						console.log("Logged out");
-						// appsGlobalContext.setUserData(null)
-						// appsGlobalContext.setUserID(null)
-						setUserData(null);
+						appsGlobalContext.setUserData(null);
+						appsGlobalContext.setUserID(null);
 					},
 				},
 			],
@@ -133,8 +95,6 @@ export default function AccountScreen({ navigation }) {
 	// ONLY SHOW IF WE HAVE USER
 	/*************************************************************/
 
-	const { userData: user } = appsGlobalContext;
-
 	if (user) {
 		return (
 			<View style={globalStyles.scrollContainer}>
@@ -143,16 +103,7 @@ export default function AccountScreen({ navigation }) {
 						<View style={globalStyles.page}>
 							<View style={styles.profile_header}>
 								<TouchableWithoutFeedback onPress={checkForCount}>
-									{profileImg ? (
-										<Image source={{ uri: profileImg }} style={styles.profile_img} />
-									) : (
-										<Image
-											source={{
-												uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02",
-											}}
-											style={styles.profile_img}
-										/>
-									)}
+									<Image source={{ uri: profileImg }} style={styles.profile_img} />
 								</TouchableWithoutFeedback>
 								<View>
 									<Text style={styles.profile_name}>{user.name}</Text>
@@ -170,19 +121,6 @@ export default function AccountScreen({ navigation }) {
 										copy='Profile'
 										params={user}
 									/>
-									{/* <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' /> */}
-
-									{/*                                
-                                <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
-                                <GoToButton navigation={navigation} navigator="Background Check" copy="Background Check"/>
-
-                                <GoToButton navigation={navigation} navigator="Professional Resume" copy="Professional Resume"/>
-                                <GoToButton navigation={navigation} navigator="Food Handler's License" copy="Food Handler's License"/>
-
-                                <GoToButton navigation={navigation} navigator="Professional Licenses" copy="Professional Licenses"/>
-                                <GoToButton navigation={navigation} navigator="Sanitation Manager License" copy="Sanitation Manager License"/>
-                                <GoToButton navigation={navigation} navigator="Liability Insurance" copy="Liability Insurance"/>
-                                */}
 								</>
 							)}
 							<GoToButton navigation={navigation} navigator='Terms' copy='Terms &amp; Conditions' />
