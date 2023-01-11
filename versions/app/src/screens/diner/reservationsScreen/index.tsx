@@ -38,7 +38,7 @@ export default function ReservationsScreen({ navigation }: any) {
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
 
-	const getDinerEvents = async (uid) => {
+	const getDinerEvents = async (uid: string) => {
 		const events = await getEventsReservedByGuestId(uid);
 		setHasEvents(events);
 		setRefreshing(false);
@@ -70,6 +70,7 @@ export default function ReservationsScreen({ navigation }: any) {
 		let endDate = format(new Date(item.end.seconds * 1000), "MMM do");
 		let endTime = format(new Date(item.end.seconds * 1000), "h:mm a");
 		let location = formatLocation(item.location);
+		let reservationImage = item.photos.at(-1);
 
 		return (
 			<TouchableWithoutFeedback
@@ -86,7 +87,7 @@ export default function ReservationsScreen({ navigation }: any) {
 				}
 			>
 				<View style={styles.navigate_away}>
-					<Image source={{ uri: "../../../assets/event-placeholder.png" }} style={styles.image} />
+					<Image source={{ uri: reservationImage }} style={styles.image} resizeMode='cover' />
 					<View style={styles.navigate_away_content}>
 						<Text style={styles.title}>{item.title}</Text>
 						<Text
@@ -99,11 +100,6 @@ export default function ReservationsScreen({ navigation }: any) {
 							<Text style={styles.name}>
 								{item.chefName ? `Chef ${item.chefName}` : "Chef Name"}
 							</Text>
-							<View style={styles.reviews_and_rating}>
-								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
-								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
-								<Text style={styles.reviews}>(120)</Text>
-							</View>
 						</View>
 						<View style={styles.price_cont}>
 							<Text style={styles.price}>${item.cpp}</Text>
