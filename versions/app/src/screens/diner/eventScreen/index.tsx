@@ -81,15 +81,14 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const renderEvent = ({ item }) => {
-		const image = item.photos
-			? { uri: item.photos[0] }
-			: require("../../../assets/event_placeholder.png");
-
 		let startDateShort = format(item.start, "MMM do");
 		let startTime = format(item.start, "h:mm a");
 		let endDateShort = format(item.end, "MMM do");
 		let endTime = format(item.end, "h:mm a");
 		let location = formatLocation(item.location);
+		let image =
+			item?.photos?.at(-1) ||
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 		return (
 			<TouchableWithoutFeedback
@@ -105,7 +104,7 @@ export default function EventsScreen({ navigation, route }) {
 				}
 			>
 				<View style={styles.navigate_away}>
-					<Image source={image} style={styles.image} />
+					<Image source={{ uri: image }} style={styles.image} />
 					<View style={styles.navigate_away_content}>
 						<Text style={styles.title}>{item.title}</Text>
 						<Text
@@ -117,11 +116,6 @@ export default function EventsScreen({ navigation, route }) {
 					<View style={styles.chef_and_price}>
 						<View>
 							<Text style={styles.name}>{item.chefName ? item.chefName : "Chef Name"}</Text>
-							<View style={styles.reviews_and_rating}>
-								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
-								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
-								<Text style={styles.reviews}>(120)</Text>
-							</View>
 						</View>
 						<View style={styles.price_cont}>
 							<Text style={styles.price}>${item.cpp}</Text>
@@ -219,9 +213,13 @@ export default function EventsScreen({ navigation, route }) {
 						<ScrollView style={styles.places} horizontal={true}>
 							{coordinates &&
 								hasEvents.map((item, index) => {
-									const image = item.photos
-										? { uri: item.photos[0] }
-										: require("../../../assets/event_placeholder.png");
+									let startDateShort = format(item.start, "MMM do");
+									let startTime = format(item.start, "h:mm a");
+									let endDateShort = format(item.end, "MMM do");
+									let endTime = format(item.end, "h:mm a");
+									let image =
+										item?.photos?.at(-1) ||
+										"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 									return (
 										<TouchableWithoutFeedback
 											key={index}
@@ -229,14 +227,16 @@ export default function EventsScreen({ navigation, route }) {
 											onLongPress={() => navigation.navigate("Event Details", { details: item })}
 										>
 											<View style={styles.scroller}>
-												<Image source={image} style={styles.scroller_img} />
+												<Image source={{ uri: image }} style={styles.scroller_img} />
 												<View style={styles.scroller_content}>
 													<View style={styles.upper_content}>
 														<View>
 															<Text style={styles.scroller_title}>{item.title}</Text>
-															<Text style={styles.scroller_date_time}>{item.event_date}</Text>
+															<Text
+																style={styles.scroller_date_time}
+															>{`${startDateShort} - ${endDateShort}`}</Text>
 															<Text style={styles.scroller_date_time}>
-																{item.start_time}-{item.end_time}
+																{startTime}-{endTime}
 															</Text>
 														</View>
 														<View>
@@ -246,15 +246,8 @@ export default function EventsScreen({ navigation, route }) {
 													</View>
 													<View style={styles.lower_content}>
 														<Text style={styles.scroller_name}>
-															{item.chef_name ? item.chef_name : "Chef Name"}
+															{item.chefName ? item.chefName : "Chef Name"}
 														</Text>
-														<View style={styles.reviews_and_rating}>
-															<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
-															<Text style={styles.rating}>
-																{item.chef_rating ? item.chef_rating : "4.8"}
-															</Text>
-															<Text style={styles.reviews}>(120)</Text>
-														</View>
 													</View>
 												</View>
 											</View>
