@@ -356,7 +356,9 @@ export default function CreateMenuScreen({ route, navigation }) {
 												/>
 												<TextInput
 													style={[forms.input]}
-													//multiline={true}
+													multiline={true}
+													minHeight={10}
+													maxHeight={200}
 													textAlignVertical='top'
 													placeholder='Short Description'
 													onChangeText={handleChange("description")}
