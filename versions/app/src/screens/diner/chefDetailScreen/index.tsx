@@ -38,6 +38,12 @@ export default function ChefDetailScreen({ route, navigation }) {
 	const details = route.params.details;
 	const chefID = details.id;
 	const appsGlobalContext = useContext(AppContext);
+	const chefProfileImage =
+		appsGlobalContext?.userData?.chefProfile?.profile_img ||
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
+	const chefProfileBackgroundImage =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-background-image.png?alt=media&token=d73f354e-224c-4fd5-9b8b-7c1b3883ea47";
+
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
@@ -85,23 +91,16 @@ export default function ChefDetailScreen({ route, navigation }) {
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-				{_.has(details, "profile_img") && details.profile_img ? (
-					<Image source={{ uri: details.profile_img }} style={styles.image} />
-				) : (
-					<Image source={require("../../../assets/food_pasta.png")} style={styles.image} />
-				)}
+				<Image
+					source={{ uri: chefProfileBackgroundImage }}
+					style={[styles.image]}
+					resizeMode='contain'
+				/>
 				<View style={styles.content}>
 					<View style={styles.header}>
 						<View style={styles.title}>
 							<Text style={globalStyles.h1}>{details.name}</Text>
 						</View>
-						{/*
-                        <View style={styles.price_cont}>
-                            {_.has(details, 'profile_img')  && details.profile_img &&
-                                <Image source={{ uri: details.profile_img }} style={styles.profile_img} />  
-                            }
-                        </View>
-                        */}
 					</View>
 					<View style={[globalStyles.card, { width: "100%" }]}>
 						<View style={globalStyles.card_header}>
@@ -212,7 +211,7 @@ export default function ChefDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
 	image: {
 		width: windowWidth,
-		height: 260,
+		height: windowHeight * 0.154,
 		backgroundColor: Theme.PRIMARY_COLOR,
 	},
 	content: {
