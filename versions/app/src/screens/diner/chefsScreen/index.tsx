@@ -1,15 +1,13 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext, useEffect, useRef } from "react";
 
 //OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "underscore";
 import MapView, { Marker } from "react-native-maps";
-import { getChefs } from "../data/chef";
+import { getChefs } from "../../../data/chef";
 
 // COMPONENTS
 import {
@@ -24,15 +22,11 @@ import {
 	Alert,
 	ScrollView,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton } from "../components/Button";
-import MenuListing from "../components/MenuListing";
-import { getEndpoint } from "../helpers/helpers";
+import AppContext from "../../../components/AppContext";
 
 // STYLES
-import { globalStyles, TouchableHighlight, footer, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { globalStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
@@ -76,7 +70,6 @@ export default function EventsScreen({ navigation, route }) {
 	};
 
 	const renderChef = ({ item }) => {
-
 		let chefProfileImage =
 			item?.chefProfile?.profile_img ||
 			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
@@ -252,7 +245,7 @@ export default function EventsScreen({ navigation, route }) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../assets/empty_calendar.png")}
+						source={require("../../../assets/empty_calendar.png")}
 					/>
 					<Text style={globalStyles.empty_text}>There are no chefs found</Text>
 				</View>

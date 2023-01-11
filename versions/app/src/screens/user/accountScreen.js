@@ -43,10 +43,13 @@ export default function AccountScreen({ navigation }) {
 	const appsGlobalContext = useContext(AppContext);
 	const { userData: user } = appsGlobalContext;
 	const activeFlow = appsGlobalContext.activeFlow;
-	const profileImg =
+	const chefProfileImage =
 		appsGlobalContext?.userData?.chefProfile?.profile_img ||
 		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
 
+	//! No functionality for guests to upload profile image, this will do for now
+	const guestProfileImage =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/avatar.png?alt=media&token=817424ef-58b8-4058-939c-c8f2bfe25dac";
 	/*************************************************************/
 	// LOGOUT
 	/*************************************************************/
@@ -103,7 +106,11 @@ export default function AccountScreen({ navigation }) {
 						<View style={globalStyles.page}>
 							<View style={styles.profile_header}>
 								<TouchableWithoutFeedback onPress={checkForCount}>
-									<Image source={{ uri: profileImg }} style={styles.profile_img} />
+									{activeFlow == "chefs" ? (
+										<Image source={{ uri: chefProfileImage }} style={styles.profile_img} />
+									) : (
+										<Image source={{ uri: guestProfileImage }} style={styles.profile_img} />
+									)}
 								</TouchableWithoutFeedback>
 								<View>
 									<Text style={styles.profile_name}>{user.name}</Text>

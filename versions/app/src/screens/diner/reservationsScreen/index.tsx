@@ -17,12 +17,12 @@ import {
 	TouchableWithoutFeedback,
 	RefreshControl,
 } from "react-native";
-import AppContext from "../../../../components/AppContext";
-import { getEventsReservedByGuestId } from "../../../../data/event";
+import AppContext from "../../../components/AppContext";
+import { getEventsReservedByGuestId } from "../../../data/event";
 
 // STYLES
-import { globalStyles } from "../../../../styles/styles";
-import Theme from "../../../../styles/theme.style.js";
+import { globalStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { FontAwesome } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -86,10 +86,7 @@ export default function ReservationsScreen({ navigation }: any) {
 				}
 			>
 				<View style={styles.navigate_away}>
-					<Image
-						source={{ uri: "../../../../assets/event-placeholder.png" }}
-						style={styles.image}
-					/>
+					<Image source={{ uri: "../../../assets/event-placeholder.png" }} style={styles.image} />
 					<View style={styles.navigate_away_content}>
 						<Text style={styles.title}>{item.title}</Text>
 						<Text
@@ -133,7 +130,7 @@ export default function ReservationsScreen({ navigation }: any) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../../../../assets/empty_calendar.png")}
+						source={require("../../../assets/empty_calendar.png")}
 					/>
 					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>

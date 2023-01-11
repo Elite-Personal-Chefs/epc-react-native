@@ -20,20 +20,20 @@ import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
-import { firebase } from "../../../../config/config";
+import { firebase } from "../../../config/config";
 import _ from "underscore";
 
 // COMPONENTS
-import AppContext from "../../../../components/AppContext";
-import { CustomButton } from "../../../../components/Button";
+import AppContext from "../../../components/AppContext";
+import { CustomButton } from "../../../components/Button";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../../data/event";
-import Event from "../../../../models/event";
+import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../data/event";
+import Event from "../../../models/event";
 
 // STYLES
-import { globalStyles, eventGlobalStyles, menusStyles } from "../../../../styles/styles";
-import Theme from "../../../../styles/theme.style.js";
+import { globalStyles, eventGlobalStyles, menusStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { AntDesign, MaterialIcons, FontAwesome5, Entypo } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -138,7 +138,7 @@ export default function ResrvationsDetailScreen({ route }: any) {
 				//Using ES-2022 Array.at() to get last item in array
 				setEventImg({ uri: details.photos.at(-1) });
 			} else {
-				setEventImg(require("../../../../assets/event_placeholder.png"));
+				setEventImg(require("../../../assets/event_placeholder.png"));
 			}
 
 			getEventDetails();
