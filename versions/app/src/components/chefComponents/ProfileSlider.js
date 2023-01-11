@@ -259,8 +259,8 @@ export default function ProfileSlider({ handleFormUpdates, userData }) {
 					if (profileImg) values.chefProfile.profile_img = profileImg;
 
 					if (cuisines && profileImg && bio) {
-						values.certifications["Complete Profile"].is_approved = false;
-						values.certifications["Complete Profile"].is_submitted = false;
+						values.certifications["Complete Profile"].is_approved = true;
+						values.certifications["Complete Profile"].is_submitted = true;
 					}
 
 					//UPDATE CHEF OBJECT IN FIREBASE
