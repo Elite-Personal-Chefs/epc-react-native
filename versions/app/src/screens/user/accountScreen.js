@@ -7,10 +7,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../config/config";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import Constants from "expo-constants";
 import _ from "underscore";
+import { getUserData } from "../../data/user";
 
 // COMPONENTS
 import {
@@ -24,57 +25,33 @@ import {
 	Alert,
 	Image,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton, GoToButton } from "../components/Button";
-import { convertTimestamp } from "../helpers/helpers";
+import AppContext from "../../components/AppContext";
+import { CustomButton, GoToButton } from "../../components/Button";
+import { convertTimestamp } from "../../helpers/helpers";
 import { TextInputMask, TextMask } from "react-native-masked-text";
-import { getEndpoint } from "../helpers/helpers";
+import { getEndpoint } from "../../helpers/helpers";
 
 // STYLES
-import { globalStyles, forms, modal } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, forms, modal } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import { MaterialCommunityIcons, FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function AccountScreen({ navigation }) {
-	//Get global vars from app context
 	const appsGlobalContext = useContext(AppContext);
+
 	const uid = appsGlobalContext.userID;
+
 	const activeFlow = appsGlobalContext.activeFlow;
+
 	const [profileImg, setProfileImg] = useState(false);
-	console.log("Account UID", uid + " " + activeFlow);
+
 	// const [user,setUserData] = useState(false)
 	const [startDate, setStartDate] = useState("");
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [sectionName, setSectionName] = useState(false);
-
-	/*************************************************************/
-	// GET USER DATA TO RENDER PAGE WITH
-	/*************************************************************/
-	// const getUserData = async (uid) => {
-	//     console.log("Account Screen Active Flow", activeFlow)
-	//     const usersRef = firebase.firestore().collection(activeFlow);
-	//     const firebaseUser = await usersRef.doc(uid).get();
-	//     console.log("Finding user: "+activeFlow+" UID: "+uid)
-	//     if (firebaseUser.exists) {
-	//         let userData = firebaseUser.data()
-	//         let userDate = convertTimestamp(userData.createdAt)
-
-	//         //Set user data throughout page
-	//         setUserData(userData);
-	//         setStartDate(userDate[0])
-	//         setDataLoaded(true)
-	//     }
-	//     else{
-	//         console.log("No user found")
-	//     }
-	// }
-
-	// if(!dataLoaded){
-	//     getUserData(uid)
-	// }
 
 	/*************************************************************/
 	// EDIT INFO
@@ -158,13 +135,6 @@ export default function AccountScreen({ navigation }) {
 
 	const { userData: user } = appsGlobalContext;
 
-	useEffect(() => {
-		//! This is not updating properly
-		if (_.has(user, "chefProfile.profile_img")) {
-			setProfileImg(user.chefProfile.profile_img);
-		}
-	}, [user]);
-
 	if (user) {
 		return (
 			<View style={globalStyles.scrollContainer}>
@@ -176,11 +146,11 @@ export default function AccountScreen({ navigation }) {
 									{profileImg ? (
 										<Image source={{ uri: profileImg }} style={styles.profile_img} />
 									) : (
-										<MaterialIcons
-											name='person'
-											size={60}
-											color={Theme.SECONDARY_COLOR}
-											style={styles.person_icon}
+										<Image
+											source={{
+												uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02",
+											}}
+											style={styles.profile_img}
 										/>
 									)}
 								</TouchableWithoutFeedback>
