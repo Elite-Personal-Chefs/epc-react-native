@@ -44,6 +44,8 @@ import {
 /*******************************************************************************/
 
 export default function CreateMenuScreen({ route, navigation }) {
+	console.log("route", route);
+
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const [modalVisible, setModalVisible] = useState(false);
@@ -260,7 +262,9 @@ export default function CreateMenuScreen({ route, navigation }) {
 	/***********************************************/
 	// PHOTO MODE
 	/***********************************************/
-	const [menuImg, setMenuImg] = useState(route.params ? route.params.photo.uri : null);
+	console.log(`\n route ${JSON.stringify(route)}\n`);
+
+	const [menuImg, setMenuImg] = useState(route?.params ? route?.params?.photo : null);
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);
 		setMenuImg(url);
@@ -301,7 +305,8 @@ export default function CreateMenuScreen({ route, navigation }) {
 									</Text>
 								) : (
 									<Text style={[globalStyles.subtitle, styles.subtitle_text]}>
-										Update your photos or click continue to publish your menu.
+										Update your photos by clicking the pencil or click continue to publish your
+										menu.
 									</Text>
 								)}
 								<View style={{ paddingVertical: 20 }}>

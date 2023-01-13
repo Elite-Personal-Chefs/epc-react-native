@@ -34,8 +34,8 @@ export default function ReservationsScreen({ navigation }: any) {
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
-	const emptyReservationImage =
-		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty_calendar.png?alt=media&token=ab0341fc-0393-4c08-82e9-f78ad2fc7026";
+	// let emptyReservationImage =
+	// 	"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty_calendar.png?alt=media&token=ab0341fc-0393-4c08-82e9-f78ad2fc7026";
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
@@ -128,7 +128,12 @@ export default function ReservationsScreen({ navigation }: any) {
 				</View>
 			) : (
 				<View style={globalStyles.empty_state}>
-					<Image style={globalStyles.empty_image} source={{ uri: emptyReservationImage }} />
+					<Image
+						style={globalStyles.empty_image}
+						// source={{ uri: emptyReservationImage }}
+						source={require("../../../assets/empty_calendar.png")}
+						resizeMode='contain'
+					/>
 					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>
 			)}
