@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { getEventsByChefId } from "../../../data/event";
 import { getEventTemplates } from "../../../data/eventTemplates";
+import _ from "underscore";
 
 // COMPONENTS
 import { View } from "react-native";
@@ -46,11 +47,11 @@ export default function ChefEventScreen({ navigation, route }) {
 				try {
 					const events = await getEventsByChefId(uid);
 
-					if (events) {
+					console.log("events", events);
+
+					if (!_.isEmpty(events)) {
 						//&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
-						setEvents(
-							events.transactions ? events.transactions : events
-						);
+						setEvents(events.transactions ? events.transactions : events);
 					} else {
 						setEvents(null);
 						console.log("No events found for you");

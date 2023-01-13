@@ -63,7 +63,8 @@ export default function EventDetailScreen({
 
 	const userEmail = appsGlobalContext.userData.email;
 	const routeParams = route.params.event;
-	const placeholderImg = require("../../../assets/food_pasta.png");
+	const placeholderImg =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 	const [reservations, setReservations] = useState<Reservation[] | null>();
 	const [menuItems, setMenuItems] = useState();
@@ -92,8 +93,6 @@ export default function EventDetailScreen({
 		const firestore = firebase.firestore();
 		let menuRef;
 		let menuDoc;
-
-		console.debug("Event", event)
 
 		menuRef = firestore
 			.collection("chefs")
@@ -176,20 +175,18 @@ export default function EventDetailScreen({
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			console.log("Passed in ID", routeParams.id);
-
 			getReservations(routeParams.id);
 			getEventDetails();
 		}, [])
 	);
 
-	const eventPhoto = eventDetails?.photos ? eventDetails.photos[0] : placeholderImg;
+	const eventPhoto = eventDetails?.photos?.at(-1) || placeholderImg;
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					<Image source={eventPhoto} style={styles.image} />
+					<Image source={{ uri: eventPhoto }} style={styles.image} />
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
