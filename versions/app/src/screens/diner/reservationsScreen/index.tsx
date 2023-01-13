@@ -34,6 +34,8 @@ export default function ReservationsScreen({ navigation }: any) {
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
+	const emptyReservationImage =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty_calendar.png?alt=media&token=ab0341fc-0393-4c08-82e9-f78ad2fc7026";
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
@@ -70,7 +72,9 @@ export default function ReservationsScreen({ navigation }: any) {
 		let endDate = format(new Date(item.end.seconds * 1000), "MMM do");
 		let endTime = format(new Date(item.end.seconds * 1000), "h:mm a");
 		let location = formatLocation(item.location);
-		let reservationImage = item.photos.at(-1);
+		let reservationImage =
+			item?.photos?.at(-1) ||
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 		return (
 			<TouchableWithoutFeedback
@@ -124,10 +128,7 @@ export default function ReservationsScreen({ navigation }: any) {
 				</View>
 			) : (
 				<View style={globalStyles.empty_state}>
-					<Image
-						style={globalStyles.empty_image}
-						source={require("../../../assets/empty_calendar.png")}
-					/>
+					<Image style={globalStyles.empty_image} source={{ uri: emptyReservationImage }} />
 					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>
 			)}
