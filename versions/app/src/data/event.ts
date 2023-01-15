@@ -33,7 +33,7 @@ const createEvent = async (eventData: Event): Promise<Event> => {
 
 	const newEventSnap = await eventCollection.add(eventData);
 	const newEvent = await newEventSnap.get();
-	return newEvent.data as Event;
+	return newEvent.data() as Event;
 };
 
 const getEventById = async (eventId: string): Promise<Event> => {

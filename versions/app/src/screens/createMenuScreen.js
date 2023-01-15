@@ -44,8 +44,6 @@ import {
 /*******************************************************************************/
 
 export default function CreateMenuScreen({ route, navigation }) {
-	console.log("route", route);
-
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const [modalVisible, setModalVisible] = useState(false);
@@ -262,8 +260,6 @@ export default function CreateMenuScreen({ route, navigation }) {
 	/***********************************************/
 	// PHOTO MODE
 	/***********************************************/
-	console.log(`\n route ${JSON.stringify(route)}\n`);
-
 	const [menuImg, setMenuImg] = useState(route?.params ? route?.params?.photo : null);
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);

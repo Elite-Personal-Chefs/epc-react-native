@@ -38,12 +38,7 @@ const windowHeight = Dimensions.get("window").height;
 
 // STYLES
 import { globalStyles, forms } from "../../../styles/styles";
-import {
-	MaterialCommunityIcons,
-	MaterialIcons,
-	Fontisto,
-	Entypo,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
 import Theme from "../../../styles/theme.style.js";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
@@ -64,7 +59,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 
 	//* FOR Menu DROPDOWN PICKER
 	const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
-	const [menusList, setMenusList] = useState([]);
+	const [menusList, setMenusList] = useState<{ label: string; value: string }[]>([]);
 	const [currentMenuID, setCurrentMenuID] = useState(
 		route?.params?.details?.menu_template_id || null
 	);
@@ -77,7 +72,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	const getCurrentLocation = async () => {
 		let { status } = await Location.requestForegroundPermissionsAsync();
 		if (status !== "granted") {
-			console.log("Permission to access location was denied");
 		}
 		let location = await Location.getLastKnownPositionAsync();
 	};
@@ -172,13 +166,12 @@ export default function CreateEventScreen({ route, navigation }: any) {
 			.collection("menus")
 			.get();
 		if (!menusRef.empty) {
-			let menus = [];
+			let menus: { label: string; value: string }[] = [];
 			menusRef.forEach((doc) => {
 				let menu = doc.data();
 				menus.push({ label: menu.title, value: doc.id });
 			});
 			setMenusList(menus);
-			//console.log("menusList", menus);
 		} else {
 			console.log("No menus found");
 		}
@@ -188,19 +181,13 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	//
 	/***********************************************/
 	const addEvent = async (values: any) => {
-		console.log(`\n👹👹👹 values ${JSON.stringify(values)} \n`);
 		const chef = appsGlobalContext.userData;
 		values.chefName = chef.name;
 
-		console.log(`\n eventID ${eventID} \n`);
-
 		if (eventID) {
-			console.log(`\n updating an event \n`);
 			await updateEvent(eventID, values);
 		} else {
-			console.log(`\n creating a new event with these values ${JSON.stringify(values)} \n`);
 			const newEvent = await createEvent(values);
-			console.log(`\n newEvent ${JSON.stringify(newEvent)} \n`);
 			setEventID(newEvent.id);
 		}
 
@@ -267,14 +254,13 @@ export default function CreateEventScreen({ route, navigation }: any) {
 								cpp: eventDetails?.cpp || "",
 								menuId: eventDetails?.menuId || "",
 							}}
-							onSubmit={(values: any) => {
+							onSubmit={async (values: any) => {
 								setSubmitDisabled(false);
 								values.chefId = uid;
 								values.start = start;
 								values.end = end;
 								values.location = eventLocation;
-								console.log(`\n values in onSubmit ${JSON.stringify(values)} \n`);
-								addEvent(values);
+								await addEvent(values);
 							}}
 						>
 							{({
@@ -570,7 +556,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											listViewDisplayed={true} // true/false/undefined
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
-												//console.log(data, details);
 												setEventLocation(data.description);
 											}}
 											placeholder='Locations'
@@ -615,18 +600,15 @@ export default function CreateEventScreen({ route, navigation }: any) {
 									<DropDownPicker
 										zIndex={1000}
 										open={menuDropdownOpen}
-										value={eventDetails?.menuId}
+										value={values.menuId}
 										items={menusList}
 										setOpen={setMenuDropdownOpen}
-										setValue={(value) => {
-											console.log("Dropdown Value", value());
-											setEventDetails({ ...eventDetails, menuId: value() });
+										setValue={(callback) => {
+											// setEventDetails({ ...eventDetails, menuId: value });
+											setFieldValue("menuId", callback(values.menuId), false);
 										}}
 										closeAfterSelecting={true}
 										itemSeparator={true}
-										onChangeValue={(value) => {
-											setFieldValue("menuId", value, false);
-										}}
 										placeholder='Select a Menu'
 										placeholderStyle={{
 											color: Theme.FAINT,
