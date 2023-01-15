@@ -38,12 +38,7 @@ const windowHeight = Dimensions.get("window").height;
 
 // STYLES
 import { globalStyles, forms } from "../../../styles/styles";
-import {
-	MaterialCommunityIcons,
-	MaterialIcons,
-	Fontisto,
-	Entypo,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
 import Theme from "../../../styles/theme.style.js";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
@@ -64,24 +59,19 @@ export default function CreateEventScreen({ route, navigation }: any) {
 
 	//* FOR Menu DROPDOWN PICKER
 	const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
-	const [menusList, setMenusList] = useState([]);
+	const [menusList, setMenusList] = useState<{ label: string; value: string }[]>([]);
 	const [currentMenuID, setCurrentMenuID] = useState(
 		route?.params?.details?.menu_template_id || null
 	);
 
 	const [eventDetails, setEventDetails] = useState(route?.params?.details);
-
-	console.log("details:", eventDetails);
-
 	const eventRef = useRef();
 	const [eventLocation, setEventLocation] = useState(eventDetails?.location || "");
 	const [eventID, setEventID] = useState(eventDetails?.id || null);
 
 	const getCurrentLocation = async () => {
-		console.log("Getting location");
 		let { status } = await Location.requestForegroundPermissionsAsync();
 		if (status !== "granted") {
-			console.log("Permission to access location was denied");
 		}
 		let location = await Location.getLastKnownPositionAsync();
 	};
@@ -100,6 +90,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	/***********************************************/
 	//! DATE PICKER
 	/***********************************************/
+
 	// ===START DATE STATES===
 	const [start, setStart] = useState(eventDetails?.start || new Date());
 
@@ -125,8 +116,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	};
 
 	const handleStartTimeConfirm = (time: Date) => {
-		console.log(`in handleStartTimeConfirm: ${time}`);
-
 		const newDate = set(start, {
 			hours: time.getHours(),
 			minutes: time.getMinutes(),
@@ -137,7 +126,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 
 	// ===END DATE STATES===
 	const [end, setEnd] = useState(eventDetails?.end || new Date());
-
 	const [showEndDate, setShowEndDate] = useState(false);
 	const displayEndDate = () => setShowEndDate(true);
 	const hideEndDate = () => setShowEndDate(false);
@@ -154,14 +142,11 @@ export default function CreateEventScreen({ route, navigation }: any) {
 			month: date.getMonth(),
 			year: date.getFullYear(),
 		});
-
 		setEnd(newDate);
 		hideEndDate();
 	};
 
 	const handleEndTimeConfirm = (time: Date) => {
-		console.log(`in handleEndTimeConfirm: ${time}`);
-
 		const newDate = set(end, {
 			hours: time.getHours(),
 			minutes: time.getMinutes(),
@@ -174,8 +159,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	//
 	/***********************************************/
 	const getMenus = async (uid: string) => {
-		console.debug("User Id for getting menus", uid);
-
 		const menusRef = await firebase
 			.firestore()
 			.collection("chefs")
@@ -183,13 +166,12 @@ export default function CreateEventScreen({ route, navigation }: any) {
 			.collection("menus")
 			.get();
 		if (!menusRef.empty) {
-			let menus = [];
+			let menus: { label: string; value: string }[] = [];
 			menusRef.forEach((doc) => {
 				let menu = doc.data();
 				menus.push({ label: menu.title, value: doc.id });
 			});
 			setMenusList(menus);
-			//console.log("menusList", menus);
 		} else {
 			console.log("No menus found");
 		}
@@ -199,23 +181,13 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	//
 	/***********************************************/
 	const addEvent = async (values: any) => {
-		console.log(`values`, values);
-
-		//Add in details about chef
 		const chef = appsGlobalContext.userData;
-
 		values.chefName = chef.name;
 
-		//If details were passed then we are updating not creating
-		//console.log(`details`, details);
-		if (eventDetails.id) {
-			console.log("Updating experience", values);
+		if (eventID) {
 			await updateEvent(eventID, values);
 		} else {
-			console.log("Creating experience", values);
 			const newEvent = await createEvent(values);
-			console.log("Snapshot", JSON.stringify(newEvent, null, 2));
-			console.log("New Event ID", newEvent.id);
 			setEventID(newEvent.id);
 		}
 
@@ -229,7 +201,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 	const [isPhotoMode, setPhotoMode] = useState(false);
 	const [eventImg, setEventImg] = useState<string>(); //useState((route.params) ? route.params.photo : null)
 	const getImageUrl = async (url: string) => {
-		console.log("Got the image", url);
 		setEventImg(url);
 	};
 
@@ -264,7 +235,11 @@ export default function CreateEventScreen({ route, navigation }: any) {
 								<ImageUploader currentImg={eventImg} getImageUrl={getImageUrl} shape='rectangle' />
 							</View>
 							{eventImg && (
-								<CustomButton size='big' onPress={() => addPhotoToEvent()} text='Submit Photo' />
+								<CustomButton
+									size='big'
+									onPress={() => addPhotoToEvent(eventImg)}
+									text='Submit Photo'
+								/>
 							)}
 						</ScrollView>
 					</View>
@@ -279,24 +254,14 @@ export default function CreateEventScreen({ route, navigation }: any) {
 								cpp: eventDetails?.cpp || "",
 								menuId: eventDetails?.menuId || "",
 							}}
-							onSubmit={(values: any) => {
+							onSubmit={async (values: any) => {
 								setSubmitDisabled(false);
 								values.chefId = uid;
 								values.start = start;
 								values.end = end;
-
-								// console.log(`😈 values.start`, values.start);
-								// console.log(`😈 values.end`, values.end);
-
 								values.location = eventLocation;
-
-								console.log("Creating this event", values);
-								addEvent(values);
-								//	(values);
+								await addEvent(values);
 							}}
-							validationSchema={yup.object().shape({
-								//name: yup.string().required('Please, provide your name!'),
-							})}
 						>
 							{({
 								values,
@@ -308,7 +273,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 								handleSubmit,
 							}) => (
 								<>
-									{/* //!Event Title */}
+									{/* TITLE */}
 									<View
 										style={[
 											forms.create_event_input_container,
@@ -324,14 +289,12 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											]}
 										/>
 										<TextInput
-											name='title'
 											value={values.title}
 											style={forms.custom_input}
 											placeholder='Event Title'
 											onChangeText={handleChange("title")}
 											onBlur={handleBlur("title")}
 											onFocus={() => setFocusName("title")}
-											setFocus={focusName}
 											placeholderTextColor={Theme.FAINT}
 											underlineColorAndroid='transparent'
 											autoCapitalize='none'
@@ -339,7 +302,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										/>
 									</View>
 
-									{/* //!Event Description */}
+									{/* DESCRIPTION */}
 									<View
 										style={[
 											forms.create_event_input_container,
@@ -360,7 +323,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											]}
 										/>
 										<TextInput
-											name='description'
 											value={values.description}
 											style={[
 												forms.custom_input,
@@ -373,7 +335,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											onChangeText={handleChange("description")}
 											onBlur={handleBlur("description")}
 											onFocus={() => setFocusName("description")}
-											setFocus={focusName}
 											multiline={true}
 											numberOfLines={3}
 											placeholderTextColor={Theme.FAINT}
@@ -383,7 +344,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										/>
 									</View>
 
-									{/* //!Event Start Date */}
+									{/* START DATE */}
 									<Pressable style={[forms.input_container_center]} onPress={displayStartDate}>
 										<View
 											style={[
@@ -424,7 +385,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										</View>
 									</Pressable>
 
-									{/* //!Event Start Time */}
+									{/* START TIME */}
 									<TouchableNativeFeedback onPress={displayStartTime}>
 										<View
 											style={[
@@ -477,7 +438,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										</View>
 									</TouchableNativeFeedback>
 
-									{/* //* END DATE */}
+									{/* END DATE */}
 									<Pressable style={forms.input_container_center} onPress={displayEndDate}>
 										<View
 											style={[
@@ -518,7 +479,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										</View>
 									</Pressable>
 
-									{/* //* END TIME */}
+									{/* END TIME */}
 									<TouchableNativeFeedback onPress={displayEndTime}>
 										<View
 											style={[
@@ -570,7 +531,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										</View>
 									</TouchableNativeFeedback>
 
-									{/* //! Event Location */}
+									{/* LOCATION */}
 									<View
 										style={[
 											forms.create_event_input_container,
@@ -595,7 +556,6 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											listViewDisplayed={true} // true/false/undefined
 											onPress={(data, details = null) => {
 												// 'details' is provided when fetchDetails = true
-												//console.log(data, details);
 												setEventLocation(data.description);
 											}}
 											placeholder='Locations'
@@ -636,21 +596,19 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										Exact location will only be revealed after completed purchase.
 									</Text>
 
+									{/* MENU */}
 									<DropDownPicker
 										zIndex={1000}
 										open={menuDropdownOpen}
-										value={eventDetails?.menuId}
+										value={values.menuId}
 										items={menusList}
 										setOpen={setMenuDropdownOpen}
-										setValue={(value) => {
-											console.log("Dropdown Value", value());
-											setEventDetails({ ...eventDetails, menuId: value() });
+										setValue={(callback) => {
+											// setEventDetails({ ...eventDetails, menuId: value });
+											setFieldValue("menuId", callback(values.menuId), false);
 										}}
 										closeAfterSelecting={true}
 										itemSeparator={true}
-										onChangeValue={(value) => {
-											setFieldValue("menuId", value, false);
-										}}
 										placeholder='Select a Menu'
 										placeholderStyle={{
 											color: Theme.FAINT,
@@ -676,6 +634,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										}}
 									/>
 
+									{/* GUEST CAPACITY */}
 									<View style={forms.small_input_container}>
 										<View
 											style={[
@@ -707,6 +666,8 @@ export default function CreateEventScreen({ route, navigation }: any) {
 												keyboardType='default'
 											/>
 										</View>
+
+										{/* COST PER PERSON */}
 										<View
 											style={[
 												forms.create_event_input_container,
@@ -743,6 +704,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										</View>
 									</View>
 
+									{/* PRE-SERVICE MESSAGE */}
 									<Text
 										style={{
 											paddingLeft: 5,
@@ -798,6 +760,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 											keyboardType='default'
 										/>
 									</View>
+
 									<Text
 										style={[
 											globalStyles.subtitle,
@@ -814,6 +777,7 @@ export default function CreateEventScreen({ route, navigation }: any) {
 										appointment.
 									</Text>
 
+									{/* POST-SERVICE MESSAGE */}
 									<Text
 										style={{
 											paddingLeft: 5,

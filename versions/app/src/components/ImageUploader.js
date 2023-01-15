@@ -2,19 +2,11 @@
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
 import React, { useState, useEffect } from "react";
-import {
-	Button,
-	Image,
-	View,
-	Platform,
-	StyleSheet,
-	Dimensions,
-	ActivityIndicator,
-} from "react-native";
+import { Image, View, Platform, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 // OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase } from "../config/config";
 import uuid from "uuid";
 
 // COMPONENTS
@@ -24,34 +16,37 @@ const windowHeight = Dimensions.get("window").height;
 
 //Styles
 import Theme from "../styles/theme.style.js";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
 export default function ImageUploader({ currentImg, getImageUrl, shape = "rectangle" }) {
-	console.log("HAs current image", currentImg);
+
 	const [image, setImage] = currentImg ? useState(currentImg) : useState(false);
 	const [loadingImage, setLoadingImage] = useState(false);
 
 	const pickImage = async () => {
 		setLoadingImage(true);
-		console.log("Loading image");
+
 		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
 			aspect: [4, 3],
 			quality: 1,
 		});
+
 		if (!result.cancelled) {
 			const uploadUrl = await uploadImageAsync(result.uri);
-			console.log("DownloadedURL", uploadUrl);
+
+			// Set the image on the ProfileSlider render
 			getImageUrl(uploadUrl);
-			setImage(uploadUrl); //result.uri
+
+			// Set the image on the ImageUploader render
+			setImage(uploadUrl);
 		}
 		setLoadingImage(false);
-		console.log("image loaded");
 	};
 
 	async function uploadImageAsync(uri) {

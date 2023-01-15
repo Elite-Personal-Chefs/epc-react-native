@@ -260,7 +260,7 @@ export default function CreateMenuScreen({ route, navigation }) {
 	/***********************************************/
 	// PHOTO MODE
 	/***********************************************/
-	const [menuImg, setMenuImg] = useState(route.params ? route.params.photo.uri : null);
+	const [menuImg, setMenuImg] = useState(route?.params ? route?.params?.photo : null);
 	const getImageUrl = async (url) => {
 		console.log("Got the image", url);
 		setMenuImg(url);
@@ -301,7 +301,8 @@ export default function CreateMenuScreen({ route, navigation }) {
 									</Text>
 								) : (
 									<Text style={[globalStyles.subtitle, styles.subtitle_text]}>
-										Update your photos or click continue to publish your menu.
+										Update your photos by clicking the pencil or click continue to publish your
+										menu.
 									</Text>
 								)}
 								<View style={{ paddingVertical: 20 }}>
@@ -356,7 +357,9 @@ export default function CreateMenuScreen({ route, navigation }) {
 												/>
 												<TextInput
 													style={[forms.input]}
-													//multiline={true}
+													multiline={true}
+													minHeight={10}
+													maxHeight={200}
 													textAlignVertical='top'
 													placeholder='Short Description'
 													onChangeText={handleChange("description")}

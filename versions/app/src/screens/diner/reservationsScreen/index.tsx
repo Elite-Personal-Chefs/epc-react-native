@@ -17,12 +17,12 @@ import {
 	TouchableWithoutFeedback,
 	RefreshControl,
 } from "react-native";
-import AppContext from "../../../../components/AppContext";
-import { getEventsReservedByGuestId } from "../../../../data/event";
+import AppContext from "../../../components/AppContext";
+import { getEventsReservedByGuestId } from "../../../data/event";
 
 // STYLES
-import { globalStyles } from "../../../../styles/styles";
-import Theme from "../../../../styles/theme.style.js";
+import { globalStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { FontAwesome } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -34,11 +34,13 @@ export default function ReservationsScreen({ navigation }: any) {
 	const uid = appsGlobalContext.userID;
 	const user = appsGlobalContext.userData;
 	const activeFlow = appsGlobalContext.activeFlow;
+	// let emptyReservationImage =
+	// 	"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/empty_calendar.png?alt=media&token=ab0341fc-0393-4c08-82e9-f78ad2fc7026";
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [hasEvents, setHasEvents] = useState(null);
 
-	const getDinerEvents = async (uid) => {
+	const getDinerEvents = async (uid: string) => {
 		const events = await getEventsReservedByGuestId(uid);
 		setHasEvents(events);
 		setRefreshing(false);
@@ -70,6 +72,9 @@ export default function ReservationsScreen({ navigation }: any) {
 		let endDate = format(new Date(item.end.seconds * 1000), "MMM do");
 		let endTime = format(new Date(item.end.seconds * 1000), "h:mm a");
 		let location = formatLocation(item.location);
+		let reservationImage =
+			item?.photos?.at(-1) ||
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 		return (
 			<TouchableWithoutFeedback
@@ -86,10 +91,7 @@ export default function ReservationsScreen({ navigation }: any) {
 				}
 			>
 				<View style={styles.navigate_away}>
-					<Image
-						source={{ uri: "../../../../assets/event-placeholder.png" }}
-						style={styles.image}
-					/>
+					<Image source={{ uri: reservationImage }} style={styles.image} resizeMode='cover' />
 					<View style={styles.navigate_away_content}>
 						<Text style={styles.title}>{item.title}</Text>
 						<Text
@@ -102,11 +104,6 @@ export default function ReservationsScreen({ navigation }: any) {
 							<Text style={styles.name}>
 								{item.chefName ? `Chef ${item.chefName}` : "Chef Name"}
 							</Text>
-							<View style={styles.reviews_and_rating}>
-								<FontAwesome name='star' size={12} color={Theme.SECONDARY_COLOR} />
-								<Text style={styles.rating}>{item.chef_rating ? item.chef_rating : "4.8"}</Text>
-								<Text style={styles.reviews}>(120)</Text>
-							</View>
 						</View>
 						<View style={styles.price_cont}>
 							<Text style={styles.price}>${item.cpp}</Text>
@@ -133,7 +130,9 @@ export default function ReservationsScreen({ navigation }: any) {
 				<View style={globalStyles.empty_state}>
 					<Image
 						style={globalStyles.empty_image}
-						source={require("../../../../assets/empty_calendar.png")}
+						// source={{ uri: emptyReservationImage }}
+						source={require("../../../assets/empty_calendar.png")}
+						resizeMode='contain'
 					/>
 					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
 				</View>

@@ -7,10 +7,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // OTHER DEPENDENCIES
-import { firebase, configKeys } from "../config/config";
+import { firebase, configKeys } from "../../config/config";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import Constants from "expo-constants";
 import _ from "underscore";
+import { getUserData } from "../../data/user";
 
 // COMPONENTS
 import {
@@ -24,89 +25,31 @@ import {
 	Alert,
 	Image,
 } from "react-native";
-import AppContext from "../components/AppContext";
-import { CustomButton, GoToButton } from "../components/Button";
-import { convertTimestamp } from "../helpers/helpers";
+import AppContext from "../../components/AppContext";
+import { CustomButton, GoToButton } from "../../components/Button";
+import { convertTimestamp } from "../../helpers/helpers";
 import { TextInputMask, TextMask } from "react-native-masked-text";
-import { getEndpoint } from "../helpers/helpers";
+import { getEndpoint } from "../../helpers/helpers";
 
 // STYLES
-import { globalStyles, forms, modal } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, forms, modal } from "../../styles/styles";
+import Theme from "../../styles/theme.style.js";
 import { MaterialCommunityIcons, FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 /*******************************************************************************/
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 export default function AccountScreen({ navigation }) {
-	//Get global vars from app context
 	const appsGlobalContext = useContext(AppContext);
-	const uid = appsGlobalContext.userID;
+	const { userData: user } = appsGlobalContext;
 	const activeFlow = appsGlobalContext.activeFlow;
-	const [profileImg, setProfileImg] = useState(false);
-	console.log("Account UID", uid + " " + activeFlow);
-	// const [user,setUserData] = useState(false)
-	const [startDate, setStartDate] = useState("");
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [sectionName, setSectionName] = useState(false);
+	const chefProfileImage =
+		appsGlobalContext?.userData?.chefProfile?.profile_img ||
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/chef-profile-image.png?alt=media&token=9f36f533-3c82-48d5-8a5e-f4ea0636dd02";
 
-	/*************************************************************/
-	// GET USER DATA TO RENDER PAGE WITH
-	/*************************************************************/
-	// const getUserData = async (uid) => {
-	//     console.log("Account Screen Active Flow", activeFlow)
-	//     const usersRef = firebase.firestore().collection(activeFlow);
-	//     const firebaseUser = await usersRef.doc(uid).get();
-	//     console.log("Finding user: "+activeFlow+" UID: "+uid)
-	//     if (firebaseUser.exists) {
-	//         let userData = firebaseUser.data()
-	//         let userDate = convertTimestamp(userData.createdAt)
-
-	//         //Set user data throughout page
-	//         setUserData(userData);
-	//         setStartDate(userDate[0])
-	//         setDataLoaded(true)
-	//     }
-	//     else{
-	//         console.log("No user found")
-	//     }
-	// }
-
-	// if(!dataLoaded){
-	//     getUserData(uid)
-	// }
-
-	/*************************************************************/
-	// EDIT INFO
-	/*************************************************************/
-	const updateProfile = () => {
-		if (sectionName == "phone") {
-			updatePhone();
-		}
-		if (sectionName == "email") {
-			updateEmail();
-		}
-		if (sectionName == "birthday") {
-			updateBirthday();
-		}
-	};
-
-	/*************************************************************/
-	// UPDATE BIRTHDAY
-	/*************************************************************/
-	const [birthday, setNewBirthday] = useState("");
-	const updateBirthday = async () => {
-		const userData = {
-			birthday: birthday,
-		};
-		const usersRef = firebase.firestore().collection(activeFlow);
-		await usersRef.doc(uid).update(userData);
-		//Clean up and refresh profile editing
-		setSectionName(false);
-		setEditProfileSection(false);
-		setDataLoaded(false);
-	};
-
+	//! No functionality for guests to upload profile image, this will do for now
+	const guestProfileImage =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/avatar.png?alt=media&token=817424ef-58b8-4058-939c-c8f2bfe25dac";
 	/*************************************************************/
 	// LOGOUT
 	/*************************************************************/
@@ -125,9 +68,8 @@ export default function AccountScreen({ navigation }) {
 						console.log("Logging out user");
 						await appsGlobalContext.signOut();
 						console.log("Logged out");
-						// appsGlobalContext.setUserData(null)
-						// appsGlobalContext.setUserID(null)
-						setUserData(null);
+						appsGlobalContext.setUserData(null);
+						appsGlobalContext.setUserID(null);
 					},
 				},
 			],
@@ -156,15 +98,6 @@ export default function AccountScreen({ navigation }) {
 	// ONLY SHOW IF WE HAVE USER
 	/*************************************************************/
 
-	const { userData: user } = appsGlobalContext;
-
-	useEffect(() => {
-		//! This is not updating properly
-		if (_.has(user, "chefProfile.profile_img")) {
-			setProfileImg(user.chefProfile.profile_img);
-		}
-	}, [user]);
-
 	if (user) {
 		return (
 			<View style={globalStyles.scrollContainer}>
@@ -173,15 +106,10 @@ export default function AccountScreen({ navigation }) {
 						<View style={globalStyles.page}>
 							<View style={styles.profile_header}>
 								<TouchableWithoutFeedback onPress={checkForCount}>
-									{profileImg ? (
-										<Image source={{ uri: profileImg }} style={styles.profile_img} />
+									{activeFlow == "chefs" ? (
+										<Image source={{ uri: chefProfileImage }} style={styles.profile_img} />
 									) : (
-										<MaterialIcons
-											name='person'
-											size={60}
-											color={Theme.SECONDARY_COLOR}
-											style={styles.person_icon}
-										/>
+										<Image source={{ uri: guestProfileImage }} style={styles.profile_img} />
 									)}
 								</TouchableWithoutFeedback>
 								<View>
@@ -200,19 +128,6 @@ export default function AccountScreen({ navigation }) {
 										copy='Profile'
 										params={user}
 									/>
-									{/* <GoToButton navigation={navigation} navigator='Refer' copy='Refer A Chef' /> */}
-
-									{/*                                
-                                <GoToButton navigation={navigation} navigator="Waiver of Liability" copy="Waiver of Liability"/>
-                                <GoToButton navigation={navigation} navigator="Background Check" copy="Background Check"/>
-
-                                <GoToButton navigation={navigation} navigator="Professional Resume" copy="Professional Resume"/>
-                                <GoToButton navigation={navigation} navigator="Food Handler's License" copy="Food Handler's License"/>
-
-                                <GoToButton navigation={navigation} navigator="Professional Licenses" copy="Professional Licenses"/>
-                                <GoToButton navigation={navigation} navigator="Sanitation Manager License" copy="Sanitation Manager License"/>
-                                <GoToButton navigation={navigation} navigator="Liability Insurance" copy="Liability Insurance"/>
-                                */}
 								</>
 							)}
 							<GoToButton navigation={navigation} navigator='Terms' copy='Terms &amp; Conditions' />

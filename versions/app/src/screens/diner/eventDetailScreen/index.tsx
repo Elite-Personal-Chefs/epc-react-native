@@ -13,10 +13,8 @@ import {
 	Image,
 	ActivityIndicator,
 	Alert,
-	TouchableOpacity,
 } from "react-native";
 
-import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
@@ -127,12 +125,12 @@ export default function EventDetailScreen({ route }: any) {
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
-			if (details?.photos) {
-				//Using ES-2022 Array.at() to get last item in array
-				setEventImg({ uri: details.photos.at(-1) });
-			} else {
-				setEventImg(require("../../../assets/event_placeholder.png"));
-			}
+			console.log(`\n Events ${JSON.stringify(eventDetails)}}`);
+			//Using ES-2022 Array.at() to get last item in array
+			setEventImg(
+				eventDetails?.photos?.at(-1) ||
+					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234"
+			);
 
 			getEventDetails();
 		}, [])
@@ -142,7 +140,13 @@ export default function EventDetailScreen({ route }: any) {
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					{<Image source={eventImg} style={eventGlobalStyles.image} resizeMode={"cover"} />}
+					{
+						<Image
+							source={{ uri: eventImg }}
+							style={eventGlobalStyles.image}
+							resizeMode={"cover"}
+						/>
+					}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>

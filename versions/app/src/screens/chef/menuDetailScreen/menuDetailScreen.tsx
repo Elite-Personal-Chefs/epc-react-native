@@ -40,8 +40,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 	const appsGlobalContext = useContext(AppContext);
 	const uid = appsGlobalContext.userID;
 	const activeFlow = appsGlobalContext.activeFlow;
-	console.log(activeFlow);
-	console.log(uid);
 	const [isEditable, setIsEditable] = useState(false);
 	const [menuItems, setMenuItems] = useState(false);
 	const pageName = route.params.pageName;
@@ -49,9 +47,13 @@ export default function MenuDetailScreen({ route, navigation }) {
 	const [knownMenuPrice, setKnownMenuPrice] = useState(
 		details.price ? Number.parseInt(details.price) : false
 	);
-	const menuImg = [
-		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b",
-	];
+
+	console.log("Menu Details", details);
+
+	const [menuImg, setMenuImg] = useState(
+		details?.photos?.at(-1) ||
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/meal-placeholder-600x335_v1_501x289.jpg?alt=media&token=c3d9645a-4483-4414-8403-28e8df8d665b"
+	);
 	const [added, setAdded] = useState(false);
 	const [adding, setAdding] = useState(false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);
@@ -161,7 +163,7 @@ export default function MenuDetailScreen({ route, navigation }) {
 				{menuImg ? (
 					<Image
 						source={{
-							uri: menuImg[0],
+							uri: menuImg,
 						}}
 						style={styles.image}
 						resizeMode={"cover"}
