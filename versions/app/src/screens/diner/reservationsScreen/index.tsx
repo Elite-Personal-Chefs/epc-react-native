@@ -134,7 +134,7 @@ export default function ReservationsScreen({ navigation }: any) {
 						source={require("../../../assets/empty_calendar.png")}
 						resizeMode='contain'
 					/>
-					<Text style={globalStyles.empty_text}>You dont have any reserved events yet!</Text>
+					<Text style={globalStyles.empty_text}>You don't have any reserved events yet!</Text>
 				</View>
 			)}
 		</View>

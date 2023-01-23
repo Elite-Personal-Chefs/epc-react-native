@@ -127,10 +127,6 @@ export default function EventsScreen({ navigation, route }) {
 		);
 	};
 
-	const openFilters = () => {
-		Alert.alert("Opening Filters");
-	};
-
 	const onRefresh = () => {
 		getEventsDetails();
 		setRefreshing(false);
@@ -147,7 +143,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	const mapRef = useRef(null);
 
-	const goToMarker = (latlng) => {
+	const goToMarker = (latlng: any) => {
 		console.log(latlng);
 		mapRef.current.animateToRegion(latlng, 300);
 	};
@@ -177,7 +173,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	return (
 		<View style={[globalStyles.page, { padding: 0 }]}>
-			{hasEvents?.length > 0 ? (
+			{hasEvents?.length > 0 || eventPageName === "Map View" ? (
 				eventPageName == "Events" ? (
 					<>
 						<View style={{ flex: 1, width: "100%" }}>
@@ -188,12 +184,6 @@ export default function EventsScreen({ navigation, route }) {
 								refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 							/>
 						</View>
-						{/*
-                        <TouchableOpacity style={styles.filter_bar} onPress={() => openFilters()}>
-                            <Text style={styles.filter_text}>Filters</Text>
-                            <Octicons name="settings" size={16} color={Theme.TEXT_ON_PRIMARY_COLOR} />
-                        </TouchableOpacity>
-                        */}
 					</>
 				) : (
 					<View style={styles.container}>
