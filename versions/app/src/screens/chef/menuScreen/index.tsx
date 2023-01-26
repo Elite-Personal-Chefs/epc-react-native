@@ -1,23 +1,23 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from "react";
 import { Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //OTHER DEPENDENCIES
 import { useFocusEffect } from "@react-navigation/native";
-import { getChefMenus } from "../data/chef";
-import { getMenuTemplates } from "../data/menuTemplates";
+import { getChefMenus } from "../../../data/chef";
+import { getMenuTemplates } from "../../../data/menuTemplates";
 
 // COMPONENTS
-import AppContext from "../components/AppContext";
-import MenuListing from "../components/MenuListing";
-import { dynamicSort } from "../helpers/helpers";
+import AppContext from "../../../components/AppContext";
+import MenuListing from "../../../components/MenuListing";
+import { dynamicSort } from "../../../helpers/helpers";
 
 // STYLES
-import { globalStyles } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import { MaterialIcons } from "@expo/vector-icons";
 
 /*******************************************************************************/
@@ -31,15 +31,16 @@ export default function MenuScreen({ navigation, route }) {
 	const menuPageName = route.name;
 	const [refreshing, setRefreshing] = useState(false);
 	const [menuTemplates, setMenuTemplates] = useState(null);
+	const [chefMenus, setChefMenus] = useState(null);
 
-	const getMenus = async (menuPageName) => {
+	const getMenus = async (menuPageName: string) => {
 		try {
-			if (menuPageName == "Templates") {
+			if (menuPageName == "Your Menus") {
+				const chefMenus = await getChefMenus(uid);
+				setChefMenus(chefMenus.menus.sort(dynamicSort("title")));
+			} else if (menuPageName == "Templates") {
 				const menuTemplates = await getMenuTemplates();
 				setMenuTemplates(menuTemplates.sort(dynamicSort("title")));
-			} else if (menuPageName == "Your Menus") {
-				const chefMenus = await getChefMenus(uid);
-				setMenuTemplates(chefMenus.menus.sort(dynamicSort("title")));
 			}
 		} catch (error) {
 			console.log(error);
@@ -67,9 +68,9 @@ export default function MenuScreen({ navigation, route }) {
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			<View style={[globalStyles.page, { padding: 0 }]}>
-				{menuTemplates ? (
+				{menuTemplates || chefMenus?.length > 0 ? (
 					<MenuListing
-						menuTemplates={menuTemplates}
+						menuTemplates={chefMenus || menuTemplates}
 						chefID={uid}
 						pageName={menuPageName}
 						navigation={navigation}
@@ -79,7 +80,7 @@ export default function MenuScreen({ navigation, route }) {
 					<View style={globalStyles.empty_state}>
 						<Image
 							style={globalStyles.empty_image}
-							source={require("../assets/empty_calendar.png")}
+							source={require("../../../assets/empty_calendar.png")}
 						/>
 						<Text style={globalStyles.empty_text}>You don't have any menus yet</Text>
 					</View>
@@ -108,11 +109,11 @@ export default function MenuScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    no_menu:{
-        flex:1,
-        width:'100%',
-        height:'100%',
-        justifyContent: 'center', 
-        alignItems: 'center',
-    },
-})
+	no_menu: {
+		flex: 1,
+		width: "100%",
+		height: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});

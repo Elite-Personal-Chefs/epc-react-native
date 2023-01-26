@@ -26,6 +26,7 @@ import { getEndpoint } from "../../../helpers/helpers";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import Tooltip from "react-native-walkthrough-tooltip";
+import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles, menusStyles, footer, forms } from "../../../styles/styles";
@@ -47,8 +48,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 	const [knownMenuPrice, setKnownMenuPrice] = useState(
 		details.price ? Number.parseInt(details.price) : false
 	);
-
-	console.log("Menu Details", details);
 
 	const [menuImg, setMenuImg] = useState(
 		details?.photos?.at(-1) ||
@@ -161,13 +160,7 @@ export default function MenuDetailScreen({ route, navigation }) {
 		<SafeAreaView style={globalStyles.safe_light}>
 			<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%", flex: 1 }}>
 				{menuImg ? (
-					<Image
-						source={{
-							uri: menuImg,
-						}}
-						style={styles.image}
-						resizeMode={"cover"}
-					/>
+					<Carousel></Carousel>
 				) : (
 					<View style={styles.container}>
 						<ActivityIndicator size='small' color={Theme.SECONDARY_COLOR} style={styles.image} />

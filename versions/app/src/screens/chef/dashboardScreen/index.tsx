@@ -165,6 +165,15 @@ export default function DashboardScreen({ navigation }) {
 										/>
 									</TouchableOpacity>
 								</View>
+								<View>
+									<Image
+										source={{
+											uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/stakeholder_image.png?alt=media&token=db02d4a3-0dca-4a57-9953-a1a3f6954c4e",
+										}}
+										style={globalStyles.large_image}
+										resizeMode='contain'
+									></Image>
+								</View>
 							</>
 						)}
 					</ScrollView>

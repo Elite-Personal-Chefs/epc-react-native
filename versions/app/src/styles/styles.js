@@ -228,7 +228,7 @@ const globalStyles = StyleSheet.create({
 		color: Theme.SECONDARY_COLOR,
 	},
 	large_image: {
-		height: windowHeight * 0.95,
+		height: windowHeight * 0.9,
 	},
 });
 
