@@ -227,6 +227,9 @@ const globalStyles = StyleSheet.create({
 	linkTextColor: {
 		color: Theme.SECONDARY_COLOR,
 	},
+	large_image: {
+		height: windowHeight * 0.9,
+	},
 });
 
 const menusStyles = StyleSheet.create({

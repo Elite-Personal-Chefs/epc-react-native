@@ -24,6 +24,7 @@ import {
 	ScrollView,
 } from "react-native";
 import AppContext from "../../../components/AppContext";
+import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles } from "../../../styles/styles";
@@ -86,9 +87,10 @@ export default function EventsScreen({ navigation, route }) {
 		let endDateShort = format(item.end, "MMM do");
 		let endTime = format(item.end, "h:mm a");
 		let location = formatLocation(item.location);
-		let image =
-			item?.photos?.at(-1) ||
-			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
+
+		let image = item?.photos || [
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
+		];
 
 		return (
 			<TouchableWithoutFeedback
@@ -103,32 +105,30 @@ export default function EventsScreen({ navigation, route }) {
 					})
 				}
 			>
-				<View style={styles.navigate_away}>
-					<Image source={{ uri: image }} style={styles.image} />
-					<View style={styles.navigate_away_content}>
-						<Text style={styles.title}>{item.title}</Text>
-						<Text
-							style={styles.date_time}
-						>{`${startDateShort} at ${startTime} - ${endDateShort} at ${endTime}`}</Text>
+				<View>
+					<Carousel image={image} />
+					<View style={styles.navigate_away}>
+						<View style={styles.navigate_away_content}>
+							<Text style={styles.title}>{item.title}</Text>
+							<Text
+								style={styles.date_time}
+							>{`${startDateShort} at ${startTime} - ${endDateShort} at ${endTime}`}</Text>
 
-						<Text style={styles.location}>{location}</Text>
-					</View>
-					<View style={styles.chef_and_price}>
-						<View>
-							<Text style={styles.name}>{item.chefName ? item.chefName : "Chef Name"}</Text>
+							<Text style={styles.location}>{location}</Text>
 						</View>
-						<View style={styles.price_cont}>
-							<Text style={styles.price}>${item.cpp}</Text>
-							<Text style={styles.price_label}>Per Person</Text>
+						<View style={styles.chef_and_price}>
+							<View>
+								<Text style={styles.name}>{item.chefName ? item.chefName : "Chef Name"}</Text>
+							</View>
+							<View style={styles.price_cont}>
+								<Text style={styles.price}>${item.cpp}</Text>
+								<Text style={styles.price_label}>Per Person</Text>
+							</View>
 						</View>
 					</View>
 				</View>
 			</TouchableWithoutFeedback>
 		);
-	};
-
-	const openFilters = () => {
-		Alert.alert("Opening Filters");
 	};
 
 	const onRefresh = () => {
@@ -147,7 +147,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	const mapRef = useRef(null);
 
-	const goToMarker = (latlng) => {
+	const goToMarker = (latlng: any) => {
 		console.log(latlng);
 		mapRef.current.animateToRegion(latlng, 300);
 	};
@@ -177,7 +177,7 @@ export default function EventsScreen({ navigation, route }) {
 
 	return (
 		<View style={[globalStyles.page, { padding: 0 }]}>
-			{hasEvents?.length > 0 ? (
+			{hasEvents?.length > 0 || eventPageName === "Map View" ? (
 				eventPageName == "Events" ? (
 					<>
 						<View style={{ flex: 1, width: "100%" }}>
@@ -188,12 +188,6 @@ export default function EventsScreen({ navigation, route }) {
 								refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 							/>
 						</View>
-						{/*
-                        <TouchableOpacity style={styles.filter_bar} onPress={() => openFilters()}>
-                            <Text style={styles.filter_text}>Filters</Text>
-                            <Octicons name="settings" size={16} color={Theme.TEXT_ON_PRIMARY_COLOR} />
-                        </TouchableOpacity>
-                        */}
 					</>
 				) : (
 					<View style={styles.container}>
@@ -217,7 +211,7 @@ export default function EventsScreen({ navigation, route }) {
 									let startTime = format(item.start, "h:mm a");
 									let endDateShort = format(item.end, "MMM do");
 									let endTime = format(item.end, "h:mm a");
-									let image =
+									let mapImage =
 										item?.photos?.at(-1) ||
 										"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 									return (
@@ -227,7 +221,7 @@ export default function EventsScreen({ navigation, route }) {
 											onLongPress={() => navigation.navigate("Event Details", { details: item })}
 										>
 											<View style={styles.scroller}>
-												<Image source={{ uri: image }} style={styles.scroller_img} />
+												<Image source={{ uri: mapImage }} style={styles.scroller_img} />
 												<View style={styles.scroller_content}>
 													<View style={styles.upper_content}>
 														<View>
@@ -353,9 +347,8 @@ const styles = StyleSheet.create({
 		alignItems: "flex-start",
 		padding: 15,
 		paddingHorizontal: 15,
-		borderWidth: 1,
+		borderBottomWidth: 1,
 		borderColor: Theme.BORDER_COLOR,
-		marginBottom: 10,
 	},
 	navigate_away_content: {
 		flex: 1,

@@ -105,7 +105,7 @@ export default function DashboardScreen({ navigation }) {
 
 	if (user) {
 		return (
-			<SafeAreaView style={globalStyles.safe_light}>
+			<SafeAreaView style={[globalStyles.safe_light]}>
 				<View style={[globalStyles.page, { marginTop: -50 }]}>
 					<ScrollView
 						style={{ width: "100%", flex: 1 }}
@@ -134,6 +134,15 @@ export default function DashboardScreen({ navigation }) {
 										/>
 									</View>
 								</View>
+								<View>
+									<Image
+										source={{
+											uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/stakeholder_image.png?alt=media&token=db02d4a3-0dca-4a57-9953-a1a3f6954c4e",
+										}}
+										style={globalStyles.large_image}
+										resizeMode='contain'
+									></Image>
+								</View>
 							</>
 						) : (
 							<>
@@ -155,6 +164,15 @@ export default function DashboardScreen({ navigation }) {
 											style={{ paddingLeft: 5 }}
 										/>
 									</TouchableOpacity>
+								</View>
+								<View>
+									<Image
+										source={{
+											uri: "https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/stakeholder_image.png?alt=media&token=db02d4a3-0dca-4a57-9953-a1a3f6954c4e",
+										}}
+										style={globalStyles.large_image}
+										resizeMode='contain'
+									></Image>
 								</View>
 							</>
 						)}

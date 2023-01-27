@@ -34,16 +34,12 @@ import {
 	getEventById,
 	getEventReservations,
 } from "../../../data/event";
+import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles, menusStyles } from "../../../styles/styles";
 import Theme from "../../../styles/theme.style.js";
-import {
-	AntDesign,
-	MaterialIcons,
-	FontAwesome5,
-	Ionicons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Reservation from "../../../models/reservation";
 
 interface EventDetailProps {
@@ -55,16 +51,14 @@ interface EventDetailProps {
 // MAIN EXPORT FUNCTION
 /*******************************************************************************/
 
-export default function EventDetailScreen({
-	route,
-	navigation,
-}: EventDetailProps) {
+export default function EventDetailScreen({ route, navigation }: EventDetailProps) {
 	const appsGlobalContext = useContext(AppContext);
 
 	const userEmail = appsGlobalContext.userData.email;
 	const routeParams = route.params.event;
-	const placeholderImg =
-		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
+	const placeholderImg = [
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
+	];
 
 	const [reservations, setReservations] = useState<Reservation[] | null>();
 	const [menuItems, setMenuItems] = useState();
@@ -180,13 +174,13 @@ export default function EventDetailScreen({
 		}, [])
 	);
 
-	const eventPhoto = eventDetails?.photos?.at(-1) || placeholderImg;
+	const eventPhoto = eventDetails?.photos || placeholderImg;
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
-				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					<Image source={{ uri: eventPhoto }} style={styles.image} />
+				<ScrollView showsVerticalScrollIndicator={false} style={{}}>
+					<Carousel image={eventPhoto}></Carousel>
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>

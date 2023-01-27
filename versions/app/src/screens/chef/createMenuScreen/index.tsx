@@ -1,35 +1,47 @@
 /*******************************************************************************/
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
-import React, { useState, useContext, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import React, { useState, useContext, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // FIREBASE DEPENDENCIES
-import _ from 'underscore'
-import DropDownPicker from 'react-native-dropdown-picker';
-import { firebase, configKeys } from '../config/config'
-import { DraxProvider, DraxList } from 'react-native-drax';
-
+import _ from "underscore";
+import DropDownPicker from "react-native-dropdown-picker";
+import { firebase, configKeys } from "../../../config/config";
+import { DraxProvider, DraxList } from "react-native-drax";
 
 // COMPONENTS
-import { Text, StyleSheet, View, TextInput, ScrollView, Dimensions, TouchableOpacity, Modal, Alert, Switch,ActivityIndicator, Platform} from 'react-native'
-import AppContext from '../components/AppContext';
-import {getEndpoint} from '../helpers/helpers'
-import { CustomButton } from '../components/Button'
-import { Formik, useFormikContext, Field } from 'formik'
-import ImageUploader from '../components/ImageUploader';
-import * as yup from 'yup'
+import {
+	Text,
+	StyleSheet,
+	View,
+	TextInput,
+	ScrollView,
+	Dimensions,
+	TouchableOpacity,
+	Modal,
+	Alert,
+	Switch,
+	ActivityIndicator,
+	Platform,
+} from "react-native";
+import AppContext from "../../../components/AppContext";
+import { getEndpoint } from "../../../helpers/helpers";
+import { CustomButton } from "../../../components/Button";
+import { Formik, useFormikContext, Field } from "formik";
+import ImageUploader from "../../../components/ImageUploader";
+import * as yup from "yup";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 import { LogBox } from "react-native";
 //This is not ideal, there is this patch https://github.com/react-navigation/react-navigation/issues/9894
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 
 // STYLES
-import { globalStyles, TouchableHighlight, modal, forms } from "../styles/styles";
-import Theme from "../styles/theme.style.js";
+import { globalStyles, TouchableHighlight, modal, forms } from "../../../styles/styles";
+import Theme from "../../../styles/theme.style.js";
 import {
 	Entypo,
 	FontAwesome,
@@ -598,106 +610,105 @@ export default function CreateMenuScreen({ route, navigation }) {
 	}
 }
 
-
 /***********************************/
 // HELEPRS
 /***********************************/
 const getItemStyleTweaks = (alphaItem) => {
-    if(alphaItem.type == 'item'){
-        return {
-            backgroundColor: Theme.SURFACE_COLOR,
-            borderColor: Theme.BORDER_COLOR,
-            borderBottomWidth: 1
-        }
-    }
+	if (alphaItem.type == "item") {
+		return {
+			backgroundColor: Theme.SURFACE_COLOR,
+			borderColor: Theme.BORDER_COLOR,
+			borderBottomWidth: 1,
+		};
+	}
 };
 
 /***********************************/
 // STYLES
 /***********************************/
 const styles = StyleSheet.create({
-    formik:{
-        justifyContent: 'flex-start',
-        width:'100%',
-        flex:1
-    },
-    formik_section:{
-        flex:1,
-        margin:10,
-    },
-    no_items: {
-        flex:1,
-        backgroundColor:'red',
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:20,
-        margin:10,
-        backgroundColor: Theme.PRIMARY_COLOR_FAINT,
-        borderColor:Theme.FAINT,
-        borderWidth:1
-    },
-    add_item_cont:{
-        width:'100%',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        borderTopColor: Theme.PRIMARY_COLOR,
-        borderTopWidth: 1
-    },
-    add_box: {
-        alignItems: 'center',
-    },
-    add_course_item: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 15,
-        marginVertical:10,
-        backgroundColor: Theme.SECONDARY_COLOR,
-        borderRadius:12
-    },
-    add_text: {
-        color: Theme.WHITE,
-        fontSize: 16,
-        marginLeft: 15
-    },
-    toggleBox:{
-        flexDirection:'row',
-        width:'100%',
-        marginTop:10,
-        paddingVertical:20,
-        paddingHorizontal:10,
-        alignItems:'center',
-        justifyContent:'center'
-    },
-    toggleLabel: {
-        padding:10,
-        fontSize:14,
-        fontWeight: 'normal'
-    },
-    toggleActive: {
-        fontWeight: 'bold',
-        color: Theme.TEXT_ON_SURFACE_COLOR
-    },
-    toggleInActive: {
-        fontWeight: 'normal',
-        color: Theme.TEXT_ON_SURFACE_COLOR_LIGHT
-    },
-    drax_container: {
-        padding:10,
-        backgroundColor: Theme.SURFACE_COLOR_LIGHT,
-        borderColor: Theme.BORDER_COLOR,
-        borderWidth:1
-    },
-    draggableItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: Theme.PRIMARY_COLOR_FAINT,
-        paddingVertical:20,
-        paddingHorizontal:5,
-    },
-    itemText: {    
-        paddingLeft:5
-    },
-})
+	formik: {
+		justifyContent: "flex-start",
+		width: "100%",
+		flex: 1,
+	},
+	formik_section: {
+		flex: 1,
+		margin: 10,
+	},
+	no_items: {
+		flex: 1,
+		backgroundColor: "red",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 20,
+		margin: 10,
+		backgroundColor: Theme.PRIMARY_COLOR_FAINT,
+		borderColor: Theme.FAINT,
+		borderWidth: 1,
+	},
+	add_item_cont: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center",
+		borderTopColor: Theme.PRIMARY_COLOR,
+		borderTopWidth: 1,
+	},
+	add_box: {
+		alignItems: "center",
+	},
+	add_course_item: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 15,
+		marginVertical: 10,
+		backgroundColor: Theme.SECONDARY_COLOR,
+		borderRadius: 12,
+	},
+	add_text: {
+		color: Theme.WHITE,
+		fontSize: 16,
+		marginLeft: 15,
+	},
+	toggleBox: {
+		flexDirection: "row",
+		width: "100%",
+		marginTop: 10,
+		paddingVertical: 20,
+		paddingHorizontal: 10,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	toggleLabel: {
+		padding: 10,
+		fontSize: 14,
+		fontWeight: "normal",
+	},
+	toggleActive: {
+		fontWeight: "bold",
+		color: Theme.TEXT_ON_SURFACE_COLOR,
+	},
+	toggleInActive: {
+		fontWeight: "normal",
+		color: Theme.TEXT_ON_SURFACE_COLOR_LIGHT,
+	},
+	drax_container: {
+		padding: 10,
+		backgroundColor: Theme.SURFACE_COLOR_LIGHT,
+		borderColor: Theme.BORDER_COLOR,
+		borderWidth: 1,
+	},
+	draggableItem: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		backgroundColor: Theme.PRIMARY_COLOR_FAINT,
+		paddingVertical: 20,
+		paddingHorizontal: 5,
+	},
+	itemText: {
+		paddingLeft: 5,
+	},
+});
