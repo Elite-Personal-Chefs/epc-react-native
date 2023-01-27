@@ -114,8 +114,6 @@ const getEvents = async ({
 const getAllUnreservedEvents = async (uid: string): Promise<Event[]> => {
 	const allEvents = await getEvents({ start: new Date(), published: true });
 
-	console.log(`allEvents`, JSON.stringify(allEvents, null, 2));
-
 	const guestDoc = await db.collection("guests").doc(uid).get();
 
 	const { reservationSummaries } = guestDoc.data();

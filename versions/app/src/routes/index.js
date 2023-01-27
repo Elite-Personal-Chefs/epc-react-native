@@ -44,7 +44,7 @@ import CreateEventScreen from "../screens/chef/createEventScreen";
 import ChefEventDetailScreen from "../screens/chef/eventDetailScreen";
 import MenuScreen from "../screens/chef/menuScreen";
 import CreateMenuScreen from "../screens/chef/createMenuScreen";
-import MenuDetailScreen from "../screens/chef/menuDetailScreen/menuDetailScreen";
+import MenuDetailScreen from "../screens/chef/menuDetailScreen";
 import ChefsScreen from "../screens/diner/chefsScreen";
 import ChefDetailScreen from "../screens/diner/chefDetailScreen";
 import ChefEventsScreen from "../screens/chef/eventsScreen";

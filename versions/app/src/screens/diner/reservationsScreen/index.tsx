@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import AppContext from "../../../components/AppContext";
 import { getEventsReservedByGuestId } from "../../../data/event";
+import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles } from "../../../styles/styles";
@@ -72,9 +73,9 @@ export default function ReservationsScreen({ navigation }: any) {
 		let endDate = format(new Date(item.end.seconds * 1000), "MMM do");
 		let endTime = format(new Date(item.end.seconds * 1000), "h:mm a");
 		let location = formatLocation(item.location);
-		let reservationImage =
-			item?.photos?.at(-1) ||
-			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
+		let reservationImage = item?.photos || [
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
+		];
 
 		return (
 			<TouchableWithoutFeedback
@@ -90,24 +91,26 @@ export default function ReservationsScreen({ navigation }: any) {
 					})
 				}
 			>
-				<View style={styles.navigate_away}>
-					<Image source={{ uri: reservationImage }} style={styles.image} resizeMode='cover' />
-					<View style={styles.navigate_away_content}>
-						<Text style={styles.title}>{item.title}</Text>
-						<Text
-							style={styles.date_time}
-						>{`${startDate} at ${startTime} - ${endDate} at ${endTime}`}</Text>
-						<Text style={styles.location}>{location}</Text>
-					</View>
-					<View style={styles.chef_and_price}>
-						<View>
-							<Text style={styles.name}>
-								{item.chefName ? `Chef ${item.chefName}` : "Chef Name"}
-							</Text>
+				<View>
+					<Carousel image={reservationImage} />
+					<View style={styles.navigate_away}>
+						<View style={styles.navigate_away_content}>
+							<Text style={styles.title}>{item.title}</Text>
+							<Text
+								style={styles.date_time}
+							>{`${startDate} at ${startTime} - ${endDate} at ${endTime}`}</Text>
+							<Text style={styles.location}>{location}</Text>
 						</View>
-						<View style={styles.price_cont}>
-							<Text style={styles.price}>${item.cpp}</Text>
-							<Text style={styles.price_label}>Per Person</Text>
+						<View style={styles.chef_and_price}>
+							<View>
+								<Text style={styles.name}>
+									{item.chefName ? `Chef ${item.chefName}` : "Chef Name"}
+								</Text>
+							</View>
+							<View style={styles.price_cont}>
+								<Text style={styles.price}>${item.cpp}</Text>
+								<Text style={styles.price_label}>Per Person</Text>
+							</View>
 						</View>
 					</View>
 				</View>
@@ -168,7 +171,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		borderWidth: 1,
 		borderColor: Theme.BORDER_COLOR,
-		marginBottom: 10,
 	},
 	navigate_away_content: {
 		flex: 1,
