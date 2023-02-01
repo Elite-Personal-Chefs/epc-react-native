@@ -13,10 +13,8 @@ import {
 	Image,
 	ActivityIndicator,
 	Alert,
-	TouchableOpacity,
 } from "react-native";
 
-import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
@@ -57,6 +55,7 @@ export default function ResrvationsDetailScreen({ route }: any) {
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
 	const [reservationQuantity, setReservationQuantity] = useState(0);
+	const [sharing, setSharing] = useState(false);
 
 	//If we are coming from Reservation page then we need more details on the event
 	const isReservation = route.params.isReservation;
@@ -129,6 +128,11 @@ export default function ResrvationsDetailScreen({ route }: any) {
 		}
 	};
 
+	const shareEvent = async () => {
+		console.log("share event");
+		setSharing(true);
+	};
+
 	/*************************************************************/
 	// RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
 	/*************************************************************/
@@ -152,7 +156,7 @@ export default function ResrvationsDetailScreen({ route }: any) {
 						<Image
 							source={{ uri: eventImg }}
 							style={eventGlobalStyles.image}
-							resizeMode={"contain"}
+							resizeMode={"cover"}
 						/>
 					}
 					<View style={styles.content}>
@@ -313,6 +317,18 @@ export default function ResrvationsDetailScreen({ route }: any) {
 								</Text>
 							</View>
 						)}
+
+						<CustomButton
+							text={sharing ? "Sharing Event" : "Share Event"}
+							onPress={() => {
+								setSharing(true);
+								setTimeout(() => {
+									setSharing(false);
+								}, 2000);
+							}}
+							size='big'
+							disabled={sharing}
+						/>
 					</View>
 				</ScrollView>
 			) : (

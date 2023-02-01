@@ -63,7 +63,7 @@ import FoodHandlerScreen from "../screens/foodHandlerScreen";
 import LicenseScreen from "../screens/licenseScreen";
 import SanitationScreen from "../screens/sanitationScreen";
 import LiabilityScreen from "../screens/liabilityScreen";
-import ContactScreen from "../screens/contactScreen";
+import ContactScreen from "../screens/chef/contactScreen";
 import FaqScreen from "../screens/faqScreen";
 import PlaygroundScreen from "../screens/playgroundScreen";
 import PersonalInfoScreen from "../screens/personalInfoScreen";
