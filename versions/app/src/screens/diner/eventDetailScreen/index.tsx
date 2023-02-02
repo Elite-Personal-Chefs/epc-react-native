@@ -28,7 +28,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import { reserveEvent, getEventById } from "../../../data/event";
 import Event from "../../../models/event";
-import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles, eventGlobalStyles, menusStyles } from "../../../styles/styles";
@@ -129,9 +128,8 @@ export default function EventDetailScreen({ route }: any) {
 			console.log(`\n Events ${JSON.stringify(eventDetails)}}`);
 			//Using ES-2022 Array.at() to get last item in array
 			setEventImg(
-				eventDetails?.photos || [
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
-				]
+				eventDetails?.photos?.at(-1) ||
+					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234"
 			);
 
 			getEventDetails();
@@ -142,14 +140,13 @@ export default function EventDetailScreen({ route }: any) {
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					{/* {
+					{
 						<Image
 							source={{ uri: eventImg }}
 							style={eventGlobalStyles.image}
 							resizeMode={"cover"}
 						/>
-					} */}
-					{<Carousel image={eventImg} />}
+					}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>

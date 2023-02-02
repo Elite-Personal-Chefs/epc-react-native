@@ -55,8 +55,6 @@ export default function MenuDetailScreen({ route, navigation }) {
 		]
 	);
 
-	console.log("details", details?.photos);
-
 	const [added, setAdded] = useState(false);
 	const [adding, setAdding] = useState(false);
 	const [toolTipVisible, setToolTipVisible] = useState(false);

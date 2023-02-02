@@ -24,7 +24,6 @@ import {
 	ScrollView,
 } from "react-native";
 import AppContext from "../../../components/AppContext";
-import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles } from "../../../styles/styles";
@@ -88,9 +87,9 @@ export default function EventsScreen({ navigation, route }) {
 		let endTime = format(item.end, "h:mm a");
 		let location = formatLocation(item.location);
 
-		let image = item?.photos || [
-			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
-		];
+		let image =
+			item?.photos?.at(-1) ||
+			"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 		return (
 			<TouchableWithoutFeedback
@@ -106,7 +105,7 @@ export default function EventsScreen({ navigation, route }) {
 				}
 			>
 				<View>
-					<Carousel image={image} />
+					<Image source={{ uri: image }} style={styles.image} />
 					<View style={styles.navigate_away}>
 						<View style={styles.navigate_away_content}>
 							<Text style={styles.title}>{item.title}</Text>
