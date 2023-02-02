@@ -15,8 +15,9 @@ const configKeys = {
 	measurementId: "G-WSZ014RCDH",
 	databaseURL: "https://elite-ee4b7.firebaseio.com",
 	api_local: "http://localhost:8080/v1/",
-	api_dev: "https://elite-personal-chefs-server.onrender.com/v1/",
-	api_live: "https://elite-personal-chefs-server.onrender.com/v1/",
+	api_dev: "https://epc-express-server.onrender.com/",
+	api_live: "https://epc-express-server.onrender.com/",
+	// api_live: "https://elite-personal-chefs-server.onrender.com/v1/",
 };
 
 if (!firebase.apps.length) {

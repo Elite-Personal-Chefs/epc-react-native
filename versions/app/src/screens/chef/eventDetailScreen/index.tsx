@@ -34,7 +34,6 @@ import {
 	getEventById,
 	getEventReservations,
 } from "../../../data/event";
-import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles, menusStyles } from "../../../styles/styles";
@@ -56,9 +55,8 @@ export default function EventDetailScreen({ route, navigation }: EventDetailProp
 
 	const userEmail = appsGlobalContext.userData.email;
 	const routeParams = route.params.event;
-	const placeholderImg = [
-		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
-	];
+	const placeholderImg =
+		"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234";
 
 	const [reservations, setReservations] = useState<Reservation[] | null>();
 	const [menuItems, setMenuItems] = useState();
@@ -174,13 +172,13 @@ export default function EventDetailScreen({ route, navigation }: EventDetailProp
 		}, [])
 	);
 
-	const eventPhoto = eventDetails?.photos || placeholderImg;
+	const eventPhoto = eventDetails?.photos?.at(-1) || placeholderImg;
 
 	return (
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{}}>
-					<Carousel image={eventPhoto}></Carousel>
+					<Image source={{ uri: eventPhoto }} style={styles.image} />
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>

@@ -2,30 +2,38 @@
 //IMPORT DEPENDENCIES
 /*******************************************************************************/
 import React, { useContext } from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StatusBar, Platform, StyleSheet } from "react-native";
 
 // OTHER DEPENDENCIES
 import _ from "underscore";
+import { firebase, configKeys } from "../config/config";
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { createIconSetFromIcoMoon } from "react-native-vector-icons";
 import iconConfig from "../assets/fonts/selection.json";
 const Icon = createIconSetFromIcoMoon(iconConfig, "custom-icons");
 
 //COMPONENTS
+import SupportIcon from "../components/SupportIcon";
 import AppContext from "../components/AppContext";
 
 //THEMES AND FONTS SETUP
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons, MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import {
+	MaterialIcons,
+	MaterialCommunityIcons,
+	FontAwesome,
+} from "@expo/vector-icons";
 import Theme from "../styles/theme.style.js";
 
 /*******************************************************************************/
 //REACT NAVIGATION DEPENDENCIES
 /*******************************************************************************/
-import { NavigationContainer, getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import {
+	NavigationContainer,
+	getFocusedRouteNameFromRoute,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 
 /*******************************************************************************/
 //ESTABLISH STACK VARIABLES
@@ -53,6 +61,7 @@ import ReservationsScreen from "../screens/diner/reservationsScreen";
 import ReservationDetailScreen from "../screens/diner/reservationsDetailScreen";
 import AccountScreen from "../screens/user/accountScreen";
 import ProfileScreen from "../screens/chef/profileScreen/profileScreen";
+import MessageScreen from "../screens/messageScreen";
 import ReferScreen from "../screens/referScreen";
 import PaymentsScreen from "../screens/paymentsScreen";
 
@@ -63,7 +72,7 @@ import FoodHandlerScreen from "../screens/foodHandlerScreen";
 import LicenseScreen from "../screens/licenseScreen";
 import SanitationScreen from "../screens/sanitationScreen";
 import LiabilityScreen from "../screens/liabilityScreen";
-import ContactScreen from "../screens/contactScreen";
+import ContactScreen from "../screens/chef/contactScreen";
 import FaqScreen from "../screens/faqScreen";
 import PlaygroundScreen from "../screens/playgroundScreen";
 import PersonalInfoScreen from "../screens/personalInfoScreen";
@@ -192,7 +201,6 @@ const MenusStackTab = () => {
 };
 
 const ChecfStackNav = createMaterialTopTabNavigator(); //This can be drawers, stacks, tabs, etc.
-
 const ChefStack = () => {
 	const appsGlobalContext = useContext(AppContext);
 	return (

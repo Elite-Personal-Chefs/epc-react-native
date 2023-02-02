@@ -13,10 +13,8 @@ import {
 	Image,
 	ActivityIndicator,
 	Alert,
-	TouchableOpacity,
 } from "react-native";
 
-import { format } from "date-fns";
 import { Dropdown } from "react-native-element-dropdown";
 
 //Other Dependencies
@@ -30,7 +28,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 import { reserveEvent, getEventById, getEventsReservationByGuestId } from "../../../data/event";
 import Event from "../../../models/event";
-import Carousel from "../../../components/Carousel";
 
 // STYLES
 import { globalStyles, eventGlobalStyles, menusStyles } from "../../../styles/styles";
@@ -58,6 +55,7 @@ export default function ResrvationsDetailScreen({ route }: any) {
 	const [menuItems, setMenuItems] = useState();
 	const [eventDetails, setEventDetails] = useState(details ? details : null);
 	const [reservationQuantity, setReservationQuantity] = useState(0);
+	const [sharing, setSharing] = useState(false);
 
 	//If we are coming from Reservation page then we need more details on the event
 	const isReservation = route.params.isReservation;
@@ -130,15 +128,19 @@ export default function ResrvationsDetailScreen({ route }: any) {
 		}
 	};
 
+	const shareEvent = async () => {
+		console.log("share event");
+		setSharing(true);
+	};
+
 	/*************************************************************/
 	// RUN FOCUS EFFECT TO CHECK VARIOUS STATES ON LOAD
 	/*************************************************************/
 	useFocusEffect(
 		React.useCallback(() => {
 			setEventImg(
-				eventDetails?.photos || [
-					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234",
-				]
+				eventDetails?.photos?.at(-1) || 
+					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234"
 			);
 
 			getEventDetails();
@@ -150,7 +152,13 @@ export default function ResrvationsDetailScreen({ route }: any) {
 		<SafeAreaView style={globalStyles.safe_light}>
 			{eventDetails ? (
 				<ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-					{<Carousel image={eventImg} />}
+					{
+						<Image
+							source={{ uri: eventImg }}
+							style={eventGlobalStyles.image}
+							resizeMode={"cover"}
+						/>
+					}
 					<View style={styles.content}>
 						<View style={styles.header}>
 							<View style={styles.title}>
@@ -309,6 +317,18 @@ export default function ResrvationsDetailScreen({ route }: any) {
 								</Text>
 							</View>
 						)}
+
+						<CustomButton
+							text={sharing ? "Sharing Event" : "Share Event"}
+							onPress={() => {
+								setSharing(true);
+								setTimeout(() => {
+									setSharing(false);
+								}, 2000);
+							}}
+							size='big'
+							disabled={sharing}
+						/>
 					</View>
 				</ScrollView>
 			) : (
