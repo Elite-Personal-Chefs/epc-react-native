@@ -139,7 +139,7 @@ export default function ResrvationsDetailScreen({ route }: any) {
 	useFocusEffect(
 		React.useCallback(() => {
 			setEventImg(
-				eventDetails?.photos?.at(-1) ||
+				eventDetails?.photos?.at(-1) || 
 					"https://firebasestorage.googleapis.com/v0/b/elite-ee4b7.appspot.com/o/event-placeholder-1200x840_v1.png?alt=media&token=011c74ed-8a6d-4825-aa9a-bd74a1f5a234"
 			);
 

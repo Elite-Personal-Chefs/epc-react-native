@@ -47,8 +47,6 @@ export default function ChefEventScreen({ navigation, route }) {
 				try {
 					const events = await getEventsByChefId(uid);
 
-					console.log("events", events);
-
 					if (!_.isEmpty(events)) {
 						//&& _.has(json,'transactions') <- removed 1/10 not sure why we needed it
 						setEvents(events.transactions ? events.transactions : events);

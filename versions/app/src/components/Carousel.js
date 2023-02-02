@@ -1,19 +1,25 @@
 import * as React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, Text, View, Image, StyleSheet } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
-function Index() {
+function Index(image) {
+	let images = image.image;
+	let imageLength = images?.length || 0;
+
 	const width = Dimensions.get("window").width;
+	const height = Dimensions.get("window").height;
+
 	return (
 		<View style={{ flex: 1 }}>
 			<Carousel
 				loop
 				width={width}
 				height={width / 2}
-				autoPlay={true}
-				data={[...new Array(6).keys()]}
+				autoPlay={false}
+				data={[...new Array(imageLength).keys()]}
+				// data={[...new Array(images.length).keys()]}
 				scrollAnimationDuration={1000}
-				onSnapToItem={(index) => console.log("current index:", index)}
+				// onSnapToItem={(index) => console.log("current index:", index)}
 				renderItem={({ index }) => (
 					<View
 						style={{
@@ -22,7 +28,11 @@ function Index() {
 							justifyContent: "center",
 						}}
 					>
-						<Text style={{ textAlign: "center", fontSize: 30 }}>{index}</Text>
+						<Image
+							style={{ width: width, height: height * 0.25 }}
+							source={{ uri: images[index] }}
+							resizeMode='cover'
+						/>
 					</View>
 				)}
 			/>
