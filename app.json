@@ -38,7 +38,7 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./exterior_assets/adaptive-icon.png",
+				"foregroundImage": "./exterior_assets/iconBlue.jpg",
 				"backgroundColor": "#FFFFFF"
 			},
 			"package": "net.agency22.epc",
