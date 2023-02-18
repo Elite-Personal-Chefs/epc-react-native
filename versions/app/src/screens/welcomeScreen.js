@@ -190,10 +190,7 @@ export default function WelcomeScreen({ navigation }) {
 							/>
 						</View>
 						<View style={[styles.choose_flow]}>
-							<Image
-								style={styles.empty_image}
-								source={require("../assets/onboard/standing_chefs.png")}
-							/>
+							<Image style={styles.empty_image} source={require("../assets/onboard/pro.png")} />
 							<CustomButton
 								text="I'm a Pro"
 								onPress={() => {
@@ -275,10 +272,7 @@ export default function WelcomeScreen({ navigation }) {
 						/>
 					</View>
 					<View style={[styles.choose_flow]}>
-						<Image
-							style={styles.empty_image}
-							source={require("../assets/onboard/standing_chefs.png")}
-						/>
+						<Image style={styles.empty_image} source={require("../assets/onboard/pro.png")} />
 						<CustomButton
 							text="I'm a Pro"
 							onPress={() => {

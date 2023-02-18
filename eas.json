@@ -4,9 +4,10 @@
 	},
 	"build": {
 		"development": {
+			"node": "18.14.0",
 			"developmentClient": true,
-			"distribution": "internal",
-      "channel": "development"
+			"distribution": "store",
+			"channel": "development"
 		},
 		"preview": {
       "distribution": "internal",
